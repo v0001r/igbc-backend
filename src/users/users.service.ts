@@ -65,6 +65,42 @@ export class UsersService {
     return this.toPublicUser(user);
   }
 
+  async getMembershipDirectoryEntries() {
+    const users = await this.usersRepository.find({
+      where: { prefShowProfilePublicly: true },
+      relations: {
+        client: {
+          organization: true,
+        },
+      },
+      order: { displayName: "ASC" },
+    });
+
+    return {
+      members: users.map((user) => {
+        const organizationType = user.client?.organization?.organizationType ?? "";
+        const normalizedOrgType = organizationType.toLowerCase();
+        const membershipType = normalizedOrgType.includes("founding")
+          ? "Founding Membership"
+          : normalizedOrgType.includes("annual")
+            ? "Annual Membership"
+            : "Individual Membership";
+        const displayName = user.client?.organization?.organizationName || user.displayName;
+
+        return {
+          id: user.id,
+          logo: this.getInitials(displayName),
+          name: displayName,
+          membershipType,
+          website: "N/A",
+          category: organizationType || "General",
+          contactEmail: user.email,
+          contactPhone: user.mobile || user.telephone || "",
+        };
+      }),
+    };
+  }
+
   async updateProfileByEmail(email: string, updateProfileDto?: UpdateProfileDto) {
     const user = await this.findByEmailWithClient(email);
     if (!user) {
@@ -158,5 +194,14 @@ export class UsersService {
       employeeId: client?.organization?.employeeId,
       organizationType: client?.organization?.organizationType,
     };
+  }
+
+  private getInitials(value: string) {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return "IG";
+    }
+    const parts = trimmed.split(/\s+/).slice(0, 2);
+    return parts.map((part) => part[0]?.toUpperCase() ?? "").join("");
   }
 }
