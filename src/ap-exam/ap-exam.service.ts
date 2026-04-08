@@ -9,6 +9,7 @@ import { Repository } from "typeorm";
 import { ApExamRegistration } from "./ap-exam-registration.entity";
 import { PaymentUpdateDto } from "./dto/payment-update.dto";
 import { RegisterApExamDto } from "./dto/register-ap-exam.dto";
+import { RescheduleExamDto } from "./dto/reschedule-exam.dto";
 
 @Injectable()
 export class ApExamService {
@@ -62,6 +63,84 @@ export class ApExamService {
       throw new NotFoundException("AP exam registration not found");
     }
     return this.toResponse(registration);
+  }
+
+  async getUserExamList(email: string) {
+    const normalizedEmail = email.toLowerCase();
+    const registrations = await this.apExamRepository.find({
+      where: { email: normalizedEmail },
+      order: { examDate: "ASC" },
+    });
+
+    return {
+      email: normalizedEmail,
+      exams: registrations.map((registration) => {
+        const isExamPassed = this.hasExamDatePassed(registration.examDate);
+        const canReschedule =
+          registration.paymentStatus === "success" &&
+          !isExamPassed &&
+          (registration.rescheduleCount ?? 0) < 1;
+
+        return {
+          registrationId: registration.id,
+          examId: registration.examId,
+          examName: "IGBC AP Exam",
+          examDate: registration.examDate,
+          examTime: registration.examTime,
+          paymentStatus: registration.paymentStatus,
+          examStatus: isExamPassed ? "past" : "upcoming",
+          actions: {
+            reschedule: canReschedule,
+          },
+          rescheduleCount: registration.rescheduleCount ?? 0,
+        };
+      }),
+    };
+  }
+
+  async rescheduleExam(registrationId: string, rescheduleDto: RescheduleExamDto) {
+    const registration = await this.findByIdOrThrow(registrationId);
+
+    if (registration.paymentStatus !== "success") {
+      throw new BadRequestException("Reschedule is allowed only after successful payment");
+    }
+
+    if (this.hasExamDatePassed(registration.examDate)) {
+      throw new BadRequestException("Cannot reschedule because exam date has already passed");
+    }
+
+    if ((registration.rescheduleCount ?? 0) >= 1) {
+      throw new BadRequestException("Reschedule is allowed only one time");
+    }
+
+    const nextExamDate = this.parseAndValidateRescheduleDate(rescheduleDto.newExamDate);
+    const today = this.getTodayAtMidnight();
+    if (nextExamDate < today) {
+      throw new BadRequestException("New exam date cannot be in the past");
+    }
+
+    const currentExamDate = this.parseDateString(registration.examDate);
+    if (rescheduleDto.mode === "prepone" && !(nextExamDate < currentExamDate)) {
+      throw new BadRequestException("For prepone, new exam date must be before current exam date");
+    }
+    if (rescheduleDto.mode === "postpone" && !(nextExamDate > currentExamDate)) {
+      throw new BadRequestException("For postpone, new exam date must be after current exam date");
+    }
+
+    registration.previousExamDate = registration.examDate;
+    registration.examDate = this.formatAsDateString(nextExamDate);
+    registration.rescheduleCount = (registration.rescheduleCount ?? 0) + 1;
+    registration.lastRescheduledAt = new Date();
+
+    const updated = await this.apExamRepository.save(registration);
+    return {
+      registrationId: updated.id,
+      examId: updated.examId,
+      examDate: updated.examDate,
+      examTime: updated.examTime,
+      rescheduleCount: updated.rescheduleCount ?? 0,
+      message: "Exam rescheduled successfully",
+    };
   }
 
   async getReviewData(registrationId: string) {
@@ -222,6 +301,33 @@ export class ApExamService {
     const month = `${date.getMonth() + 1}`.padStart(2, "0");
     const day = `${date.getDate()}`.padStart(2, "0");
     return `${year}-${month}-${day}`;
+  }
+
+  private hasExamDatePassed(examDateString: string): boolean {
+    const examDate = this.parseDateString(examDateString);
+    return examDate < this.getTodayAtMidnight();
+  }
+
+  private parseAndValidateRescheduleDate(examDateInput: string): Date {
+    const parsed = this.parseDateString(examDateInput);
+    if (parsed.getDay() !== 6) {
+      throw new BadRequestException("Reschedule date must be a Saturday");
+    }
+    return parsed;
+  }
+
+  private parseDateString(dateString: string): Date {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const parsedDate = new Date(year, month - 1, day);
+    if (Number.isNaN(parsedDate.getTime())) {
+      throw new BadRequestException("Date is invalid");
+    }
+    return parsedDate;
+  }
+
+  private getTodayAtMidnight(): Date {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
   }
 
   private toResponse(registration: ApExamRegistration) {

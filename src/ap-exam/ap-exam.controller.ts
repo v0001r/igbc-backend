@@ -3,6 +3,7 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ApExamService } from "./ap-exam.service";
 import { PaymentUpdateDto } from "./dto/payment-update.dto";
 import { RegisterApExamDto } from "./dto/register-ap-exam.dto";
+import { RescheduleExamDto } from "./dto/reschedule-exam.dto";
 
 @ApiTags("ap-exam")
 @Controller("ap-exam")
@@ -27,6 +28,12 @@ export class ApExamController {
     return this.apExamService.getRegistrationByEmail(email);
   }
 
+  @ApiOperation({ summary: "Get AP exam list for user with available actions" })
+  @Get("user-exams")
+  getUserExams(@Query("email") email: string) {
+    return this.apExamService.getUserExamList(email);
+  }
+
   @ApiOperation({ summary: "Get review data for AP exam registration" })
   @Get(":id/review")
   getReview(@Param("id") id: string) {
@@ -37,6 +44,12 @@ export class ApExamController {
   @Post(":id/payment")
   updatePaymentStatus(@Param("id") id: string, @Body() paymentUpdateDto: PaymentUpdateDto) {
     return this.apExamService.updatePaymentStatus(id, paymentUpdateDto);
+  }
+
+  @ApiOperation({ summary: "Reschedule AP exam (allowed only once)" })
+  @Post(":id/reschedule")
+  rescheduleExam(@Param("id") id: string, @Body() rescheduleExamDto: RescheduleExamDto) {
+    return this.apExamService.rescheduleExam(id, rescheduleExamDto);
   }
 
   @ApiOperation({ summary: "Get selectable AP exam dates for month (1st and 3rd Saturday)" })

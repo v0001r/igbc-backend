@@ -66,4 +66,13 @@ export class ApExamRegistration {
 
   @Column({ nullable: true })
   paymentTransactionId?: string;
+
+  @Column({ type: "int", default: 0 })
+  rescheduleCount!: number;
+
+  @Column({ type: "date", nullable: true })
+  previousExamDate?: string;
+
+  @Column({ type: "timestamp", nullable: true })
+  lastRescheduledAt?: Date;
 }
