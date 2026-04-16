@@ -101,6 +101,17 @@ export class UsersService {
     };
   }
 
+  async getUsersByIds(userIds: string[]) {
+    const uniqueIds = [...new Set(userIds.filter((id) => Boolean(id?.trim())))];
+    if (uniqueIds.length === 0) {
+      return [];
+    }
+
+    return this.usersRepository.find({
+      where: uniqueIds.map((id) => ({ id })),
+    });
+  }
+
   async updateProfileByEmail(email: string, updateProfileDto?: UpdateProfileDto) {
     const user = await this.findByEmailWithClient(email);
     if (!user) {

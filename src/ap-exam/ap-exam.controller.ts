@@ -1,14 +1,65 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { ApExamService } from "./ap-exam.service";
 import { PaymentUpdateDto } from "./dto/payment-update.dto";
 import { RegisterApExamDto } from "./dto/register-ap-exam.dto";
 import { RescheduleExamDto } from "./dto/reschedule-exam.dto";
+import { UpdateExamResultDto } from "./dto/update-exam-result.dto";
+import { UploadExamReportDto } from "./dto/upload-exam-report.dto";
 
 @ApiTags("ap-exam")
 @Controller("ap-exam")
 export class ApExamController {
   constructor(private readonly apExamService: ApExamService) {}
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Admin: get AP exam registrations list" })
+  @UseGuards(JwtAuthGuard)
+  @Get("admin/list")
+  getAdminExamList(
+    @Req() request: { user: { email: string } },
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+    @Query("search") search?: string,
+  ) {
+    return this.apExamService.getAdminExamList(request.user.email, {
+      page: page ? Number(page) : undefined,
+      limit: limit ? Number(limit) : undefined,
+      search,
+    });
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Admin Tab: manage certificate list (passed AP exams)" })
+  @UseGuards(JwtAuthGuard)
+  @Get("admin/tabs/manage-certificate")
+  getAdminManageCertificateList(
+    @Req() request: { user: { email: string } },
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+    @Query("search") search?: string,
+  ) {
+    return this.apExamService.getAdminManageCertificateList(request.user.email, {
+      page: page ? Number(page) : undefined,
+      limit: limit ? Number(limit) : undefined,
+      search,
+    });
+  }
 
   @ApiOperation({ summary: "Register for AP exam" })
   @Post("register")
@@ -38,6 +89,55 @@ export class ApExamController {
   @Get(":id/review")
   getReview(@Param("id") id: string) {
     return this.apExamService.getReviewData(id);
+  }
+
+  @ApiOperation({ summary: "View AP exam details including report and result" })
+  @Get(":id/view")
+  getExamView(@Param("id") id: string) {
+    return this.apExamService.getExamView(id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Admin: upload AP exam report and score" })
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor("report"))
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      required: ["report", "score"],
+      properties: {
+        report: {
+          type: "string",
+          format: "binary",
+        },
+        score: {
+          type: "number",
+          example: 78,
+        },
+      },
+    },
+  })
+  @Post(":id/report")
+  uploadReport(
+    @Param("id") id: string,
+    @Req() request: { user: { email: string } },
+    @UploadedFile() report: { originalname: string; mimetype: string; buffer: Buffer } | undefined,
+    @Body() dto: UploadExamReportDto,
+  ) {
+    return this.apExamService.uploadExamReportAndScore(id, request.user.email, report, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Admin: mark AP exam result as pass/fail (after report upload)" })
+  @UseGuards(JwtAuthGuard)
+  @Patch(":id/result")
+  updateResult(
+    @Param("id") id: string,
+    @Req() request: { user: { email: string } },
+    @Body() dto: UpdateExamResultDto,
+  ) {
+    return this.apExamService.updateExamResult(id, request.user.email, dto);
   }
 
   @ApiOperation({ summary: "Update payment status for AP exam registration" })

@@ -1,15 +1,26 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { UsersService } from "../users/users.service";
 import { ApExamRegistration } from "./ap-exam-registration.entity";
+import { ApExamStorageService } from "./ap-exam-storage.service";
 import { PaymentUpdateDto } from "./dto/payment-update.dto";
 import { RegisterApExamDto } from "./dto/register-ap-exam.dto";
 import { RescheduleExamDto } from "./dto/reschedule-exam.dto";
+import { UpdateExamResultDto } from "./dto/update-exam-result.dto";
+import { UploadExamReportDto } from "./dto/upload-exam-report.dto";
+
+type UploadedReportFile = {
+  originalname: string;
+  mimetype: string;
+  buffer: Buffer;
+};
 
 @Injectable()
 export class ApExamService {
@@ -19,7 +30,156 @@ export class ApExamService {
   constructor(
     @InjectRepository(ApExamRegistration)
     private readonly apExamRepository: Repository<ApExamRegistration>,
+    private readonly usersService: UsersService,
+    private readonly apExamStorageService: ApExamStorageService,
   ) {}
+
+  async getAdminExamList(requesterEmail: string, query?: { page?: number; limit?: number; search?: string }) {
+    await this.ensureAdminAccess(requesterEmail);
+
+    const page = Math.max(query?.page ?? 1, 1);
+    const limit = Math.min(Math.max(query?.limit ?? 10, 1), 100);
+    const qb = this.apExamRepository.createQueryBuilder("exam");
+    qb.where("(exam.resultStatus IS NULL OR TRIM(exam.resultStatus) = '')");
+
+    if (query?.search?.trim()) {
+      const search = `%${query.search.trim().toLowerCase()}%`;
+      qb.andWhere(
+        "LOWER(exam.email) LIKE :search OR LOWER(exam.firstName) LIKE :search OR LOWER(exam.lastName) LIKE :search OR LOWER(COALESCE(exam.examId, '')) LIKE :search",
+        { search },
+      );
+    }
+
+    qb.orderBy("exam.examDate", "DESC")
+      .addOrderBy("exam.id", "DESC")
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [records, total] = await qb.getManyAndCount();
+    return {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit) || 1,
+      items: records.map((record) => ({
+        registrationId: record.id,
+        examId: record.examId ?? null,
+        fullName: `${record.firstName} ${record.lastName}`.trim(),
+        email: record.email,
+        mobileNumber: record.mobileNumber,
+        examDate: record.examDate,
+        examTime: record.examTime,
+        paymentStatus: record.paymentStatus,
+        feeAmount: record.feeAmount,
+        rescheduleCount: record.rescheduleCount ?? 0,
+        reportUrl: record.reportUrl ?? null,
+        examScore: record.examScore ?? null,
+        resultStatus: record.resultStatus ?? null,
+      })),
+    };
+  }
+
+  async getAdminManageCertificateList(
+    requesterEmail: string,
+    query?: { page?: number; limit?: number; search?: string },
+  ) {
+    await this.ensureAdminAccess(requesterEmail);
+
+    const page = Math.max(query?.page ?? 1, 1);
+    const limit = Math.min(Math.max(query?.limit ?? 10, 1), 100);
+    const qb = this.apExamRepository.createQueryBuilder("exam");
+    qb.where("exam.resultStatus = :resultStatus", { resultStatus: "pass" });
+
+    if (query?.search?.trim()) {
+      const search = `%${query.search.trim().toLowerCase()}%`;
+      qb.andWhere(
+        "LOWER(exam.email) LIKE :search OR LOWER(exam.firstName) LIKE :search OR LOWER(exam.lastName) LIKE :search OR LOWER(COALESCE(exam.examId, '')) LIKE :search",
+        { search },
+      );
+    }
+
+    qb.orderBy("exam.resultUpdatedAt", "DESC")
+      .addOrderBy("exam.id", "DESC")
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [records, total] = await qb.getManyAndCount();
+    return {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit) || 1,
+      items: records.map((record) => ({
+        registrationId: record.id,
+        examId: record.examId ?? null,
+        fullName: `${record.firstName} ${record.lastName}`.trim(),
+        email: record.email,
+        mobileNumber: record.mobileNumber,
+        examDate: record.examDate,
+        examTime: record.examTime,
+        score: record.examScore ?? null,
+        reportUrl: record.reportUrl ?? null,
+        resultStatus: record.resultStatus,
+        resultUpdatedAt: record.resultUpdatedAt ?? null,
+        actions: {
+          view: true,
+        },
+      })),
+    };
+  }
+
+  async getExamView(registrationId: string) {
+    const registration = await this.findByIdOrThrow(registrationId);
+    return this.toResponse(registration);
+  }
+
+  async uploadExamReportAndScore(
+    registrationId: string,
+    requesterEmail: string,
+    reportFile: UploadedReportFile | undefined,
+    dto: UploadExamReportDto,
+  ) {
+    await this.ensureAdminAccess(requesterEmail);
+    const registration = await this.findByIdOrThrow(registrationId);
+    if (!reportFile) {
+      throw new BadRequestException("Report file is required");
+    }
+    const reportUrl = await this.apExamStorageService.uploadReport(reportFile, registration.id);
+    registration.reportUrl = reportUrl;
+    registration.examScore = dto.score;
+    registration.reportUploadedAt = new Date();
+    registration.resultStatus = undefined;
+    registration.resultUpdatedAt = undefined;
+
+    const updated = await this.apExamRepository.save(registration);
+    return {
+      registrationId: updated.id,
+      examId: updated.examId ?? null,
+      reportUrl: updated.reportUrl,
+      examScore: updated.examScore,
+      reportUploadedAt: updated.reportUploadedAt,
+      message: "Report and score uploaded successfully",
+    };
+  }
+
+  async updateExamResult(registrationId: string, requesterEmail: string, dto: UpdateExamResultDto) {
+    await this.ensureAdminAccess(requesterEmail);
+    const registration = await this.findByIdOrThrow(registrationId);
+    if (!registration.reportUrl) {
+      throw new BadRequestException("Upload report before setting pass/fail result");
+    }
+
+    registration.resultStatus = dto.result;
+    registration.resultUpdatedAt = new Date();
+    const updated = await this.apExamRepository.save(registration);
+    return {
+      registrationId: updated.id,
+      examId: updated.examId ?? null,
+      result: updated.resultStatus,
+      resultUpdatedAt: updated.resultUpdatedAt,
+      message: "Exam result updated successfully",
+    };
+  }
 
   async createRegistration(registerDto: RegisterApExamDto) {
     const email = registerDto.personalInformation.email.toLowerCase();
@@ -363,8 +523,22 @@ export class ApExamService {
         amount: registration.feeAmount,
         currency: "INR",
       },
+      assessment: {
+        reportUrl: registration.reportUrl ?? null,
+        score: registration.examScore ?? null,
+        reportUploadedAt: registration.reportUploadedAt ?? null,
+        resultStatus: registration.resultStatus ?? null,
+        resultUpdatedAt: registration.resultUpdatedAt ?? null,
+      },
       paymentStatus: registration.paymentStatus,
       examId: registration.examId,
     };
+  }
+
+  private async ensureAdminAccess(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user || user.userType !== "a") {
+      throw new ForbiddenException("Admin access only");
+    }
   }
 }

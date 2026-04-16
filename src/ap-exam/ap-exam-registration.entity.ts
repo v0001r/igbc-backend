@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export type PaymentStatus = "pending" | "success" | "failure";
+export type ExamResultStatus = "pass" | "fail";
 
 @Entity("ap_exam_registrations")
 export class ApExamRegistration {
@@ -75,4 +76,19 @@ export class ApExamRegistration {
 
   @Column({ type: "timestamp", nullable: true })
   lastRescheduledAt?: Date;
+
+  @Column({ nullable: true })
+  reportUrl?: string;
+
+  @Column({ type: "int", nullable: true })
+  examScore?: number;
+
+  @Column({ type: "timestamp", nullable: true })
+  reportUploadedAt?: Date;
+
+  @Column({ type: "varchar", nullable: true })
+  resultStatus?: ExamResultStatus;
+
+  @Column({ type: "timestamp", nullable: true })
+  resultUpdatedAt?: Date;
 }
