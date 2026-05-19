@@ -1,0 +1,3661 @@
+{
+  "on_site_renewable_energy": {
+    "laravelScript": "energy-lighting",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_on_site_renewable_energy"
+        ],
+        "when": {
+          "field": "case_for_on_site_renewable",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "capacity_percetage_on_site"
+        ],
+        "when": {
+          "field": "case_for_off_site_renewable",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_on_site_renewable_energy"
+        ],
+        "when": {
+          "field": "this",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_on_site_renewable_energy"
+        ],
+        "when": {
+          "field": "this",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "generation_onsite_solar",
+          "total_energy_building",
+          "percentage_energy_catered"
+        ],
+        "when": {
+          "field": "select_approach_credit_onsite",
+          "op": "==",
+          "value": "Owner Occupied"
+        }
+      },
+      {
+        "targets": [
+          "generation_onsite_solar_annex",
+          "lighting_energy_building",
+          "catered_lighting_energy"
+        ],
+        "when": {
+          "field": "select_approach_credit_onsite",
+          "op": "==",
+          "value": "Tenant Occupied"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "generation_onsite_solar",
+          "total_energy_building",
+          "percentage_energy_catered",
+          "generation_onsite_solar_annex",
+          "lighting_energy_building",
+          "catered_lighting_energy"
+        ],
+        "when": {
+          "field": "select_approach_credit_onsite",
+          "op": "==",
+          "value": "Owner Occupied"
+        }
+      },
+      {
+        "targets": [
+          "generation_onsite_solar_annex",
+          "lighting_energy_building",
+          "catered_lighting_energy",
+          "generation_onsite_solar",
+          "total_energy_building",
+          "percentage_energy_catered"
+        ],
+        "when": {
+          "field": "select_approach_credit_onsite",
+          "op": "==",
+          "value": "Tenant Occupied"
+        }
+      }
+    ]
+  },
+  "green_power": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "annual_generation_green_power",
+          "total_annual_energy_green_power",
+          "total_annual_energy_green_power_re",
+          "percentage_energy_solor",
+          "narrative_green_power",
+          "detailed_calculations_green_power",
+          "layout_green_power",
+          "purchase_invoice_green_power",
+          "monthly_energy_bill_green_power",
+          "energy_meter_reading_green_power",
+          "geotagged_photograph_green_power"
+        ],
+        "when": {
+          "field": "green_power_select",
+          "op": "==",
+          "value": "On-site Renewable Energy"
+        }
+      },
+      {
+        "targets": [
+          "annual_off_site",
+          "generation_off_site",
+          "building_off_site",
+          "catered_off_site",
+          "narrative_off_site",
+          "detailed_off_site",
+          "signed_client_off_site",
+          "energy_bill_off_site",
+          "geotagged_off_site"
+        ],
+        "when": {
+          "field": "green_power_select",
+          "op": "==",
+          "value": "Off-site Renewable Energy"
+        }
+      },
+      {
+        "targets": [
+          "grid_off_set",
+          "generation_onsite",
+          "gen_off_set",
+          "gen_off_setsolar",
+          "con_build_off_set",
+          "eng_catered_off_set",
+          "narrative_off_set",
+          "detailed_off_set",
+          "layout_locatio_off_set",
+          "energy_highliting_total_off_set",
+          "renewable_energy_off_set",
+          "submit_company_off_set",
+          "timestamped_off_set",
+          "exemplary_off_set"
+        ],
+        "when": {
+          "field": "green_power_select",
+          "op": "==",
+          "value": "Off-set Grid Energy Use by Renewable Energy"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "annual_generation_green_power",
+          "total_annual_energy_green_power",
+          "total_annual_energy_green_power_re",
+          "percentage_energy_solor",
+          "narrative_green_power",
+          "detailed_calculations_green_power",
+          "layout_green_power",
+          "purchase_invoice_green_power",
+          "monthly_energy_bill_green_power",
+          "energy_meter_reading_green_power",
+          "geotagged_photograph_green_power",
+          "annual_off_site",
+          "gen_off_set",
+          "generation_off_site",
+          "building_off_site",
+          "catered_off_site",
+          "narrative_off_site",
+          "detailed_off_site",
+          "signed_client_off_site",
+          "energy_bill_off_site",
+          "geotagged_off_site",
+          "grid_off_set",
+          "generation_onsite",
+          "gen_off_setsolar",
+          "con_build_off_set",
+          "eng_catered_off_set",
+          "narrative_off_set",
+          "detailed_off_set",
+          "layout_locatio_off_set",
+          "energy_highliting_total_off_set",
+          "renewable_energy_off_set",
+          "submit_company_off_set",
+          "timestamped_off_set",
+          "exemplary_off_set"
+        ],
+        "when": {
+          "field": "green_power_select",
+          "op": "==",
+          "value": "On-site Renewable Energy"
+        }
+      },
+      {
+        "targets": [
+          "annual_off_site",
+          "generation_off_site",
+          "building_off_site",
+          "catered_off_site",
+          "narrative_off_site",
+          "detailed_off_site",
+          "signed_client_off_site",
+          "energy_bill_off_site",
+          "geotagged_off_site",
+          "annual_generation_green_power",
+          "total_annual_energy_green_power",
+          "total_annual_energy_green_power_re",
+          "percentage_energy_solor",
+          "narrative_green_power",
+          "detailed_calculations_green_power",
+          "layout_green_power",
+          "purchase_invoice_green_power",
+          "monthly_energy_bill_green_power",
+          "energy_meter_reading_green_power",
+          "geotagged_photograph_green_power",
+          "grid_off_set",
+          "generation_onsite",
+          "gen_off_set",
+          "gen_off_setsolar",
+          "con_build_off_set",
+          "eng_catered_off_set",
+          "narrative_off_set",
+          "detailed_off_set",
+          "layout_locatio_off_set",
+          "energy_highliting_total_off_set",
+          "renewable_energy_off_set",
+          "submit_company_off_set",
+          "timestamped_off_set",
+          "exemplary_off_set"
+        ],
+        "when": {
+          "field": "green_power_select",
+          "op": "==",
+          "value": "Off-site Renewable Energy"
+        }
+      },
+      {
+        "targets": [
+          "grid_off_set",
+          "generation_onsite",
+          "gen_off_set",
+          "gen_off_setsolar",
+          "con_build_off_set",
+          "eng_catered_off_set",
+          "narrative_off_set",
+          "detailed_off_set",
+          "layout_locatio_off_set",
+          "energy_highliting_total_off_set",
+          "renewable_energy_off_set",
+          "submit_company_off_set",
+          "timestamped_off_set",
+          "exemplary_off_set",
+          "annual_generation_green_power",
+          "total_annual_energy_green_power",
+          "total_annual_energy_green_power_re",
+          "percentage_energy_solor",
+          "narrative_green_power",
+          "detailed_calculations_green_power",
+          "layout_green_power",
+          "purchase_invoice_green_power",
+          "monthly_energy_bill_green_power",
+          "energy_meter_reading_green_power",
+          "geotagged_photograph_green_power",
+          "annual_off_site",
+          "generation_off_site",
+          "building_off_site",
+          "catered_off_site",
+          "narrative_off_site",
+          "detailed_off_site",
+          "signed_client_off_site",
+          "energy_bill_off_site",
+          "geotagged_off_site"
+        ],
+        "when": {
+          "field": "green_power_select",
+          "op": "==",
+          "value": "Off-set Grid Energy Use by Renewable Energy"
+        }
+      }
+    ]
+  },
+  "minimum_fresh_air_requirements": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_stating_space",
+          "cal_inficating_space",
+          "highlighting_list_space",
+          "test_results_space",
+          "geotag_time_space"
+        ],
+        "when": {
+          "field": "mechanically_ventilated_spaces",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_spaces_non",
+          "window_door_schedule_space",
+          "details_installed_space",
+          "building_elevations_space",
+          "indicating_openable_space",
+          "geotag_time_stamped_space"
+        ],
+        "when": {
+          "field": "non_air_conditioned_spaces",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "enhanced_indoor_environment_quality": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "cfm_required_space",
+          "single_annex",
+          "outdoor_annex",
+          "cfm_provided_space",
+          "percentage_improvement_space_indoor",
+          "narrative_spaces_indoor_non",
+          "window_door_schedule_space_indoor",
+          "details_installed_space_indoor",
+          "building_elevations_space_indoor",
+          "indicating_openable_space_indoor",
+          "geotag_time_stamped_space_indoor"
+        ],
+        "when": {
+          "field": "enhanced_ventilation_spaces",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "monitor_iaq_parameters_space",
+          "narrative_indicating_space",
+          "parameter_report",
+          "quarterly_monitoring",
+          "location_sensors",
+          "stamped_photo"
+        ],
+        "when": {
+          "field": "monitor_iaq_parameters_spaces",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "thermal_comfort_strategies",
+          "indoor_temp_rh"
+        ],
+        "when": {
+          "field": "thermal_comfort",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "compliant_area",
+          "total_area_daylight",
+          "regularly_occupied_area",
+          "narrative_daylight",
+          "site_building_daylight",
+          "floor_plan_daylight",
+          "report_analysis_daylight",
+          "cutsheet_installed_glass",
+          "photo_graphs_interiors",
+          "purchase_invoice_daylight"
+        ],
+        "when": {
+          "field": "daylight_access",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "regularly_area_para",
+          "total_area_para",
+          "occupied_area_para",
+          "narrative_para",
+          "highithin_area",
+          "indicating_levels_para",
+          "recommedation_para",
+          "cutsheet_insulation_para",
+          "photographs_para"
+        ],
+        "when": {
+          "field": "acoustical_parameters",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_fac",
+          "isolated_space_factory",
+          "exhaust_system_factroy",
+          "measure_undertaken_factroy"
+        ],
+        "when": {
+          "field": "olfactory_parameters_eng",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "green_education": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "relevant_applicable_documents",
+          "photographs_green_education"
+        ],
+        "when": {
+          "field": "awarness_green_education",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "crediy_comp",
+          "photographs_showing_measure"
+        ],
+        "when": {
+          "field": "educa_on",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "enhanced_waste_managementv": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "dry_water_gene",
+          "data_year_before_previous_year",
+          "percentage_reduction",
+          "enhanced_waste_narrative",
+          "enhanced_waste",
+          "enhanced_waste_consent",
+          "enhanced_waste_letter",
+          "enhanced_waste_green_practices",
+          "enhanced_waste_geotag_project",
+          "enhanced_waste_list_of_waste",
+          "calculation_highlighting"
+        ],
+        "when": {
+          "field": "dry_waste_reduction",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "dry_waste",
+          "dry_waste_enhanced_waste",
+          "dry_waste_enhanced_waste_consent",
+          "dry_waste_enhanced_waste_letter",
+          "dry_waste_enhanced_waste_renovation",
+          "dry_waste_stamped",
+          "manufacturer_certificate_dry"
+        ],
+        "when": {
+          "field": "dry_waste_recycling_resue",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "details_converted_preceding",
+          "enhanced_waste_photos",
+          "location_organic_waste",
+          "payment_organic_wet",
+          "wet_stamped_showing"
+        ],
+        "when": {
+          "field": "wet_waste_composting",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "sustainable_retrofitting": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "select_radio",
+          "sustainable_narrative",
+          "procured_materials_list",
+          "greenpro_certificate",
+          "used_eco",
+          "greenpro_geotag"
+        ],
+        "when": {
+          "field": "eco_labelled",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "signed_sustainable_policy"
+        ],
+        "when": {
+          "field": "sus_pro_policy",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "urban_heat_island": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_with_detailed",
+          "per_treated_roof",
+          "exposed_islad_annex",
+          "site_and_roof_area_plan_highlighting",
+          "sri_test_certificate",
+          "tax_invoice_of_materials",
+          "sustainable_design_photographs",
+          "geo_photo"
+        ],
+        "when": {
+          "field": "urban_heat_island_mitigation",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "site_plan_non",
+          "cal_of_non_roof_area",
+          "per_treated_non_roof",
+          "urban_heat_annex",
+          "receipt_high",
+          "nabl_test",
+          "stamped_reduce"
+        ],
+        "when": {
+          "field": "non_roof_impervious_area",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "exposed",
+          "insert_area",
+          "tolerant",
+          "heat_island_mitigation",
+          "urban_exemplary",
+          "urban_narrative",
+          "urban_roof_area",
+          "test_certificate",
+          "invoice_roof",
+          "photos_roof",
+          "developer"
+        ],
+        "when": {
+          "field": "heat_roof",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "total_exposed_non_roof_area",
+          "exposed_area_of_high_sri_non_roof",
+          "area_of_hardscape_non_roof",
+          "heat_island_mitigation_non_roof",
+          "non_roof_exemplary_performance",
+          "non_roof_narrative_with_detailed",
+          "non_roof_site_and_roof_area_plan_highlighting",
+          "non_roof_sri_test_certificate",
+          "non_roof_tax_invoice_of_materials",
+          "non_roof_site_and_roof_photographs",
+          "non_roof_developer_declaration"
+        ],
+        "when": {
+          "field": "heat_non_roof",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "exposed",
+          "insert_area",
+          "tolerant",
+          "heat_island_mitigation",
+          "urban_exemplary",
+          "urban_narrative",
+          "urban_roof_area",
+          "test_certificate",
+          "invoice_roof",
+          "photos_roof",
+          "developer"
+        ],
+        "when": {
+          "field": "heat_roof",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "total_exposed_non_roof_area",
+          "exposed_area_of_high_sri_non_roof",
+          "area_of_hardscape_non_roof",
+          "heat_island_mitigation_non_roof",
+          "non_roof_exemplary_performance",
+          "non_roof_narrative_with_detailed",
+          "non_roof_site_and_roof_area_plan_highlighting",
+          "non_roof_sri_test_certificate",
+          "non_roof_tax_invoice_of_materials",
+          "non_roof_site_and_roof_photographs",
+          "non_roof_developer_declaration"
+        ],
+        "when": {
+          "field": "heat_non_roof",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "exposed",
+          "insert_area",
+          "tolerant",
+          "heat_island_mitigation",
+          "urban_exemplary",
+          "urban_narrative",
+          "urban_roof_area",
+          "test_certificate",
+          "invoice_roof",
+          "photos_roof",
+          "developer"
+        ],
+        "when": {
+          "field": "heat_roof",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "total_exposed_non_roof_area",
+          "exposed_area_of_high_sri_non_roof",
+          "area_of_hardscape_non_roof",
+          "heat_island_mitigation_non_roof",
+          "non_roof_exemplary_performance",
+          "non_roof_narrative_with_detailed",
+          "non_roof_site_and_roof_area_plan_highlighting",
+          "non_roof_sri_test_certificate",
+          "non_roof_tax_invoice_of_materials",
+          "non_roof_site_and_roof_photographs",
+          "non_roof_developer_declaration"
+        ],
+        "when": {
+          "field": "heat_non_roof",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "eco_friendly_commuting": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "total_permanents",
+          "total_permanen_ecos",
+          "occupants_public_transport",
+          "narrative_eco_nar",
+          "commuting_practices_eco",
+          "detailed_indicating_occupants",
+          "eco_friendly_photographs_eco"
+        ],
+        "when": {
+          "field": "public_transport",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "permanent_eco",
+          "using_service_eco",
+          "occupants_shutter_eco",
+          "narrative_shutter_eco",
+          "contract_project"
+        ],
+        "when": {
+          "field": "shuttel_service_eco",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "building_operations_maintenance": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "public_transport",
+          "hvac_chiller",
+          "waster_sys",
+          "divder_line",
+          "onsite_engergy",
+          "rain_har",
+          "power_sys",
+          "elevators_escalators",
+          "building_sys",
+          "building_operations_narrative",
+          "annual_maintenance_contracts"
+        ],
+        "when": {
+          "field": "is_maintenance_plan_systems",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "energy_and_water_assessment_report",
+          "audit_report",
+          "water_report",
+          "building_narr"
+        ],
+        "when": {
+          "field": "bulding_energy",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "public_transport"
+        ],
+        "when": {
+          "field": "is_maintenance_plan_systems",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "building_performance_dashboard": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "building_operations_narrative_dash",
+          "sechematic_bms_installed",
+          "monitoring_system_details",
+          "system_dashboard_details",
+          "meter_installed_details",
+          "water_meter_photographs",
+          "total_water_consumption_data",
+          "project_comm_one"
+        ],
+        "when": {
+          "field": "monitoring_energy_consumption",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_con",
+          "diagram_bms_installed",
+          "system_pro",
+          "installed_project",
+          "water_meter_pro",
+          "share_total",
+          "project_comm_two"
+        ],
+        "when": {
+          "field": "monitoring_con",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "sehematic_m",
+          "system_project",
+          "installed_pro",
+          "sensors_installed_photographs",
+          "perfor",
+          "project_comm_three"
+        ],
+        "when": {
+          "field": "indoor_air_quality",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "universal_designs": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "parking_differently_abled",
+          "highlighting_ramps",
+          "seating_lift",
+          "interior_abled_toilet"
+        ],
+        "when": {
+          "field": "list_application_eco",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "alternative_water_performances": {
+    "laravelScript": "existing_building",
+    "showWhen": [
+      {
+        "targets": [
+          "municipal_water_supply",
+          "ro_water_con",
+          "stp_input",
+          "stp_output",
+          "rain_coll",
+          "dom_consum",
+          "cooling_tower",
+          "flush_consum",
+          "landscap_consum"
+        ],
+        "when": {
+          "field": "log_sheets",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "daylighting": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "day_parameters_area",
+          "day_total_area",
+          "day_narrative",
+          "day_floor_plan",
+          "day_manufacturer",
+          "day_site_plan",
+          "day_simulation_report",
+          "day_photographs",
+          "day_purchase_invoices"
+        ],
+        "when": {
+          "field": "daylight_approch",
+          "op": "==",
+          "value": "Simulation Approach"
+        }
+      },
+      {
+        "targets": [
+          "mannual_parameters_area",
+          "mannual_total",
+          "mannual_narrative",
+          "mannual_def_report",
+          "mannual_floor_plan",
+          "mannual_site_plan",
+          "mannual_manufacturer",
+          "mannual_build",
+          "mannual_purchase_invoices"
+        ],
+        "when": {
+          "field": "daylight_approch",
+          "op": "==",
+          "value": "Mannual Approach"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "day_parameters_area",
+          "day_total_area",
+          "day_narrative",
+          "day_floor_plan",
+          "day_manufacturer",
+          "day_site_plan",
+          "day_simulation_report",
+          "day_photographs",
+          "day_purchase_invoices",
+          "mannual_parameters_area",
+          "mannual_total",
+          "mannual_narrative",
+          "mannual_def_report",
+          "mannual_floor_plan",
+          "mannual_site_plan",
+          "mannual_manufacturer",
+          "mannual_build",
+          "mannual_purchase_invoices",
+          "mannual_narrative_doc",
+          "mannual_def_report_doc",
+          "mannual_floor_plan_doc",
+          "mannual_site_plan_doc",
+          "mannual_manufacturer_doc",
+          "mannual_build_doc",
+          "mannual_purchase_invoices_doc"
+        ],
+        "when": {
+          "field": "daylight_approch",
+          "op": "==",
+          "value": "Simulation Approach"
+        }
+      },
+      {
+        "targets": [
+          "mannual_parameters_area",
+          "mannual_total",
+          "mannual_narrative",
+          "mannual_def_report",
+          "mannual_floor_plan",
+          "mannual_site_plan",
+          "mannual_manufacturer",
+          "mannual_build",
+          "mannual_purchase_invoices",
+          "day_parameters_area",
+          "day_total_area",
+          "day_narrative",
+          "day_floor_plan",
+          "day_manufacturer",
+          "day_site_plan",
+          "day_simulation_report",
+          "day_photographs",
+          "day_purchase_invoices",
+          "day_narrative_doc",
+          "day_floor_plan_doc",
+          "day_manufacturer_doc",
+          "day_site_plan_doc",
+          "day_simulation_report_doc",
+          "day_photographs_doc",
+          "day_purchase_invoices_doc"
+        ],
+        "when": {
+          "field": "daylight_approch",
+          "op": "==",
+          "value": "Mannual Approach"
+        }
+      }
+    ]
+  },
+  "access_public_transport": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "public_transport_select",
+          "distance_annexure_ac_fresh_air"
+        ],
+        "when": {
+          "field": "public_transport",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "basic_amenities": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "retail_store",
+          "school",
+          "hospital",
+          "bank",
+          "restaurant",
+          "hospital_dental",
+          "pharmacy",
+          "courier_service"
+        ],
+        "when": {
+          "field": "2_km_from_factory",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "first_aid_medical_facility",
+          "creche",
+          "locker_shower",
+          "canteen",
+          "resting_prooms",
+          "gymnasium"
+        ],
+        "when": {
+          "field": "provided_situ",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "heat_island_mitigation": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "total_roof",
+          "total_exposed_roof",
+          "high_sri_finish",
+          "landscape_builtup",
+          "island_mitigation_non_roof",
+          "narrative_area",
+          "site_uhi",
+          "datasheet_certificate"
+        ],
+        "when": {
+          "field": "island_mitigation_roof",
+          "op": "==",
+          "value": "Urban Heat island mitigation for Roof"
+        }
+      },
+      {
+        "targets": [
+          "ex_pos",
+          "non_roof_sampling",
+          "material_tax",
+          "photographs_non_roof",
+          "developer_owner",
+          "heat_narr"
+        ],
+        "when": {
+          "field": "island_mitigation_roof",
+          "op": "==",
+          "value": "Urban Heat island mitigation for Non-Roof"
+        }
+      },
+      {
+        "targets": [
+          "total_roof",
+          "total_exposed_roof",
+          "high_sri_finish",
+          "landscape_builtup",
+          "island_mitigation_non_roof",
+          "narrative_area",
+          "site_uhi",
+          "datasheet_certificate"
+        ],
+        "when": {
+          "field": "urban_heat_roof_island",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "ex_pos",
+          "non_roof_sampling",
+          "hardscape_area_non_roof",
+          "mitigation_non_roof_percent",
+          "material_tax",
+          "photographs_non_roof",
+          "developer_owner",
+          "heat_narr"
+        ],
+        "when": {
+          "field": "urban_heat_non_roof_island",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "ex_pos",
+          "non_roof_sampling",
+          "material_tax",
+          "photographs_non_roof",
+          "developer_owner",
+          "heat_narr",
+          "total_roof",
+          "total_exposed_roof",
+          "high_sri_finish",
+          "landscape_builtup",
+          "island_mitigation_non_roof",
+          "narrative_area",
+          "site_uhi",
+          "datasheet_certificate",
+          "narrative_area_doc",
+          "site_uhi_doc",
+          "datasheet_certificate_doc"
+        ],
+        "when": {
+          "field": "island_mitigation_roof",
+          "op": "==",
+          "value": "Urban Heat island mitigation for Non-Roof"
+        }
+      }
+    ]
+  },
+  "green_transportation_facility": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "four_wheels",
+          "two_wheels",
+          "ev_fourwheels",
+          "ev_twowheels",
+          "four_parking_percents",
+          "two_parking_percents",
+          "low_emmiting_vehicles"
+        ],
+        "when": {
+          "field": "option_electric_charging_infra",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative",
+          "parking_plans",
+          "ev_socketsev",
+          "po_green_invoice",
+          "photos_green",
+          "laws_green_parking_re",
+          "alternate_fuel",
+          "material_tax",
+          "photographs_non_roof",
+          "developer_owner",
+          "heat_narr"
+        ],
+        "when": {
+          "field": "option_eco_friendly_transport_facility",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "building_flush_out": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "before_nt"
+        ],
+        "when": {
+          "field": "build_natural_ventilation",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "shall_perform"
+        ],
+        "when": {
+          "field": "build_forced_ventilation",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "occupant_wellbeing_facilities": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "indoor_games",
+          "table_tennis",
+          "carrom",
+          "sq_squash",
+          "foot_ball",
+          "air_hockey",
+          "snooker",
+          "outdoor_games",
+          "badminton_court",
+          "volleyball_court",
+          "basketball_court",
+          "tennis_court",
+          "football_cricket",
+          "kabaddi"
+        ],
+        "when": {
+          "field": "indoor_outdoor_option_one",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "occupant_number",
+          "occupant_well"
+        ],
+        "when": {
+          "field": "break_out_option_two",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "total_roof",
+          "total_exposed_roof",
+          "high_sri_finish",
+          "landscape_builtup",
+          "island_mitigation_non_roof"
+        ],
+        "when": {
+          "field": "urban_heat_roof_island",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "total_roof",
+          "total_exposed_roof",
+          "high_sri_finish",
+          "landscape_builtup",
+          "island_mitigation_non_roof"
+        ],
+        "when": {
+          "field": "urban_heat_non_roof_island",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "minimum_energy_efficiency": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "min_narr",
+          "min_construction_details",
+          "glazing_specification",
+          "min_wwr_calculations",
+          "lpd_calculations_along",
+          "lighting_systems_controls",
+          "min_rendered",
+          "mini_photo",
+          "mini_letter",
+          "calculation_wall_roof_assembly",
+          "window_wall_ratio",
+          "photographs_of_glazing",
+          "detailed_lpd_calculations",
+          "lighting_system_control",
+          "air_condition_cop_isser",
+          "photographs_lighting_fixtures",
+          "description_installed_air_conditioning",
+          "technical_cutsheet_installed_air",
+          "technical_cutsheet_cooling_system",
+          "technical_cutsheet_of_hvls",
+          "photographs_of_hvls_cooloing",
+          "description_low_energy_cooling_system",
+          "drawing_indicating_area_coverd",
+          "Photographs_installed_system"
+        ],
+        "when": {
+          "field": "min_select",
+          "op": "==",
+          "value": "Prescriptive Method"
+        }
+      },
+      {
+        "targets": [
+          "eng_purchase_in",
+          "eng_photos",
+          "eng_narrative",
+          "eng_energy_simulation_report",
+          "eng_manufacturer_cut_sheets",
+          "eng_lpd_calculations",
+          "eng_lighting_layouts",
+          "eng_hvac_layouts",
+          "eng_calculations",
+          "eng_wall_roof_drawings",
+          "eng_simulation_files"
+        ],
+        "when": {
+          "field": "min_select",
+          "op": "==",
+          "value": "Whole Building Performance Method"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "min_narr",
+          "min_construction_details",
+          "glazing_specification",
+          "min_wwr_calculations",
+          "lpd_calculations_along",
+          "lighting_systems_controls",
+          "min_rendered",
+          "mini_photo",
+          "mini_letter",
+          "calculation_wall_roof_assembly",
+          "window_wall_ratio",
+          "photographs_of_glazing",
+          "detailed_lpd_calculations",
+          "lighting_system_control",
+          "air_condition_cop_isser",
+          "photographs_lighting_fixtures",
+          "description_installed_air_conditioning",
+          "technical_cutsheet_installed_air",
+          "technical_cutsheet_cooling_system",
+          "technical_cutsheet_of_hvls",
+          "photographs_of_hvls_cooloing",
+          "description_low_energy_cooling_system",
+          "drawing_indicating_area_coverd",
+          "Photographs_installed_system",
+          "eng_purchase_in",
+          "eng_photos",
+          "eng_narrative",
+          "eng_energy_simulation_report",
+          "eng_manufacturer_cut_sheets",
+          "eng_lpd_calculations",
+          "eng_lighting_layouts",
+          "eng_hvac_layouts",
+          "eng_calculations",
+          "eng_wall_roof_drawings",
+          "eng_simulation_files",
+          "eng_purchase_in_doc",
+          "eng_photos_doc",
+          "eng_narrative_doc",
+          "eng_energy_simulation_report_doc",
+          "eng_manufacturer_cut_sheets_doc",
+          "eng_lpd_calculations_doc",
+          "eng_lighting_layouts_doc",
+          "eng_hvac_layouts_doc",
+          "eng_calculations_doc",
+          "eng_wall_roof_drawings_doc",
+          "eng_simulation_files_doc"
+        ],
+        "when": {
+          "field": "min_select",
+          "op": "==",
+          "value": "Prescriptive Method"
+        }
+      },
+      {
+        "targets": [
+          "eng_purchase_in",
+          "eng_photos",
+          "eng_narrative",
+          "eng_energy_simulation_report",
+          "eng_manufacturer_cut_sheets",
+          "eng_lpd_calculations",
+          "eng_lighting_layouts",
+          "eng_hvac_layouts",
+          "eng_calculations",
+          "eng_wall_roof_drawings",
+          "eng_simulation_files",
+          "effi",
+          "min_narr",
+          "calculation_wall_roof_assembly",
+          "glazing_specification",
+          "window_wall_ratio",
+          "photographs_of_glazing",
+          "detailed_lpd_calculations",
+          "lighting_system_control",
+          "air_condition_cop_isser",
+          "photographs_lighting_fixtures",
+          "description_installed_air_conditioning",
+          "technical_cutsheet_installed_air",
+          "technical_cutsheet_cooling_system",
+          "technical_cutsheet_of_hvls",
+          "photographs_of_hvls_cooloing",
+          "description_low_energy_cooling_system",
+          "drawing_indicating_area_coverd",
+          "Photographs_installed_system",
+          "min_narr_doc",
+          "calculation_wall_roof_assembly_doc",
+          "glazing_specification_doc",
+          "window_wall_ratio_doc",
+          "photographs_of_glazing_doc",
+          "detailed_lpd_calculations_doc",
+          "lighting_system_control_doc",
+          "air_condition_cop_isser_doc",
+          "photographs_lighting_fixtures_doc",
+          "description_installed_air_conditioning_doc",
+          "technical_cutsheet_installed_air_doc",
+          "technical_cutsheet_cooling_system_doc",
+          "technical_cutsheet_of_hvls_doc",
+          "photographs_of_hvls_cooloing_doc",
+          "description_low_energy_cooling_system_doc",
+          "drawing_indicating_area_coverd_doc",
+          "Photographs_installed_system_doc"
+        ],
+        "when": {
+          "field": "min_select",
+          "op": "==",
+          "value": "Whole Building Performance Method"
+        }
+      }
+    ]
+  },
+  "enhanced_water_efficencies": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "water_efficiency_table",
+          "water_efficiency_option1"
+        ],
+        "when": {
+          "field": "selectwater_eff",
+          "op": "==",
+          "value": "Water Efficient Plumbing Fixture"
+        }
+      },
+      {
+        "targets": [
+          "water_efficiency_table",
+          "water_efficiency_option1",
+          "water_calculation_table"
+        ],
+        "when": {
+          "field": "selectwater_eff",
+          "op": "==",
+          "value": "Reduction in water consumption"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "water_efficiency_table",
+          "water_efficiency_option1",
+          "water_calculation_table"
+        ],
+        "when": {
+          "field": "selectwater_eff",
+          "op": "==",
+          "value": "Water Efficient Plumbing Fixture"
+        }
+      },
+      {
+        "targets": [
+          "water_efficiency_table",
+          "water_efficiency_option1"
+        ],
+        "when": {
+          "field": "selectwater_eff",
+          "op": "==",
+          "value": "Reduction in water consumption"
+        }
+      }
+    ]
+  },
+  "sustainable_landscape_design": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "landscape_design_narrative",
+          "high_irrgation",
+          "cutsheet_fix",
+          "photo_land"
+        ],
+        "when": {
+          "field": "irrigation_sys",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "per_turf",
+          "narr_turf",
+          "vegetated_turf",
+          "photo_turf"
+        ],
+        "when": {
+          "field": "limit_turf",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_adaptive_grd",
+          "area_adaptive_built",
+          "area_adaptive_vertical",
+          "area_adaptive_land_grd",
+          "area_adaptive_built_stru",
+          "area_adaptive_verti_land",
+          "local_adaptive",
+          "dio_narr",
+          "area_drough",
+          "species_used",
+          "stamped_photo"
+        ],
+        "when": {
+          "field": "landscape_design_exemplary",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "minimum_energy_performance": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "percentage_energy_saving",
+          "narrative_eng",
+          "cal_del",
+          "epi_calculation_eng",
+          "ex_per_for",
+          "project_area_details_eng",
+          "monthly_energy_bill_eng",
+          "photo_eng"
+        ],
+        "when": {
+          "field": "existing_apprich_similation",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "option_narrative",
+          "calibration_nmbe",
+          "exemplary_performance_eng",
+          "eng_per_saving",
+          "option_deatiled",
+          "energy_simulation_report_eng",
+          "manufacturers_cut_sheets_eng",
+          "lpd_calculations_eng",
+          "lighting_layouts_eng",
+          "hvac_layouts_eng",
+          "calculations_envelope_eng",
+          "wall_roof_assembly_eng",
+          "simulation_output_reports_eng",
+          "tenant_lease_agreement_eng",
+          "declaration_letter_eng",
+          "purchase_invoices_eng",
+          "monthly_last_one_year_eng",
+          "geotagged_timestamped_eng"
+        ],
+        "when": {
+          "field": "existing_apprich_similation",
+          "op": "==",
+          "value": "Calibrated Simulation"
+        }
+      },
+      {
+        "targets": [
+          "simulation_method_input",
+          "simulation_method_output",
+          "detailed_energy_simulation_report",
+          "narrative_min_energy",
+          "comparison_baseline_building_parameters",
+          "glazing_details_proposed",
+          "construction_details_proposed_wall_roof",
+          "drawings_wall_roof_assembly",
+          "proposed_lighting_system_details",
+          "proposed_lpd_calculations_interior_exterior",
+          "lighting_layout_interior_common_areas",
+          "exterior_lighting_layout",
+          "proposed_air_conditioning_system",
+          "brochures_cut_sheets_letters",
+          "wall_roof_construction",
+          "invoices_releavent_materials"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "retv_calculation_template",
+          "narrative_min_energy_cert",
+          "baseline_building_parameters_ecbc",
+          "porposed_glazing_details_ecbc",
+          "drawings_wall_roof_assembly_ecbc",
+          "proposed_lighting_system_details_ecbc",
+          "lpd_calculations_interior_exterior_ecbc",
+          "conceptual_interior_common_ecbc",
+          "layout_lighting_exterior_ecbc",
+          "air_proposed_conditioning_ecbc",
+          "manufacturer_brochures_ecbc",
+          "wall_roof_photographs_construction_ecbc",
+          "all_releavent_materials_ecbc"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Performance Approach (Simulation Approach)"
+        }
+      },
+      {
+        "targets": [
+          "simulation_method_input",
+          "simulation_method_output",
+          "detailed_energy_simulation_report",
+          "narrative_min_energy",
+          "comparison_baseline_building_parameters",
+          "glazing_details_proposed",
+          "construction_details_proposed_wall_roof",
+          "drawings_wall_roof_assembly",
+          "proposed_lighting_system_details",
+          "proposed_lpd_calculations_interior_exterior",
+          "lighting_layout_interior_common_areas",
+          "exterior_lighting_layout",
+          "proposed_air_conditioning_system",
+          "brochures_cut_sheets_letters",
+          "wall_roof_construction",
+          "invoices_releavent_materials"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "retv_calculation_template",
+          "narrative_min_energy_cert",
+          "baseline_building_parameters_ecbc",
+          "porposed_glazing_details_ecbc",
+          "drawings_wall_roof_assembly_ecbc",
+          "proposed_lighting_system_details_ecbc",
+          "lpd_calculations_interior_exterior_ecbc",
+          "conceptual_interior_common_ecbc",
+          "layout_lighting_exterior_ecbc",
+          "air_proposed_conditioning_ecbc",
+          "manufacturer_brochures_ecbc",
+          "wall_roof_photographs_construction_ecbc",
+          "all_releavent_materials_ecbc"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Performance Approach (Simulation Approach)"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "percentage_energy_saving",
+          "narrative_eng",
+          "cal_del",
+          "epi_calculation_eng",
+          "ex_per_for",
+          "project_area_details_eng",
+          "monthly_energy_bill_eng",
+          "photo_eng",
+          "option_narrative",
+          "eng_per_saving",
+          "option_deatiled",
+          "calibration_nmbe",
+          "exemplary_performance_eng",
+          "energy_simulation_report_eng",
+          "manufacturers_cut_sheets_eng",
+          "lpd_calculations_eng",
+          "lighting_layouts_eng",
+          "hvac_layouts_eng",
+          "calculations_envelope_eng",
+          "wall_roof_assembly_eng",
+          "simulation_output_reports_eng",
+          "tenant_lease_agreement_eng",
+          "declaration_letter_eng",
+          "purchase_invoices_eng",
+          "monthly_last_one_year_eng",
+          "geotagged_timestamped_eng",
+          "purchase_credit_measurement",
+          "option_narrative_doc",
+          "option_deatiled_doc",
+          "energy_simulation_report_eng_doc",
+          "calibration_nmbe_doc",
+          "manufacturers_cut_sheets_eng_doc",
+          "lpd_calculations_eng_doc",
+          "lighting_layouts_eng_doc",
+          "hvac_layouts_eng_doc",
+          "calculations_envelope_eng_doc",
+          "wall_roof_assembly_eng_doc",
+          "simulation_output_reports_eng_doc",
+          "tenant_lease_agreement_eng_doc",
+          "declaration_letter_eng_doc",
+          "purchase_invoices_eng_doc",
+          "monthly_last_one_year_eng_doc",
+          "geotagged_timestamped_eng_doc",
+          "purchase_credit_measurement_doc"
+        ],
+        "when": {
+          "field": "existing_apprich_similation",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "option_narrative",
+          "calibration_nmbe",
+          "exemplary_performance_eng",
+          "eng_per_saving",
+          "option_deatiled",
+          "energy_simulation_report_eng",
+          "manufacturers_cut_sheets_eng",
+          "lpd_calculations_eng",
+          "lighting_layouts_eng",
+          "hvac_layouts_eng",
+          "calculations_envelope_eng",
+          "wall_roof_assembly_eng",
+          "simulation_output_reports_eng",
+          "tenant_lease_agreement_eng",
+          "declaration_letter_eng",
+          "purchase_invoices_eng",
+          "monthly_last_one_year_eng",
+          "geotagged_timestamped_eng",
+          "percentage_energy_saving",
+          "narrative_eng",
+          "cal_del",
+          "epi_calculation_eng",
+          "ex_per_for",
+          "project_area_details_eng",
+          "monthly_energy_bill_eng",
+          "photo_eng",
+          "narrative_eng_doc",
+          "cal_del_doc",
+          "epi_calculation_eng_doc",
+          "project_area_details_eng_doc",
+          "monthly_energy_bill_eng_doc",
+          "photo_eng_doc"
+        ],
+        "when": {
+          "field": "existing_apprich_similation",
+          "op": "==",
+          "value": "Calibrated Simulation"
+        }
+      },
+      {
+        "targets": [
+          "simulation_method_input",
+          "simulation_method_output",
+          "detailed_energy_simulation_report",
+          "narrative_min_energy",
+          "comparison_baseline_building_parameters",
+          "glazing_details_proposed",
+          "construction_details_proposed_wall_roof",
+          "drawings_wall_roof_assembly",
+          "proposed_lighting_system_details",
+          "proposed_lpd_calculations_interior_exterior",
+          "lighting_layout_interior_common_areas",
+          "exterior_lighting_layout",
+          "proposed_air_conditioning_system",
+          "brochures_cut_sheets_letters",
+          "wall_roof_construction",
+          "invoices_releavent_materials",
+          "retv_calculation_template",
+          "narrative_min_energy_cert",
+          "baseline_building_parameters_ecbc",
+          "porposed_glazing_details_ecbc",
+          "drawings_wall_roof_assembly_ecbc",
+          "proposed_lighting_system_details_ecbc",
+          "lpd_calculations_interior_exterior_ecbc",
+          "conceptual_interior_common_ecbc",
+          "layout_lighting_exterior_ecbc",
+          "air_proposed_conditioning_ecbc",
+          "manufacturer_brochures_ecbc",
+          "wall_roof_photographs_construction_ecbc",
+          "all_releavent_materials_ecbc",
+          "retv_calculation_template_doc",
+          "narrative_min_energy_cert_doc",
+          "baseline_building_parameters_ecbc_doc",
+          "porposed_glazing_details_ecbc_doc",
+          "drawings_wall_roof_assembly_ecbc_doc",
+          "proposed_lighting_system_details_ecbc_doc",
+          "lpd_calculations_interior_exterior_ecbc_doc",
+          "conceptual_interior_common_ecbc_doc",
+          "layout_lighting_exterior_ecbc_doc",
+          "air_proposed_conditioning_ecbc_doc",
+          "manufacturer_brochures_ecbc_doc",
+          "wall_roof_photographs_construction_ecbc_doc",
+          "all_releavent_materials_ecbc_doc"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "retv_calculation_template",
+          "narrative_min_energy_cert",
+          "baseline_building_parameters_ecbc",
+          "porposed_glazing_details_ecbc",
+          "drawings_wall_roof_assembly_ecbc",
+          "proposed_lighting_system_details_ecbc",
+          "lpd_calculations_interior_exterior_ecbc",
+          "conceptual_interior_common_ecbc",
+          "layout_lighting_exterior_ecbc",
+          "air_proposed_conditioning_ecbc",
+          "manufacturer_brochures_ecbc",
+          "wall_roof_photographs_construction_ecbc",
+          "all_releavent_materials_ecbc",
+          "simulation_method_input",
+          "simulation_method_output",
+          "detailed_energy_simulation_report",
+          "narrative_min_energy",
+          "comparison_baseline_building_parameters",
+          "glazing_details_proposed",
+          "construction_details_proposed_wall_roof",
+          "drawings_wall_roof_assembly",
+          "proposed_lighting_system_details",
+          "proposed_lpd_calculations_interior_exterior",
+          "lighting_layout_interior_common_areas",
+          "exterior_lighting_layout",
+          "proposed_air_conditioning_system",
+          "brochures_cut_sheets_letters",
+          "wall_roof_construction",
+          "invoices_releavent_materials",
+          "simulation_method_input_doc",
+          "simulation_method_output_doc",
+          "detailed_energy_simulation_report_doc",
+          "narrative_min_energy_doc",
+          "comparison_baseline_building_parameters_doc",
+          "glazing_details_proposed_doc",
+          "construction_details_proposed_wall_roof_doc",
+          "drawings_wall_roof_assembly_doc",
+          "proposed_lighting_system_details_doc",
+          "proposed_lpd_calculations_interior_exterior_doc",
+          "lighting_layout_interior_common_areas_doc",
+          "exterior_lighting_layout_doc",
+          "proposed_air_conditioning_system_doc",
+          "brochures_cut_sheets_letters_doc",
+          "wall_roof_construction_doc",
+          "invoices_releavent_materials_doc"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Performance Approach (Simulation Approach)"
+        }
+      },
+      {
+        "targets": [
+          "simulation_method_input",
+          "simulation_method_output",
+          "detailed_energy_simulation_report",
+          "narrative_min_energy",
+          "comparison_baseline_building_parameters",
+          "glazing_details_proposed",
+          "construction_details_proposed_wall_roof",
+          "drawings_wall_roof_assembly",
+          "proposed_lighting_system_details",
+          "proposed_lpd_calculations_interior_exterior",
+          "lighting_layout_interior_common_areas",
+          "exterior_lighting_layout",
+          "proposed_air_conditioning_system",
+          "brochures_cut_sheets_letters",
+          "wall_roof_construction",
+          "invoices_releavent_materials",
+          "retv_calculation_template",
+          "narrative_min_energy_cert",
+          "baseline_building_parameters_ecbc",
+          "porposed_glazing_details_ecbc",
+          "drawings_wall_roof_assembly_ecbc",
+          "proposed_lighting_system_details_ecbc",
+          "lpd_calculations_interior_exterior_ecbc",
+          "conceptual_interior_common_ecbc",
+          "layout_lighting_exterior_ecbc",
+          "air_proposed_conditioning_ecbc",
+          "manufacturer_brochures_ecbc",
+          "wall_roof_photographs_construction_ecbc",
+          "all_releavent_materials_ecbc",
+          "retv_calculation_template_doc",
+          "narrative_min_energy_cert_doc",
+          "baseline_building_parameters_ecbc_doc",
+          "porposed_glazing_details_ecbc_doc",
+          "drawings_wall_roof_assembly_ecbc_doc",
+          "proposed_lighting_system_details_ecbc_doc",
+          "lpd_calculations_interior_exterior_ecbc_doc",
+          "conceptual_interior_common_ecbc_doc",
+          "layout_lighting_exterior_ecbc_doc",
+          "air_proposed_conditioning_ecbc_doc",
+          "manufacturer_brochures_ecbc_doc",
+          "wall_roof_photographs_construction_ecbc_doc",
+          "all_releavent_materials_ecbc_doc"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "retv_calculation_template",
+          "narrative_min_energy_cert",
+          "baseline_building_parameters_ecbc",
+          "porposed_glazing_details_ecbc",
+          "drawings_wall_roof_assembly_ecbc",
+          "proposed_lighting_system_details_ecbc",
+          "lpd_calculations_interior_exterior_ecbc",
+          "conceptual_interior_common_ecbc",
+          "layout_lighting_exterior_ecbc",
+          "air_proposed_conditioning_ecbc",
+          "manufacturer_brochures_ecbc",
+          "wall_roof_photographs_construction_ecbc",
+          "all_releavent_materials_ecbc",
+          "simulation_method_input",
+          "simulation_method_output",
+          "detailed_energy_simulation_report",
+          "narrative_min_energy",
+          "comparison_baseline_building_parameters",
+          "glazing_details_proposed",
+          "construction_details_proposed_wall_roof",
+          "drawings_wall_roof_assembly",
+          "proposed_lighting_system_details",
+          "proposed_lpd_calculations_interior_exterior",
+          "lighting_layout_interior_common_areas",
+          "exterior_lighting_layout",
+          "proposed_air_conditioning_system",
+          "brochures_cut_sheets_letters",
+          "wall_roof_construction",
+          "invoices_releavent_materials",
+          "simulation_method_input_doc",
+          "simulation_method_output_doc",
+          "detailed_energy_simulation_report_doc",
+          "narrative_min_energy_doc",
+          "comparison_baseline_building_parameters_doc",
+          "glazing_details_proposed_doc",
+          "construction_details_proposed_wall_roof_doc",
+          "drawings_wall_roof_assembly_doc",
+          "proposed_lighting_system_details_doc",
+          "proposed_lpd_calculations_interior_exterior_doc",
+          "lighting_layout_interior_common_areas_doc",
+          "exterior_lighting_layout_doc",
+          "proposed_air_conditioning_system_doc",
+          "brochures_cut_sheets_letters_doc",
+          "wall_roof_construction_doc",
+          "invoices_releavent_materials_doc"
+        ],
+        "when": {
+          "field": "select_approach",
+          "op": "==",
+          "value": "Performance Approach (Simulation Approach)"
+        }
+      }
+    ]
+  },
+  "enhanced_energy_performance": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "percentage_energy_saving_ench",
+          "narrative_eng_ench",
+          "epi_calculation_eng_ench",
+          "project_area_details_eng_ench",
+          "monthly_energy_bill_eng_ench",
+          "photo_eng_ench"
+        ],
+        "when": {
+          "field": "existing_apprich_similation_ench",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "eng_per_saving_ench",
+          "option_narrative_ench",
+          "option_deatiled_ench",
+          "energy_simulation_report_eng_ench",
+          "manufacturers_cut_sheets_eng_ench",
+          "lpd_calculations_eng_ench",
+          "lighting_layouts_eng_ench",
+          "hvac_layouts_eng_ench",
+          "calculations_envelope_eng_ench",
+          "wall_roof_assembly_eng_ench",
+          "simulation_output_reports_eng_ench",
+          "tenant_lease_agreement_eng_ench",
+          "declaration_letter_eng_ench",
+          "purchase_invoices_eng_ench",
+          "monthly_last_one_year_eng_ench",
+          "geotagged_timestamped_eng_ench"
+        ],
+        "when": {
+          "field": "existing_apprich_similation_ench",
+          "op": "==",
+          "value": "Calibrated Simulation"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "percentage_energy_saving_ench",
+          "narrative_eng_ench",
+          "epi_calculation_eng_ench",
+          "project_area_details_eng_ench",
+          "monthly_energy_bill_eng_ench",
+          "photo_eng_ench",
+          "eng_per_saving_ench",
+          "option_narrative_ench",
+          "option_deatiled_ench",
+          "energy_simulation_report_eng_ench",
+          "manufacturers_cut_sheets_eng_ench",
+          "lpd_calculations_eng_ench",
+          "lighting_layouts_eng_ench",
+          "hvac_layouts_eng_ench",
+          "calculations_envelope_eng_ench",
+          "wall_roof_assembly_eng_ench",
+          "simulation_output_reports_eng_ench",
+          "tenant_lease_agreement_eng_ench",
+          "declaration_letter_eng_ench",
+          "purchase_invoices_eng_ench",
+          "monthly_last_one_year_eng_ench",
+          "geotagged_timestamped_eng_ench",
+          "option_narrative_ench_doc",
+          "option_deatiled_ench_doc",
+          "energy_simulation_report_eng_ench_doc",
+          "manufacturers_cut_sheets_eng_ench_doc",
+          "lpd_calculations_eng_ench_doc",
+          "lighting_layouts_eng_ench_doc",
+          "hvac_layouts_eng_ench_doc",
+          "calculations_envelope_eng_ench_doc",
+          "wall_roof_assembly_eng_ench_doc",
+          "simulation_output_reports_eng_ench_doc",
+          "tenant_lease_agreement_eng_ench_doc",
+          "declaration_letter_eng_ench_doc",
+          "purchase_invoices_eng_ench_doc",
+          "monthly_last_one_year_eng_ench_doc",
+          "geotagged_timestamped_eng_ench_doc"
+        ],
+        "when": {
+          "field": "existing_apprich_similation_ench",
+          "op": "==",
+          "value": "Prescriptive Approach"
+        }
+      },
+      {
+        "targets": [
+          "eng_per_saving_ench",
+          "option_narrative_ench",
+          "option_deatiled_ench",
+          "energy_simulation_report_eng_ench",
+          "manufacturers_cut_sheets_eng_ench",
+          "lpd_calculations_eng_ench",
+          "lighting_layouts_eng_ench",
+          "hvac_layouts_eng_ench",
+          "calculations_envelope_eng_ench",
+          "wall_roof_assembly_eng_ench",
+          "simulation_output_reports_eng_ench",
+          "tenant_lease_agreement_eng_ench",
+          "declaration_letter_eng_ench",
+          "purchase_invoices_eng_ench",
+          "monthly_last_one_year_eng_ench",
+          "geotagged_timestamped_eng_ench",
+          "percentage_energy_saving_ench",
+          "narrative_eng_ench",
+          "epi_calculation_eng_ench",
+          "project_area_details_eng_ench",
+          "monthly_energy_bill_eng_ench",
+          "photo_eng_ench",
+          "percentage_energy_saving_ench_doc",
+          "narrative_eng_ench_doc",
+          "epi_calculation_eng_ench_doc",
+          "project_area_details_eng_ench_doc",
+          "monthly_energy_bill_eng_ench_doc",
+          "photo_eng_ench_doc"
+        ],
+        "when": {
+          "field": "existing_apprich_similation_ench",
+          "op": "==",
+          "value": "Calibrated Simulation"
+        }
+      }
+    ]
+  },
+  "indoor_air_quality": {
+    "laravelScript": "factory",
+    "showWhen": [
+      {
+        "targets": [
+          "indoor_total_area",
+          "indoor_parameters_area"
+        ],
+        "when": {
+          "field": "indoor_monitor_iaq",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "daylighting_credit": {
+    "laravelScript": "indoor-enviornment",
+    "showWhen": [
+      {
+        "targets": [
+          "daylight_measurement_report",
+          "daylighting_narrative",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "daylighting_narrative",
+          "declaration_project_owner",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter",
+          "daylight_measurement_report",
+          "simulation_report_daylight",
+          "floor_plan_simulation_indicating_window_door_schedule",
+          "daylighting_simulation_narrative",
+          "manufacturer_brochure_glass",
+          "photographs_geotagged_daylighting"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "2"
+        }
+      },
+      {
+        "targets": [
+          "daylight_measurement_report",
+          "daylighting_narrative",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "daylight_measurement_report",
+          "simulation_report_daylight",
+          "floor_plan_simulation_indicating_window_door_schedule",
+          "daylighting_simulation_narrative",
+          "manufacturer_brochure_glass",
+          "photographs_geotagged_daylighting"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "2"
+        }
+      },
+      {
+        "targets": [
+          "total_compliant_area",
+          "total_compliant_reg_area2",
+          "narrative_daylighting",
+          "indicating_window_door",
+          "simulation_report_credit",
+          "cutsheet_credit",
+          "photographs_credit",
+          "purchase_credit"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Simulation Approach"
+        }
+      },
+      {
+        "targets": [
+          "total_compliant_reg_area",
+          "total_compliant_reg",
+          "simulation_report_credit_measurement",
+          "narrative_daylighting_measurement",
+          "indicating_window_door_measurement",
+          "site_master_measurement",
+          "cutsheet_credit_measurement",
+          "photographs_credit_measurement",
+          "purchase_credit_measurement"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Measurement approach"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "daylight_measurement_report",
+          "daylighting_narrative",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter",
+          "simulation_report_daylight",
+          "daylighting_simulation_narrative",
+          "floor_plan_simulation_indicating_window_door_schedule",
+          "manufacturer_brochure_glass",
+          "photographs_geotagged_daylighting",
+          "simulation_report_daylight_doc",
+          "daylighting_simulation_narrative_doc",
+          "floor_plan_simulation_indicating_window_door_schedule_doc",
+          "manufacturer_brochure_glass_doc",
+          "photographs_geotagged_daylighting_doc"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "daylighting_narrative",
+          "declaration_project_owner",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter",
+          "daylight_measurement_report",
+          "simulation_report_daylight",
+          "floor_plan_simulation_indicating_window_door_schedule",
+          "daylighting_simulation_narrative",
+          "manufacturer_brochure_glass",
+          "photographs_geotagged_daylighting",
+          "daylighting_narrative_doc",
+          "simulation_report_daylight_doc",
+          "floor_plan_indicating_window_door_schedule_doc",
+          "declaration_project_owner_doc",
+          "drawing_highlighting_angle_of_obstruction_doc",
+          "measurement_report_space_wise_lux_doc",
+          "geotagged_photographs_videos_lux_meter_doc"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "2"
+        }
+      },
+      {
+        "targets": [
+          "daylight_measurement_report",
+          "daylighting_narrative",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter",
+          "simulation_report_daylight",
+          "daylighting_simulation_narrative",
+          "floor_plan_simulation_indicating_window_door_schedule",
+          "manufacturer_brochure_glass",
+          "photographs_geotagged_daylighting"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "daylight_measurement_report",
+          "simulation_report_daylight",
+          "floor_plan_simulation_indicating_window_door_schedule",
+          "daylighting_simulation_narrative",
+          "manufacturer_brochure_glass",
+          "photographs_geotagged_daylighting",
+          "daylighting_narrative",
+          "declaration_project_owner",
+          "floor_plan_indicating_window_door_schedule",
+          "drawing_highlighting_angle_of_obstruction",
+          "measurement_report_space_wise_lux",
+          "geotagged_photographs_videos_lux_meter"
+        ],
+        "when": {
+          "field": "case_options_daylighting_credit",
+          "op": "==",
+          "value": "2"
+        }
+      },
+      {
+        "targets": [
+          "total_compliant_area",
+          "total_compliant_reg_area2",
+          "narrative_daylighting",
+          "indicating_window_door",
+          "simulation_report_credit",
+          "cutsheet_credit",
+          "photographs_credit",
+          "purchase_credit",
+          "total_compliant_reg_area",
+          "total_compliant_reg",
+          "simulation_report_credit_measurement",
+          "narrative_daylighting_measurement",
+          "indicating_window_door_measurement",
+          "site_master_measurement",
+          "cutsheet_credit_measurement",
+          "photographs_credit_measurement",
+          "purchase_credit_measurement",
+          "narrative_daylighting_measurement_doc",
+          "indicating_window_door_measurement_doc",
+          "simulation_report_credit_measurement_doc",
+          "site_master_measurement_doc",
+          "cutsheet_credit_measurement_doc",
+          "photographs_credit_measurement_doc",
+          "purchase_credit_measurement_doc"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Simulation Approach"
+        }
+      },
+      {
+        "targets": [
+          "total_compliant_reg_area",
+          "total_compliant_reg",
+          "simulation_report_credit_measurement",
+          "narrative_daylighting_measurement",
+          "indicating_window_door_measurement",
+          "site_master_measurement",
+          "cutsheet_credit_measurement",
+          "photographs_credit_measurement",
+          "purchase_credit_measurement",
+          "total_compliant_reg_area2",
+          "total_compliant_area",
+          "narrative_daylighting",
+          "indicating_window_door",
+          "simulation_report_credit",
+          "cutsheet_credit",
+          "photographs_credit",
+          "purchase_credit",
+          "narrative_daylighting_doc",
+          "indicating_window_door_doc",
+          "simulation_report_credit_doc",
+          "cutsheet_credit_doc",
+          "photographs_credit_doc",
+          "purchase_credit_doc"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Measurement approach"
+        }
+      }
+    ]
+  },
+  "thermal_comfort": {
+    "laravelScript": "indoor-enviornment",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_thermal_comfort",
+          "existing_interiors_project",
+          "interior_project_new",
+          "calculation_indicating_more_than_75",
+          "geotagged_photographs_videos_thermostat"
+        ],
+        "when": {
+          "field": "compliancesyn",
+          "op": "==",
+          "value": "Yes"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "interior_flush_out": {
+    "laravelScript": "indoor-enviornment",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_interior_flush_out",
+          "declaration_letter_interior_flush_out",
+          "photographs_geo_tagged_flush_out"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "narrative_ventilation_flush_out",
+          "forced_ventilation",
+          "during_flush_out_period"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "2"
+        }
+      },
+      {
+        "targets": [
+          "narrative_interior_flush_out",
+          "declaration_letter_interior_flush_out",
+          "photographs_geo_tagged_flush_out"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "narrative_ventilation_flush_out",
+          "forced_ventilation",
+          "during_flush_out_period"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "2"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "narrative_interior_flush_out",
+          "declaration_letter_interior_flush_out",
+          "photographs_geo_tagged_flush_out",
+          "forced_ventilation",
+          "during_flush_out_period",
+          "narrative_ventilation_flush_out",
+          "narrative_ventilation_flush_out_doc",
+          "forced_ventilation_doc",
+          "during_flush_out_period_doc"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "narrative_ventilation_flush_out",
+          "forced_ventilation",
+          "during_flush_out_period",
+          "declaration_letter_interior_flush_out",
+          "narrative_interior_flush_out",
+          "photographs_geo_tagged_flush_out",
+          "narrative_interior_flush_out_doc",
+          "declaration_letter_interior_flush_out_doc",
+          "photographs_geo_tagged_flush_out_doc"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "2"
+        }
+      },
+      {
+        "targets": [
+          "narrative_interior_flush_out",
+          "declaration_letter_interior_flush_out",
+          "photographs_geo_tagged_flush_out",
+          "forced_ventilation",
+          "during_flush_out_period",
+          "narrative_ventilation_flush_out",
+          "narrative_ventilation_flush_out_doc",
+          "forced_ventilation_doc",
+          "during_flush_out_period_doc"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "narrative_ventilation_flush_out",
+          "forced_ventilation",
+          "during_flush_out_period",
+          "declaration_letter_interior_flush_out",
+          "narrative_interior_flush_out",
+          "photographs_geo_tagged_flush_out",
+          "narrative_interior_flush_out_doc",
+          "declaration_letter_interior_flush_out_doc",
+          "photographs_geo_tagged_flush_out_doc"
+        ],
+        "when": {
+          "field": "ventilation_flush_out",
+          "op": "==",
+          "value": "2"
+        }
+      }
+    ]
+  },
+  "integrated_energy_monitoring": {
+    "laravelScript": "interiorhome",
+    "showWhen": [
+      {
+        "targets": [
+          "area_lighting",
+          "area_lighting_ex"
+        ],
+        "when": {
+          "field": "energy_metering_monitoring",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "manag_sys",
+          "manag_sys_light"
+        ],
+        "when": {
+          "field": "energy_metering_monitoring",
+          "op": "==",
+          "value": "2"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "area_lighting",
+          "area_lighting_ex",
+          "manag_sys",
+          "manag_sys_light"
+        ],
+        "when": {
+          "field": "energy_metering_monitoring",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "manag_sys",
+          "manag_sys_light",
+          "area_lighting",
+          "area_lighting_ex"
+        ],
+        "when": {
+          "field": "energy_metering_monitoring",
+          "op": "==",
+          "value": "2"
+        }
+      }
+    ]
+  },
+  "minimum_daylighting_enhanced": {
+    "laravelScript": "interiorhome",
+    "showWhen": [
+      {
+        "targets": [
+          "annex_rwh",
+          "min_percen_comp",
+          "narrative_echanced",
+          "master_Plan_buildings",
+          "angle_obstruction_buildings",
+          "floor_plan_window_enhanced",
+          "techinal_cutsheet_enhnaced",
+          "glass_purchase_invoice",
+          "photographs_enhanced"
+        ],
+        "when": {
+          "field": "prescriptive_approach",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "annex_rwh_summary",
+          "min_percen_comp_area",
+          "narrative_daylit",
+          "site_master_plan_enhanced",
+          "simul_input_output",
+          "techinal_cutsheet_enhnaced_day",
+          "glass_purchase_invoice_enhanced",
+          "photographs_geotagged_enhanced"
+        ],
+        "when": {
+          "field": "simulation_approach",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "annex_rwh",
+          "min_percen_comp",
+          "narrative_echanced",
+          "master_Plan_buildings",
+          "angle_obstruction_buildings",
+          "floor_plan_window_enhanced",
+          "techinal_cutsheet_enhnaced",
+          "glass_purchase_invoice",
+          "photographs_enhanced"
+        ],
+        "when": {
+          "field": "prescriptive_approach",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "annex_rwh_summary",
+          "min_percen_comp_area",
+          "narrative_daylit",
+          "site_master_plan_enhanced",
+          "simul_input_output",
+          "techinal_cutsheet_enhnaced_day",
+          "glass_purchase_invoice_enhanced",
+          "photographs_geotagged_enhanced"
+        ],
+        "when": {
+          "field": "simulation_approach",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "annex_rwh",
+          "min_percen_comp",
+          "narrative_echanced",
+          "master_Plan_buildings",
+          "angle_obstruction_buildings",
+          "floor_plan_window_enhanced",
+          "techinal_cutsheet_enhnaced",
+          "glass_purchase_invoice",
+          "photographs_enhanced"
+        ],
+        "when": {
+          "field": "prescriptive_approach",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "annex_rwh_summary",
+          "min_percen_comp_area",
+          "narrative_daylit",
+          "site_master_plan_enhanced",
+          "simul_input_output",
+          "techinal_cutsheet_enhnaced_day",
+          "glass_purchase_invoice_enhanced",
+          "photographs_geotagged_enhanced"
+        ],
+        "when": {
+          "field": "simulation_approach",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "ventilation_design_enhanced": {
+    "laravelScript": "interiorhome",
+    "showWhen": [
+      {
+        "targets": [
+          "ventilated_spaces_design"
+        ],
+        "when": {
+          "field": "natural_ventilated_spaces",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "green_transportation": {
+    "laravelScript": "interiorhome",
+    "showWhen": [
+      {
+        "targets": [
+          "detailed_narrative_cal",
+          "parking_plan_cal",
+          "purchase_invoice_cal",
+          "photographs_green"
+        ],
+        "when": {
+          "field": "option_1_a_electric_vehicles",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "detailed_narrative_cal_optionb",
+          "parking_plan_cal_optionb",
+          "site_vicinity_map",
+          "purchase_invoice_cal_optionb",
+          "photographs_green_optionb"
+        ],
+        "when": {
+          "field": "option_1_b_cng_powered_vehicles",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "four_wheel",
+          "two_wheel",
+          "ev_fourwheel",
+          "ev_twowheel",
+          "four_parking_percent",
+          "two_parking_percent",
+          "narrative_charging",
+          "parking_plans_charging",
+          "ev_sockets",
+          "po",
+          "photos_po",
+          "copy_local_bye",
+          "exemplary_performance_check"
+        ],
+        "when": {
+          "field": "facilities_ev_site",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "detailed_narrative_cal",
+          "parking_plan_cal",
+          "purchase_invoice_cal",
+          "photographs_green"
+        ],
+        "when": {
+          "field": "option_1_a_electric_vehicles",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "detailed_narrative_cal_optionb",
+          "parking_plan_cal_optionb",
+          "site_vicinity_map",
+          "purchase_invoice_cal_optionb",
+          "photographs_green_optionb"
+        ],
+        "when": {
+          "field": "option_1_b_cng_powered_vehicles",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "four_wheel",
+          "two_wheel",
+          "ev_fourwheel",
+          "ev_twowheel",
+          "four_parking_percents",
+          "two_parking_percents",
+          "narrative_charging",
+          "parking_plans_charging",
+          "ev_sockets",
+          "po",
+          "photos_po",
+          "copy_local_bye",
+          "exemplary_performance_check"
+        ],
+        "when": {
+          "field": "facilities_ev_site",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "site_preservation": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "area_retained_topography"
+        ],
+        "when": {
+          "field": "retained_topography",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "no_existing_trees"
+        ],
+        "when": {
+          "field": "preserved_trees",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_retainted_natural_rock"
+        ],
+        "when": {
+          "field": "retainted_natural_rock",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_retainted_site_countour"
+        ],
+        "when": {
+          "field": "retainted_site_countour",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_retained_topography"
+        ],
+        "when": {
+          "field": "retained_topography",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_retained_topography"
+        ],
+        "when": {
+          "field": "retained_topography",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "no_existing_trees"
+        ],
+        "when": {
+          "field": "preserved_trees",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_retainted_site_countour"
+        ],
+        "when": {
+          "field": "retainted_site_countour",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_retainted_natural_rock"
+        ],
+        "when": {
+          "field": "retainted_natural_rock",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "rainwater_harvesting": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "runoff_cal",
+          "oneday_cal",
+          "rain_cal_harvest",
+          "plumbing_narrative",
+          "plumbing_rainfall",
+          "plumbing_rain_harvesting",
+          "plumbing_highlights",
+          "plumbing_drawings"
+        ],
+        "when": {
+          "field": "select_approach_rain",
+          "op": "==",
+          "value": "Case A"
+        }
+      },
+      {
+        "targets": [
+          "cap_rain_req",
+          "cap_rain_prpposed",
+          "per_rain_harvest",
+          "plumbing_performance",
+          "plumbing_hydrology",
+          "plumbing_narra",
+          "plumbing_photos"
+        ],
+        "when": {
+          "field": "select_approach_rain",
+          "op": "==",
+          "value": "Case B"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "runoff_cal",
+          "oneday_cal",
+          "rain_cal_harvest",
+          "plumbing_narrative",
+          "plumbing_rainfall",
+          "plumbing_rain_harvesting",
+          "plumbing_highlights",
+          "plumbing_drawings",
+          "cap_rain_req",
+          "cap_rain_prpposed",
+          "per_rain_harvest",
+          "plumbing_performance",
+          "plumbing_hydrology",
+          "plumbing_narra",
+          "plumbing_photos",
+          "plumbing_narra_doc",
+          "plumbing_hydrology_doc",
+          "plumbing_photos_doc"
+        ],
+        "when": {
+          "field": "select_approach_rain",
+          "op": "==",
+          "value": "Case A"
+        }
+      },
+      {
+        "targets": [
+          "cap_rain_req",
+          "cap_rain_prpposed",
+          "per_rain_harvest",
+          "plumbing_performance",
+          "plumbing_hydrology",
+          "plumbing_narra",
+          "plumbing_photos",
+          "runoff_cal",
+          "oneday_cal",
+          "rain_cal_harvest",
+          "plumbing_narrative",
+          "plumbing_rainfall",
+          "plumbing_rain_harvesting",
+          "plumbing_highlights",
+          "plumbing_drawings",
+          "plumbing_narrative_doc",
+          "plumbing_rainfall_doc",
+          "plumbing_rain_harvesting_doc",
+          "plumbing_highlights_doc",
+          "plumbing_drawings_doc"
+        ],
+        "when": {
+          "field": "select_approach_rain",
+          "op": "==",
+          "value": "Case B"
+        }
+      }
+    ]
+  },
+  "minimum_fresh_air_enhanced": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "vrp_calculations_select",
+          "vrp_calculations",
+          "vrp_calculations_single",
+          "vrp_calculations_multiple",
+          "decalaration_minimum",
+          "narrative_minimum_air",
+          "hvac_layout_fresh_air",
+          "technical_cutsheet_fresh_air",
+          "videos_geotagged_time",
+          "purchase_invoices_minimum",
+          "lease_agreement_applicable"
+        ],
+        "when": {
+          "field": "case_a_mechanically_ventilated",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "caseb_narrative",
+          "floor_plans_windows",
+          "details_installed_windows",
+          "elevation_building_ope",
+          "openable_carpet_cal_area",
+          "stamped_operable_doors"
+        ],
+        "when": {
+          "field": "case_b_nartural_ventilation",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "vrp_calculations_select",
+          "vrp_calculations",
+          "vrp_calculations_single",
+          "vrp_calculation_ashrae",
+          "decalaration_minimum",
+          "narrative_minimum_air",
+          "hvac_layout_fresh_air",
+          "technical_cutsheet_fresh_air",
+          "videos_geotagged_time",
+          "purchase_invoices_minimum",
+          "lease_agreement_applicable"
+        ],
+        "when": {
+          "field": "case_a_mechanically_ventilated",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "caseb_narrative",
+          "floor_plans_windows",
+          "details_installed_windows",
+          "elevation_building_ope",
+          "openable_carpet_cal_area",
+          "stamped_operable_doors"
+        ],
+        "when": {
+          "field": "case_b_nartural_ventilation",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "minimise_indoor_outdoor_pollutants": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_entryway",
+          "site_master_outdoor_minimise",
+          "photographs_outdoor_minimise"
+        ],
+        "when": {
+          "field": "entryway_systems",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_printer",
+          "higihlighting_printer",
+          "exhaust_system",
+          "geotagged_photograph_indoor"
+        ],
+        "when": {
+          "field": "printer_rooms",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_air_filtering_media",
+          "purchase_invoices_air_filtering",
+          "technical_cutsheet_air_filtering",
+          "fresh_air_system_floor_plan",
+          "geotagged_photograph_indoor_tech"
+        ],
+        "when": {
+          "field": "air_filtering_media",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_germicidal",
+          "purchase_invoices_germicidal",
+          "technical_cutsheet_germicidal",
+          "fresh_air_system_germicidal",
+          "geotagged_photograph_germicidal"
+        ],
+        "when": {
+          "field": "germicidal_uv_lamps",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "low_emitting_materials": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_coatings",
+          "list_voc",
+          "manufacturer_cutsheet_brochures",
+          "purchase_invoices_voc"
+        ],
+        "when": {
+          "field": "paints_coatings",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "adh_narrative",
+          "adhesives_sealants_model",
+          "cutssheet_brochures",
+          "purchase_invoices_adhesives"
+        ],
+        "when": {
+          "field": "adhesives_voc",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "area_cri",
+          "area_cri_applicable",
+          "narrative_carpets",
+          "highlighting_carpets",
+          "percentage_area_carpets",
+          "cri_certificate",
+          "purchase_invoices_carpets",
+          "time_stamped"
+        ],
+        "when": {
+          "field": "carpets",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_wood",
+          "list_composite_wood",
+          "cutsheet_test_report",
+          "purchase_invoices_wood"
+        ],
+        "when": {
+          "field": "composite_wood",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_furniture",
+          "list_of_new_wood_furniture_used",
+          "manufacturer_cutsheet_test_reports",
+          "purchase_invoices",
+          "geotagged_and_timestamped_photograph"
+        ],
+        "when": {
+          "field": "new_wood_furniture",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "off_site_renewable_energy": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "generation_offsite_solar",
+          "total_energy_offsite",
+          "percentage_energy_offsite"
+        ],
+        "when": {
+          "field": "select_approac_off_site",
+          "op": "==",
+          "value": "Owner Occupied"
+        }
+      },
+      {
+        "targets": [
+          "generation_offsite",
+          "lighting_energy_offsite",
+          "catered_lighting_offsite"
+        ],
+        "when": {
+          "field": "select_approac_off_site",
+          "op": "==",
+          "value": "Tenant Occupied"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "generation_offsite_solar",
+          "total_energy_offsite",
+          "percentage_energy_offsite",
+          "generation_offsite",
+          "lighting_energy_offsite",
+          "catered_lighting_offsite"
+        ],
+        "when": {
+          "field": "select_approac_off_site",
+          "op": "==",
+          "value": "Owner Occupied"
+        }
+      },
+      {
+        "targets": [
+          "generation_offsite",
+          "lighting_energy_offsite",
+          "catered_lighting_offsite",
+          "generation_offsite_solar",
+          "total_energy_offsite",
+          "percentage_energy_offsite"
+        ],
+        "when": {
+          "field": "select_approac_off_site",
+          "op": "==",
+          "value": "Tenant Occupied"
+        }
+      }
+    ]
+  },
+  "energy_metering_management": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "annex_narrative_offsite1",
+          "annex_singleline_diagram",
+          "annex_geotagged_photo1"
+        ],
+        "when": {
+          "field": "new_energy_metering",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "annex_narrative_offsite2",
+          "annex_declaration_letter",
+          "project_owner_provide_total",
+          "annex_geotagged_photo2"
+        ],
+        "when": {
+          "field": "new_building_managment",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "waste_water_reuse_construction": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_water",
+          "cal_reduction_water",
+          "annex_mix_design_report1",
+          "annex_purchase_invoice2",
+          "annex_manufacturer_cutsheet3",
+          "annex_declaration4"
+        ],
+        "when": {
+          "field": "admixtures_curing_compounds",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_water2",
+          "annex_calculations_potable5",
+          "annex_treated_water6",
+          "annex_single_line_diagram7",
+          "annex_purchase_invoice_gatepass8",
+          "annex_declaration9"
+        ],
+        "when": {
+          "field": "admixtures_curing_treated",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "minimum_energy_enhanced": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "energy_savings_percentage",
+          "narrative_energy",
+          "energy_report",
+          "hvac_cut_sheets",
+          "lpd_calculations",
+          "lighting_layouts",
+          "hvac_layouts",
+          "energy_calculations",
+          "wall_roof_drawings",
+          "simulation_reports",
+          "tenant_agreement_energy",
+          "purchase_invoices_energy",
+          "geo_photograph_energy"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Case A: Performance Based Approach "
+        }
+      },
+      {
+        "targets": [
+          "energy_savings_percentage",
+          "narrative_energy",
+          "energy_report",
+          "hvac_cut_sheets",
+          "lpd_calculations",
+          "lighting_layouts",
+          "hvac_layouts",
+          "energy_calculations",
+          "wall_roof_drawings",
+          "simulation_reports",
+          "tenant_agreement_energy",
+          "purchase_invoices_energy",
+          "geo_photograph_energy"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Case B: Prescriptive Based Approach"
+        }
+      },
+      {
+        "targets": [
+          "energy_savings_percentage",
+          "narrative_energy",
+          "energy_report",
+          "hvac_cut_sheets",
+          "lpd_calculations",
+          "lighting_layouts",
+          "hvac_layouts",
+          "energy_calculations",
+          "wall_roof_drawings",
+          "simulation_reports",
+          "tenant_agreement_energy",
+          "purchase_invoices_energy",
+          "geo_photograph_energy"
+        ],
+        "when": {
+          "field": "select_approach_credit_2",
+          "op": "==",
+          "value": "Case A: Performance Based Approach "
+        }
+      },
+      {
+        "targets": [
+          "energy_savings_percentage",
+          "narrative_energy",
+          "energy_report",
+          "hvac_cut_sheets",
+          "lpd_calculations",
+          "lighting_layouts",
+          "hvac_layouts",
+          "energy_calculations",
+          "wall_roof_drawings",
+          "simulation_reports",
+          "tenant_agreement_energy",
+          "purchase_invoices_energy",
+          "geo_photograph_energy"
+        ],
+        "when": {
+          "field": "select_approach_credit_2",
+          "op": "==",
+          "value": "Case B: Prescriptive Based Approach"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "energy_savings_percentage"
+        ],
+        "when": {
+          "field": "select_approach_credit",
+          "op": "==",
+          "value": "Case B: Prescriptive Based Approach"
+        }
+      },
+      {
+        "targets": [
+          "energy_savings_percentage"
+        ],
+        "when": {
+          "field": "select_approach_credit_2",
+          "op": "==",
+          "value": "Case B: Prescriptive Based Approach"
+        }
+      }
+    ]
+  },
+  "innovation_one": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_invovation_one",
+          "supporting_documents_innovation_one",
+          "photos_innovation_one"
+        ],
+        "when": {
+          "field": "innova_one",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "new_build_credit_one"
+        ],
+        "when": {
+          "field": "perfor_ex",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "narrative_invovation_one",
+          "supporting_documents_innovation_one",
+          "photos_innovation_one"
+        ],
+        "when": {
+          "field": "innova_one",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "new_build_credit_one"
+        ],
+        "when": {
+          "field": "perfor_ex",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "innovation_two": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_invovation_two",
+          "supporting_documents_innovation_two",
+          "photos_innovation_two"
+        ],
+        "when": {
+          "field": "innova_two",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "new_build_innovation_two"
+        ],
+        "when": {
+          "field": "perfor_ex_two",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "innovation_three": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_invovation_three",
+          "supporting_documents_innovation_three",
+          "photos_innovation_three"
+        ],
+        "when": {
+          "field": "innova_three",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "new_build_innovation_three"
+        ],
+        "when": {
+          "field": "perfor_ex_three",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "innovation_four": {
+    "laravelScript": "new-building",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_invovation_four",
+          "supporting_documents_innovation_four",
+          "photos_innovation_four"
+        ],
+        "when": {
+          "field": "innova_four",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "new_build_innovation_four"
+        ],
+        "when": {
+          "field": "perfor_ex_four",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "commercial_lease": {
+    "laravelScript": "sustainable",
+    "showWhen": [
+      {
+        "targets": [
+          "lease_agreement_tenure",
+          "lease_agreement",
+          "declaration_project_owner",
+          "commercial_narrative"
+        ],
+        "when": {
+          "field": "commercial_lease",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "energy_bill_property_tax",
+          "declaration_from_project_owner",
+          "commercial_narrative_occ"
+        ],
+        "when": {
+          "field": "commercial_lease",
+          "op": "==",
+          "value": "2"
+        }
+      }
+    ],
+    "hideWhen": [
+      {
+        "targets": [
+          "lease_agreement_tenure",
+          "lease_agreement",
+          "declaration_project_owner",
+          "commercial_narrative",
+          "energy_bill_property_tax",
+          "energy_bill_property_tax_doc",
+          "declaration_from_project_owner",
+          "commercial_narrative_occ",
+          "commercial_narrative_occ_doc",
+          "declaration_from_project_owner_doc"
+        ],
+        "when": {
+          "field": "commercial_lease",
+          "op": "==",
+          "value": "1"
+        }
+      },
+      {
+        "targets": [
+          "energy_bill_property_tax",
+          "declaration_from_project_owner",
+          "commercial_narrative_occ",
+          "lease_agreement_tenure",
+          "commercial_narrative",
+          "lease_agreement",
+          "declaration_project_owner",
+          "declaration_project_owner_doc",
+          "lease_agreement_doc",
+          "commercial_narrative_doc"
+        ],
+        "when": {
+          "field": "commercial_lease",
+          "op": "==",
+          "value": "2"
+        }
+      }
+    ]
+  },
+  "efficent_space_conditioning": {
+    "laravelScript": "sustainable",
+    "showWhen": [
+      {
+        "targets": [
+          "narrative_non_air",
+          "floor_plan_window_schedule",
+          "interior_project_temperature_humidity",
+          "existing_interior_project_temperature_humidity",
+          "geotagged_photographs_videos"
+        ],
+        "when": {
+          "field": "non_air_conditioned_spaces",
+          "op": "checked"
+        }
+      },
+      {
+        "targets": [
+          "conditioning_system_installed",
+          "hvac_layout_indicating",
+          "purchase_invoice_air_conditioned_system",
+          "technical_specification_manufacturer_cut_sheets",
+          "geo_tagged_photographs_videos",
+          "narrative_passive_technology_installed",
+          "technical_specifications_photographs"
+        ],
+        "when": {
+          "field": "conditioned_spaces",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  },
+  "passive_architecture": {
+    "laravelScript": "sustainable",
+    "showWhen": [
+      {
+        "targets": [
+          "exterior"
+        ],
+        "when": {
+          "field": "prescriptive_method",
+          "op": "checked"
+        }
+      }
+    ],
+    "hideWhen": []
+  }
+}

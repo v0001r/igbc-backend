@@ -7,7 +7,8 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "build": "tsc -p tsconfig.build.json",
-    "test": "echo \"No tests configured\""
+    "test": "echo \"No tests configured\"",
+    "generate:field-rules": "node scripts/generate-laravel-field-rules.mjs"
   },
   "keywords": [],
   "author": "",

@@ -13,6 +13,11 @@ import { MembershipPlanMaster } from "./membership/membership-plan.entity";
 import { MembershipTypeMaster } from "./membership/membership-type.entity";
 import { SupportEntry } from "./support/support.entity";
 import { SupportModule } from "./support/support.module";
+import { Project } from "./projects/project.entity";
+import { ProjectsModule } from "./projects/projects.module";
+import { RatingData } from "./projects/rating-data.entity";
+import { RatingDocument } from "./projects/rating-document.entity";
+import { RatingType } from "./projects/rating-type.entity";
 import { Client } from "./users/client.entity";
 import { Organization } from "./users/organization.entity";
 import { User } from "./users/user.entity";
@@ -43,6 +48,10 @@ import { UsersModule } from "./users/users.module";
           MembershipPlanMaster,
           Event,
           SupportEntry,
+          RatingType,
+          Project,
+          RatingData,
+          RatingDocument,
         ],
         synchronize: true,
       }),
@@ -53,6 +62,7 @@ import { UsersModule } from "./users/users.module";
     MembershipModule,
     EventsModule,
     SupportModule,
+    ProjectsModule,
   ],
 })
 export class AppModule {}
