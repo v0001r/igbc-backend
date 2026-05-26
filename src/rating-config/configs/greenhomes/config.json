@@ -81,15 +81,7 @@
                 "certificate": true,
                 "points": 0
             },
-            {
-                "name": "Annex EE 5: Energy Analysis Annex",
-                "sub_slug": "energy_analysis_annex",
-                "checklist": false,
-                "required": false,
-                "pre-certificate": true,
-                "certificate": true,
-                "points": 0
-            },
+        
             {
                 "name": "EE MR 1_HCFC Free Equipment",
                 "sub_slug": "hcfc_free_equipment",
@@ -378,15 +370,6 @@
                 "points": 0
             },
             {
-                "name": "Annex RHW 2.1: Natural Ventilation Calculation ",
-                "sub_slug": "annex_ventilation_design_two",
-                "checklist": false,
-                "required": false,
-                "pre-certificate": true,
-                "certificate": true,
-                "points": 0
-            },
-            {
                 "name": "Annex RHW 2.2: Natural Ventilation through CFD",
                 "sub_slug": "annex_ventilation_design_cfd",
                 "checklist": false,
@@ -662,15 +645,7 @@
                 "certificate": true,
                 "points": 0
             },
-            {
-                "name": "Annex Two copy",
-                "sub_slug": "annex_wc_two_copy",
-                "checklist": false,
-                "required": false,
-                "pre-certificate": true,
-                "certificate": true,
-                "points": 0
-            },
+            
             {
                 "name": "Annex WC 3: Water Balance Calculation",
                 "sub_slug": "annex_wc_three",
@@ -1110,12 +1085,10 @@
         "annex_ventilation_design_air_conditioned": [],
         "annex_ventilation_design_cfd": [],
         "annex_ventilation_design_one": [],
-        "annex_ventilation_design_two": [],
         "annex_wc_four": [],
         "annex_wc_one": [],
         "annex_wc_three": [],
         "annex_wc_two": [],
-        "annex_wc_two_copy": [],
         "annexure_master_material": [],
         "annexure_waste_management": [],
         "basic_amenities": [
@@ -1906,7 +1879,6 @@
                 "number": "5"
             }
         ],
-        "energy_analysis_annex": [],
         "energy_annex": [],
         "energy_efficiency_common_area": [
             {
@@ -8547,18 +8519,7 @@
                 "readonly": false,
                 "number": ""
             },
-            {
-                "display_name": "Annex RHW 2.1: Natural Ventilation Calculation",
-                "name": "greater",
-                "type": "h",
-                "subtab": "annex_ventilation_design_two",
-                "validation": "",
-                "valid_message": "",
-                "pre-certificate": true,
-                "certificate": true,
-                "readonly": false,
-                "number": ""
-            },
+           
             {
                 "display_name": "Annex RHW 2.4: Summary of Ventilation Design",
                 "name": "greathethansummary",

@@ -1,3 +1,5 @@
+import type { AnnexureSchemaDefinition } from "./annexure/annexure-schema.types";
+
 export type RatingConfigTab = {
   name: string;
   slug: string;
@@ -92,4 +94,6 @@ export type CertificationWorkspaceResponse = {
   annexureRoutes: AnnexureBladeRoute[];
   /** Laravel-ported show/hide/readonly/compute rules keyed by `tab/subtab`. */
   fieldRules: Record<string, FieldRuleSetDto>;
+  /** Config-driven annexure UI keyed by `tab/subtab` (see `data/annexures/`). */
+  annexureSchemas: Record<string, AnnexureSchemaDefinition>;
 };

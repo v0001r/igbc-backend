@@ -1,0 +1,8 @@
+{
+  "entries": [
+    { "slug": "living_room", "label": "Living room", "target": 1 },
+    { "slug": "kitchen", "label": "Kitchen", "target": 2 },
+    { "slug": "dinning", "label": "Dinning", "target": 1 },
+    { "slug": "bedroom", "label": "Bedroom", "target": 1 }
+  ]
+}

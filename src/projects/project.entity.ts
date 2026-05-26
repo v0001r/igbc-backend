@@ -14,7 +14,7 @@ export type ProjectRegistrationStatus =
   | "pending"
   | "in-review"
   | "approved"
-  | "rejected";
+  | "rejected"; 
 
 export type ProjectCertificationStatus =
   | "not_started"

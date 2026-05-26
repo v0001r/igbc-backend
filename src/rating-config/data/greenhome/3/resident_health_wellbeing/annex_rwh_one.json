@@ -1,0 +1,252 @@
+{
+  "id": "annex_rwh_one",
+  "title": "Annex RHW 1.1: Daylighting Calculation - Prescriptive Approach",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "renderMode": "dwelling",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.rwh-one",
+  "baselineCatalogPath": "shared/glazing-factor-targets.json",
+  "dwellingLayout": {
+    "layoutMode": "rowTable",
+    "addTowerLabel": "Add Dwelling Unit",
+    "addRowLabel": "Add Row",
+    "defaultTowerCount": 1,
+    "minTowers": 1,
+    "maxTowers": 20,
+    "orientationRowCount": 5,
+    "minOrientationRows": 1,
+    "maxOrientationRows": 50,
+    "towerNameParam": "dwelling_type",
+    "orientationColumns": [
+      {
+        "param": "rwh_one",
+        "header": "Regularly Occupied Space",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "param": "type_reg_occ",
+        "header": "Type of Regularly Occupied Space",
+        "type": "select",
+        "options": {
+          "": "Select",
+          "living_room": "Living room",
+          "kitchen": "Kitchen",
+          "dinning": "Dinning",
+          "bedroom": "Bedroom"
+        }
+      },
+      {
+        "param": "floor_area_home",
+        "header": "Floor Area (sq.m)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "window_area_home",
+        "header": "Window Area (sq.m)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "window_glazing_home",
+        "header": "Window Glazing VLT (%)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "skylight_area_home",
+        "header": "Skylight Area (sq.m)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "skylight_glazing_home",
+        "header": "Skylight Glazing VLT (%)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "glazing_achieved",
+        "header": "Glazing Factor to be Achieved",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "glazing_factor_home",
+        "header": "Glazing Factor Achieved",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "glazing_factor_boolean",
+        "header": "Regularly Occupied Spaces Meet or Exceed the Criteria",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "reg_occ_cirteria",
+        "header": "Area of Regularly Occupied Spaces Meeting the Criteria",
+        "type": "readonly",
+        "computed": true
+      }
+    ]
+  },
+  "dwellingStore": {
+    "towerStringParams": ["dwelling_type"],
+    "towerScalarParams": ["total_floor_area", "total_complied_area", "percentage_home"],
+    "orientationParams": [
+      "rwh_one",
+      "type_reg_occ",
+      "floor_area_home",
+      "window_area_home",
+      "window_glazing_home",
+      "skylight_area_home",
+      "skylight_glazing_home",
+      "glazing_achieved",
+      "glazing_factor_home",
+      "glazing_factor_boolean",
+      "reg_occ_cirteria"
+    ]
+  },
+  "dwellingRowPipeline": [
+    {
+      "set": "glazing_achieved",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "mapGet",
+          "mapKey": "glazingTargets",
+          "key": { "ref": "row:type_reg_occ" },
+          "default": 0
+        }
+      }
+    },
+    {
+      "set": "glazing_factor_home",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "div",
+          "args": [
+            {
+              "op": "add",
+              "args": [
+                {
+                  "op": "mul",
+                  "args": [
+                    {
+                      "op": "mul",
+                      "args": [
+                        { "op": "parseNum", "arg": { "ref": "row:window_area_home" } },
+                        { "op": "parseNum", "arg": { "ref": "row:window_glazing_home" } }
+                      ]
+                    },
+                    { "const": 0.2 }
+                  ]
+                },
+                {
+                  "op": "mul",
+                  "args": [
+                    { "op": "parseNum", "arg": { "ref": "row:skylight_area_home" } },
+                    { "op": "parseNum", "arg": { "ref": "row:skylight_glazing_home" } }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "if",
+              "cond": {
+                "op": "gt",
+                "left": { "op": "parseNum", "arg": { "ref": "row:floor_area_home" } },
+                "right": { "const": 0 }
+              },
+              "then": { "op": "parseNum", "arg": { "ref": "row:floor_area_home" } },
+              "else": { "const": 1 }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "set": "glazing_factor_boolean",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "lt",
+          "left": { "op": "parseNum", "arg": { "ref": "row:glazing_factor_home" } },
+          "right": { "op": "parseNum", "arg": { "ref": "row:glazing_achieved" } }
+        },
+        "then": { "const": "No" },
+        "else": { "const": "Yes" }
+      }
+    },
+    {
+      "set": "reg_occ_cirteria",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gte",
+          "left": { "op": "parseNum", "arg": { "ref": "row:glazing_factor_home" } },
+          "right": { "op": "parseNum", "arg": { "ref": "row:glazing_achieved" } }
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": { "op": "parseNum", "arg": { "ref": "row:floor_area_home" } }
+        },
+        "else": { "const": "0.00" }
+      }
+    }
+  ],
+  "dwellingTowerPipeline": [
+    {
+      "set": "total_floor_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "floor_area_home" }
+      }
+    },
+    {
+      "set": "total_complied_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "reg_occ_cirteria" }
+      }
+    },
+    {
+      "set": "percentage_home",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gt",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_floor_area" } },
+          "right": { "const": 0 }
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_complied_area" } },
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_floor_area" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          }
+        },
+        "else": { "const": "0" }
+      }
+    }
+  ]
+}

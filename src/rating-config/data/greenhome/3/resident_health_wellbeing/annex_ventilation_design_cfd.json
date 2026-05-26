@@ -1,0 +1,191 @@
+{
+  "id": "annex_ventilation_design_cfd",
+  "title": "Annex RHW 2.2: Natural Ventilation through CFD",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "renderMode": "dwelling",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.rwh_ventilation_cfd",
+  "dwellingLayout": {
+    "layoutMode": "rowTable",
+    "addTowerLabel": "Add Dwelling Unit",
+    "addRowLabel": "Add Row",
+    "defaultTowerCount": 1,
+    "minTowers": 1,
+    "maxTowers": 20,
+    "orientationRowCount": 5,
+    "minOrientationRows": 1,
+    "maxOrientationRows": 50,
+    "complianceHeaderParam": "rwh_one_coust_lpd",
+    "complianceColumnCount": 2,
+    "rowTableFooter": [
+      {
+        "cells": [
+          { "kind": "empty" },
+          { "kind": "label", "colspan": 2, "text": "Total" },
+          { "kind": "field", "param": "total_floor_area_cfd" },
+          { "kind": "label", "colspan": 4, "text": "Meeting Compliance" },
+          { "kind": "field", "param": "total_complied_area_ventilation" },
+          { "kind": "field", "param": "percentage_home" }
+        ]
+      }
+    ],
+    "orientationColumns": [
+      {
+        "param": "rwh_one_ventilation_cfd",
+        "header": "Regularly Occupied Space",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "param": "type_reg_occ_ventilation_cfd",
+        "header": "Type of Regularly Occupied Space",
+        "type": "select",
+        "options": {
+          "": "Select",
+          "living_room": "Living room",
+          "kitchen": "Kitchen",
+          "bathroom": "Bathroom"
+        }
+      },
+      {
+        "param": "floor_area_home_ventilation_cfd",
+        "header": "Floor Area (sq.m)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "window_area_home_ventilation_cfd",
+        "header": "Minimum Number of Air changes (ACH)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "window_glazing_home_ventilation_cfd",
+        "header": "Mandatory Number of Air changes (ACH)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "skylight_glazing_home_ventilation_cfd",
+        "header": "Credit Number of Air changes (ACH)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "glazing_factor_home_ventilation_cfd",
+        "header": "Meet or Exceed Mandatory Requirement (RHW MR 2) (Yes/ No)",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "glazing_factor_boolean_ventilation_cfd",
+        "header": "Meet or Exceed Credit Requirement (RHW Cr 2) (Yes/ No)",
+        "type": "readonly",
+        "computed": true
+      }
+    ]
+  },
+  "dwellingStore": {
+    "towerStringParams": ["rwh_one_coust_lpd"],
+    "towerScalarParams": [
+      "total_floor_area_cfd",
+      "total_complied_area_ventilation",
+      "percentage_home"
+    ],
+    "orientationParams": [
+      "rwh_one_ventilation_cfd",
+      "type_reg_occ_ventilation_cfd",
+      "floor_area_home_ventilation_cfd",
+      "window_area_home_ventilation_cfd",
+      "window_glazing_home_ventilation_cfd",
+      "skylight_glazing_home_ventilation_cfd",
+      "glazing_factor_home_ventilation_cfd",
+      "glazing_factor_boolean_ventilation_cfd"
+    ]
+  },
+  "dwellingRowPipeline": [
+    {
+      "set": "glazing_factor_home_ventilation_cfd",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "and",
+          "args": [
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:window_area_home_ventilation_cfd" } },
+              "right": { "const": 0 }
+            },
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:window_glazing_home_ventilation_cfd" } },
+              "right": { "const": 0 }
+            }
+          ]
+        },
+        "then": { "const": "" },
+        "else": {
+          "op": "if",
+          "cond": {
+            "op": "gte",
+            "left": { "op": "parseNum", "arg": { "ref": "row:window_area_home_ventilation_cfd" } },
+            "right": { "op": "parseNum", "arg": { "ref": "row:window_glazing_home_ventilation_cfd" } }
+          },
+          "then": { "const": "Yes" },
+          "else": { "const": "No" }
+        }
+      }
+    },
+    {
+      "set": "glazing_factor_boolean_ventilation_cfd",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "and",
+          "args": [
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:window_area_home_ventilation_cfd" } },
+              "right": { "const": 0 }
+            },
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:skylight_glazing_home_ventilation_cfd" } },
+              "right": { "const": 0 }
+            }
+          ]
+        },
+        "then": { "const": "" },
+        "else": {
+          "op": "if",
+          "cond": {
+            "op": "gte",
+            "left": { "op": "parseNum", "arg": { "ref": "row:window_area_home_ventilation_cfd" } },
+            "right": { "op": "parseNum", "arg": { "ref": "row:skylight_glazing_home_ventilation_cfd" } }
+          },
+          "then": { "const": "Yes" },
+          "else": { "const": "No" }
+        }
+      }
+    }
+  ],
+  "dwellingTowerPipeline": [
+    {
+      "set": "total_floor_area_cfd",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "floor_area_home_ventilation_cfd" }
+      }
+    },
+    {
+      "set": "total_complied_area_ventilation",
+      "expr": { "op": "allRowsYes", "field": "glazing_factor_home_ventilation_cfd" }
+    },
+    {
+      "set": "percentage_home",
+      "expr": { "op": "allRowsYes", "field": "glazing_factor_boolean_ventilation_cfd" }
+    }
+  ]
+}

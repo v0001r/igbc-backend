@@ -1,0 +1,337 @@
+{
+  "id": "annex_lpd_calculation",
+  "title": "Annex EE 1: LPD Calculation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "storageTable": "material_resources",
+  "baselineCatalogPath": "shared/lpd-baseline-spaces.json",
+  "bladeInclude": ".rating.greenhomes.annex_lpd_calaculations",
+  "table": {
+    "addRowLabel": "Add More",
+    "defaultRowCount": 5,
+    "minRows": 1,
+    "maxRows": 50,
+    "stickyFirstColumns": 2,
+    "columns": [
+      {
+        "id": "space_name_lpd",
+        "param": "space_name_lpd",
+        "header": "Space Name",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "id": "space_descri_lpd",
+        "param": "space_descri_lpd",
+        "header": "Space Description",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "id": "applicable_space_lpd",
+        "param": "applicable_space_lpd",
+        "header": "Applicable Spaces",
+        "type": "select",
+        "width": "min-w-[200px]",
+        "options": { "": "Select Space Type" }
+      },
+      {
+        "id": "area_space_lpd",
+        "param": "area_space_lpd",
+        "header": "Area (m²)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[100px]"
+      },
+      {
+        "id": "proposed_space_lpd",
+        "param": "proposed_space_lpd",
+        "header": "Proposed Load (kW)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[110px]"
+      },
+      {
+        "id": "hours_op_space_lpd",
+        "param": "hours_op_space_lpd",
+        "header": "Hours of Operation (hrs/day)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "annual_space_lpd",
+        "param": "annual_space_lpd",
+        "header": "Annual Consumption (Proposed)",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[130px]"
+      },
+      {
+        "id": "baseline_space_lpd",
+        "param": "baseline_space_lpd",
+        "header": "Baseline LPD (W/sq.m)",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[110px]"
+      },
+      {
+        "id": "basecase_space_lpd",
+        "param": "basecase_space_lpd",
+        "header": "Basecase Load (kW)",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[110px]"
+      },
+      {
+        "id": "annual_consumption_space_lpd",
+        "param": "annual_consumption_space_lpd",
+        "header": "Annual Consumption (Base Case)",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[140px]"
+      }
+    ]
+  },
+  "rowPipeline": [
+    {
+      "set": "baseline_space_lpd",
+      "expr": {
+        "op": "mapGet",
+        "mapKey": "lpdBaselines",
+        "key": { "ref": "row:applicable_space_lpd" },
+        "default": 0
+      }
+    },
+    {
+      "set": "annual_space_lpd",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "mul",
+          "args": [
+            {
+              "op": "mul",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "row:proposed_space_lpd" } },
+                { "op": "parseNum", "arg": { "ref": "row:hours_op_space_lpd" } }
+              ]
+            },
+            { "const": 365 }
+          ]
+        }
+      }
+    },
+    {
+      "set": "basecase_space_lpd",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 4,
+        "arg": {
+          "op": "div",
+          "args": [
+            {
+              "op": "mul",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "row:area_space_lpd" } },
+                { "op": "parseNum", "arg": { "ref": "row:baseline_space_lpd" } }
+              ]
+            },
+            { "const": 1000 }
+          ]
+        }
+      }
+    },
+    {
+      "set": "annual_consumption_space_lpd",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "mul",
+          "args": [
+            {
+              "op": "mul",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "row:hours_op_space_lpd" } },
+                { "op": "parseNum", "arg": { "ref": "row:basecase_space_lpd" } }
+              ]
+            },
+            { "const": 365 }
+          ]
+        }
+      }
+    }
+  ],
+  "footerRows": [
+    {
+      "cells": [
+        {
+          "kind": "label",
+          "colspan": 7,
+          "text": "Total Annual Lighting Consumption (Proposed) kWh - Common Area"
+        },
+        { "kind": "field", "param": "total_annual_consumption_lpds", "type": "readonly" },
+        {
+          "kind": "label",
+          "colspan": 2,
+          "text": "Total Annual Lighting Consumption (Base Case) kWh - Common Area"
+        },
+        { "kind": "field", "param": "total_comnon_area_lpds", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "kind": "label",
+          "colspan": 7,
+          "text": "Total Annual Lighting Consumption (Proposed) kWh"
+        },
+        { "kind": "field", "param": "total_annual_proposed_lpd", "type": "readonly" },
+        {
+          "kind": "label",
+          "colspan": 2,
+          "text": "Total Annual Lighting Consumption (Base Case) kWh"
+        },
+        { "kind": "field", "param": "total_consumption_base_lpd", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "kind": "label",
+          "colspan": 10,
+          "text": "Overall Energy Savings through Lighting Design"
+        },
+        { "kind": "field", "param": "overall_energy_savings_lpd", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "kind": "label",
+          "colspan": 10,
+          "text": "Energy Savings through lighting design in Common Area"
+        },
+        { "kind": "field", "param": "common_area_energy_savings_lpd", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    }
+  ],
+  "scalarPipeline": [
+    {
+      "set": "total_annual_proposed_lpd",
+      "expr": { "op": "sumRows", "field": "annual_space_lpd" }
+    },
+    {
+      "set": "total_annual_consumption_lpds",
+      "expr": {
+        "op": "sumRowsExclude",
+        "field": "annual_space_lpd",
+        "excludeField": "applicable_space_lpd",
+        "excludeValues": [
+          "dwelling_unit_level__apartments__villas__gated_communities",
+          "guest_house__hostels__service_apartments"
+        ]
+      }
+    },
+    {
+      "set": "total_consumption_base_lpd",
+      "expr": { "op": "sumRows", "field": "annual_consumption_space_lpd" }
+    },
+    {
+      "set": "total_comnon_area_lpds",
+      "expr": {
+        "op": "sumRowsExclude",
+        "field": "annual_consumption_space_lpd",
+        "excludeField": "applicable_space_lpd",
+        "excludeValues": [
+          "dwelling_unit_level__apartments__villas__gated_communities",
+          "guest_house__hostels__service_apartments"
+        ]
+      }
+    },
+    {
+      "set": "overall_energy_savings_lpd",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "if",
+          "cond": {
+            "op": "gt",
+            "left": { "op": "parseNum", "arg": { "ref": "scalar:total_consumption_base_lpd" } },
+            "right": { "const": 0 }
+          },
+          "then": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  {
+                    "op": "sub",
+                    "args": [
+                      { "op": "parseNum", "arg": { "ref": "scalar:total_consumption_base_lpd" } },
+                      { "op": "parseNum", "arg": { "ref": "scalar:total_annual_proposed_lpd" } }
+                    ]
+                  },
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_consumption_base_lpd" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          },
+          "else": { "const": 0 }
+        }
+      }
+    },
+    {
+      "set": "common_area_energy_savings_lpd",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "if",
+          "cond": {
+            "op": "gt",
+            "left": { "op": "parseNum", "arg": { "ref": "scalar:total_comnon_area_lpds" } },
+            "right": { "const": 0 }
+          },
+          "then": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  {
+                    "op": "sub",
+                    "args": [
+                      { "op": "parseNum", "arg": { "ref": "scalar:total_comnon_area_lpds" } },
+                      { "op": "parseNum", "arg": { "ref": "scalar:total_annual_consumption_lpds" } }
+                    ]
+                  },
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_comnon_area_lpds" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          },
+          "else": { "const": 0 }
+        }
+      }
+    }
+  ],
+  "scalarParams": [
+    "total_annual_consumption_lpds",
+    "total_comnon_area_lpds",
+    "total_annual_proposed_lpd",
+    "total_consumption_base_lpd",
+    "overall_energy_savings_lpd",
+    "common_area_energy_savings_lpd"
+  ]
+}

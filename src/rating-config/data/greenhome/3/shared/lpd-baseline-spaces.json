@@ -1,0 +1,38 @@
+{
+  "source": "IGBC Green Homes Annexure I — Space-by-Space Method (W/sq.m). Sync with Laravel __baseline_lpd_data() when DB export is available.",
+  "slugify": "lowercase; spaces/commas/hyphens → underscore",
+  "entries": [
+    { "slug": "living_room", "label": "Living room", "baseline": 11.8 },
+    { "slug": "bed_room", "label": "Bed room", "baseline": 11.8 },
+    { "slug": "dining_area", "label": "Dining area", "baseline": 9.7 },
+    { "slug": "kitchen", "label": "Kitchen", "baseline": 12.9 },
+    { "slug": "dressing_room", "label": "Dressing room", "baseline": 6.4 },
+    { "slug": "rest_room", "label": "Rest room", "baseline": 9.7 },
+    { "slug": "gymnasium", "label": "Gymnasium", "baseline": 4.3 },
+    { "slug": "exercise_center", "label": "Exercise center", "baseline": 3.2 },
+    { "slug": "home_theatre", "label": "Home theatre", "baseline": 12.9 },
+    { "slug": "lounge", "label": "Lounge", "baseline": 15 },
+    { "slug": "corridor", "label": "Corridor", "baseline": 5.4 },
+    { "slug": "stair_case", "label": "Stair case", "baseline": 5.4 },
+    { "slug": "motels_/_resorts_-_guest_room", "label": "Motels / Resorts - Guest room", "baseline": 11.8 },
+    { "slug": "motels_/_resorts_-_dinning_area", "label": "Motels / Resorts – Dinning area", "baseline": 12.9 },
+    { "slug": "lobby_/_reception", "label": "Lobby / Reception", "baseline": 13.9 },
+    { "slug": "hostels_/_dormitories", "label": "Hostels / Dormitories", "baseline": 11.8 },
+    { "slug": "external_lighting_/_parking", "label": "External lighting / Parking", "baseline": 3.2 },
+    {
+      "slug": "dwelling_unit_level__apartments__villas__gated_communities",
+      "label": "Dwelling unit level, Apartments, Villas, Gated communities",
+      "baseline": 5,
+      "excludeFromCommonAreaTotals": true
+    },
+    {
+      "slug": "guest_house__hostels__service_apartments",
+      "label": "Guest House, Hostels, Service Apartments (non-residential interior)",
+      "baseline": 5,
+      "excludeFromCommonAreaTotals": true
+    },
+    { "slug": "external_lighting", "label": "External Lighting (landscaping, facades, street)", "baseline": 2.5 },
+    { "slug": "common_area_lighting", "label": "Common Area Lighting (corridors, lobbies, staircases)", "baseline": 4 },
+    { "slug": "parking_area", "label": "Parking Area (basement / stilt)", "baseline": 2.5 }
+  ]
+}

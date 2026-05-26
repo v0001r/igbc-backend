@@ -1,0 +1,110 @@
+{
+  "id": "annex_wc_one",
+  "title": "Annex WC 1: Rainwater Calculation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "renderMode": "rainwater",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.annexOne",
+  "baselineCatalogPath": "shared/rainwater-surface-types.json",
+  "rainwaterLayout": {
+    "rainfall": {
+      "fixedRowCount": 5,
+      "yearOptions": {
+        "": "Select Year",
+        "2018": "2018",
+        "2019": "2019",
+        "2020": "2020",
+        "2021": "2021",
+        "2022": "2022",
+        "2023": "2023"
+      },
+      "monthOptions": {
+        "": "Select Month",
+        "January": "January",
+        "Febuary": "Febuary",
+        "March": "March",
+        "April": "April",
+        "May": "May",
+        "June": "June",
+        "July": "July",
+        "August": "August",
+        "September": "September",
+        "October": "October",
+        "November": "November",
+        "December": "December"
+      }
+    },
+    "caseOptions": {
+      "": "Select Case",
+      "1": "Case A: Rainwater Harvesting, Roof & Non-roof",
+      "2": "Case B: High Groundwater Table"
+    },
+    "surfaceTable": {
+      "addRowLabel": "Add Row",
+      "defaultRowCount": 6,
+      "minRows": 1,
+      "maxRows": 50,
+      "columns": [
+        {
+          "id": "surface",
+          "param": "surface",
+          "header": "Surface Type",
+          "type": "select",
+          "width": "min-w-[220px]",
+          "options": {
+            "": "Select Surface Type"
+          }
+        },
+        {
+          "id": "runoff",
+          "param": "runoff",
+          "header": "Run-off Coefficient",
+          "type": "readonly",
+          "computed": true
+        },
+        {
+          "id": "area",
+          "param": "area",
+          "header": "Area (Sq.m)",
+          "type": "number",
+          "step": "0.01"
+        },
+        {
+          "id": "imprevious_area",
+          "param": "imprevious_area",
+          "header": "Impervious Area",
+          "type": "readonly",
+          "computed": true
+        }
+      ]
+    },
+    "summary": [
+      {
+        "label": "Total rain water from roof and non-roof area (sq.m)",
+        "param": "total_rain",
+        "type": "readonly"
+      },
+      {
+        "label": "Required rainwater harvesting capacity for mandatory requirements (cu.m)",
+        "param": "mandatory_harvesting",
+        "type": "readonly"
+      },
+      {
+        "label": "Proposed / Existing rainwater harvesting capacity (cu.m)",
+        "param": "harvesting",
+        "type": "readonly"
+      },
+      {
+        "label": "Meets the mandatory requirement",
+        "param": "requirment",
+        "type": "readonly"
+      },
+      {
+        "label": "% of average peak rainfall for one-day rainfall considered for Existing / Proposed rainwater harvesting systems",
+        "param": "avg_rainfall",
+        "type": "readonly"
+      }
+    ]
+  }
+}

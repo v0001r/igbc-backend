@@ -18,6 +18,7 @@ import {
   resolveSubtabTitle,
 } from "./rating-config.resolver";
 import { loadAnnexureBladeRoutes, resolveAnnexure } from "./annexure-registry";
+import { buildAnnexureSchemaIndex } from "./annexure/annexure-schema.loader";
 import type { CertificationFormResponse } from "../projects/certification-form.types";
 import { FieldRulesService } from "./field-rules/field-rules.service";
 
@@ -87,6 +88,13 @@ export class RatingConfigService {
       form: input.form,
       annexureRoutes,
       fieldRules: this.fieldRulesService.buildRulesIndex(input.configKey, config),
+      annexureSchemas: buildAnnexureSchemaIndex(
+        input.configKey,
+        input.versionType,
+        input.ratingTypeId,
+        config,
+        annexureRoutes,
+      ),
     };
   }
 

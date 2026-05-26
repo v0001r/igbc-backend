@@ -9,6 +9,14 @@
   },
   {
     "tab": "water_conservation",
+    "subtab": "annex_wc_one",
+    "version": "3",
+    "bladeInclude": ".rating.greenhomes.annexOne",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "water_conservation",
     "subtab": "annex_wc_two",
     "version": "3",
     "bladeInclude": ".rating.annexV1.annexTwo",
@@ -19,7 +27,7 @@
     "tab": "water_conservation",
     "subtab": "annex_wc_two",
     "version": "3",
-    "bladeInclude": ".rating.greenhomes.annexTwo",
+    "bladeInclude": ".rating.greenhomes.annexTwo_old",
     "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
   },
@@ -27,7 +35,7 @@
     "tab": "water_conservation",
     "subtab": "annex_wc_two_copy",
     "version": "3",
-    "bladeInclude": ".rating.greenhomes.annexTwo_old",
+    "bladeInclude": ".rating.greenhomes.annexTwo",
     "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
   },
@@ -41,10 +49,26 @@
   },
   {
     "tab": "water_conservation",
+    "subtab": "annex_wc_three",
+    "version": "3",
+    "bladeInclude": ".rating.greenhomes.annexThree",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "water_conservation",
     "subtab": "annex_wc_four",
     "version": "3",
     "bladeInclude": ".rating.annexV1.annexFour",
     "ratingTypeId5Only": true,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "water_conservation",
+    "subtab": "annex_wc_four",
+    "version": "3",
+    "bladeInclude": ".rating.greenhomes.annexFour",
+    "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
   },
   {

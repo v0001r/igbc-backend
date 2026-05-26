@@ -1,0 +1,135 @@
+{
+  "id": "annexure_waste_management",
+  "title": "Annex MR 2: Waste Management Sheet",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.annexMasterWaste",
+  "table": {
+    "addRowLabel": "Add More",
+    "defaultRowCount": 5,
+    "minRows": 1,
+    "maxRows": 50,
+    "stickyFirstColumns": 2,
+    "headerRows": [
+      [
+        { "colspan": 1, "text": "" },
+        { "colspan": 2, "text": "Quantity of Waste (Kgs)" },
+        { "colspan": 1, "text": "" }
+      ]
+    ],
+    "columns": [
+      {
+        "id": "materials",
+        "param": "materials",
+        "header": "Description of Material",
+        "type": "text",
+        "width": "min-w-[200px]"
+      },
+      {
+        "id": "generated",
+        "param": "generated",
+        "header": "Generated",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "reused",
+        "param": "reused",
+        "header": "Reused/ Recycle",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "recycle_used",
+        "param": "recycle_used",
+        "header": "Details of Reuse/ Recycle",
+        "type": "select",
+        "width": "min-w-[240px]",
+        "options": {
+          "": "Select Diversion Category",
+          "reused_backfill_project": "Reused for backfill in the project",
+          "send_recycling": "Sent for Recycling",
+          "send_landfill": "Sent to Landfill",
+          "other": "Others"
+        }
+      }
+    ]
+  },
+  "footerRows": [
+    {
+      "cells": [
+        { "kind": "label", "colspan": 2, "text": "Total" },
+        { "kind": "field", "param": "total_generated", "type": "readonly" },
+        { "kind": "field", "param": "total_reused", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "param": "percentage_waste_diverted_landfill",
+      "label": "Percentage of waste diverted from landfill"
+    }
+  ],
+  "scalarParams": ["total_generated", "total_reused", "percentage_waste_diverted_landfill"],
+  "scalarPipeline": [
+    {
+      "set": "total_generated",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "generated" }
+      }
+    },
+    {
+      "set": "total_reused",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "reused" }
+      }
+    },
+    {
+      "set": "percentage_waste_diverted_landfill",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "and",
+          "args": [
+            {
+              "op": "gt",
+              "left": { "op": "parseNum", "arg": { "ref": "scalar:total_generated" } },
+              "right": { "const": 0 }
+            },
+            {
+              "op": "gt",
+              "left": { "op": "parseNum", "arg": { "ref": "scalar:total_reused" } },
+              "right": { "const": 0 }
+            }
+          ]
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 0,
+          "arg": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_reused" } },
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_generated" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          }
+        },
+        "else": { "const": "0" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "id": "summanry_of_ventilation_two_one",
+  "title": "Annex RHW 2.4: Summary of Ventilation Design",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.summary_two_one_ventilation",
+  "ventilationSummary": {
+    "tab": "resident_health_wellbeing",
+    "floorCountSubtab": "ventilation_design_enhanced",
+    "floorCountParam": "no_of_floors",
+    "sources": [
+      {
+        "id": "one",
+        "label": "Natural Ventilation Calculation",
+        "subtab": "annex_ventilation_design_one",
+        "dwellingField": "rwh_one_coust",
+        "mandatoryField": "total_complied_area_ventilation",
+        "creditField": "percentage_home",
+        "floorFilter": "always"
+      },
+      {
+        "id": "two",
+        "label": "Natural Ventilation Calculation",
+        "subtab": "annex_ventilation_design_two",
+        "dwellingField": "rwh_one_coust_two",
+        "mandatoryField": "total_complied_area_ventilation",
+        "creditField": "percentage_home",
+        "floorFilter": "gte5"
+      },
+      {
+        "id": "three",
+        "label": "Natural Ventilation through CFD",
+        "subtab": "annex_ventilation_design_cfd",
+        "dwellingField": "rwh_one_coust_lpd",
+        "mandatoryField": "total_complied_area_ventilation",
+        "creditField": "percentage_home",
+        "floorFilter": "always"
+      },
+      {
+        "id": "four",
+        "label": "Airconditioned spaces",
+        "subtab": "annex_ventilation_design_air_conditioned",
+        "dwellingField": "rwh_one_coust_air",
+        "mandatoryField": "total_complied_area_ventilation",
+        "creditField": "percentage_home",
+        "floorFilter": "always"
+      }
+    ]
+  },
+  "table": {
+    "allowAddRows": false,
+    "defaultRowCount": 0,
+    "minRows": 0,
+    "stickyFirstColumns": 2,
+    "headerRows": [
+      [{ "colspan": 5, "text": "Dwelling Unit Type - Combined Data" }]
+    ],
+    "columns": [
+      {
+        "id": "data_source",
+        "param": "data_source",
+        "header": "Data Source",
+        "type": "readonly",
+        "width": "min-w-[200px]"
+      },
+      {
+        "id": "dwelling_name",
+        "param": "dwelling_name",
+        "header": "Name of Dwelling Unit",
+        "type": "readonly",
+        "width": "min-w-[180px]"
+      },
+      {
+        "id": "dwelling_units",
+        "param": "dwelling_units",
+        "header": "Number of Dwelling Units",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[160px]"
+      },
+      {
+        "id": "meet_or_exceed",
+        "param": "meet_or_exceed",
+        "header": "Meet or Exceed Mandatory Requirement (RHW MR 2) (Yes/No)",
+        "type": "readonly",
+        "width": "min-w-[200px]"
+      },
+      {
+        "id": "meet_exceed",
+        "param": "meet_exceed",
+        "header": "Meet or Exceed Credit Requirement (RHW Cr 2) (Yes/No)",
+        "type": "readonly",
+        "width": "min-w-[200px]"
+      }
+    ]
+  },
+  "footerRows": [
+    {
+      "cells": [
+        { "kind": "label", "colspan": 5, "text": "Compliance for Mandatory Requirement" },
+        { "kind": "field", "param": "total_complied_area", "type": "readonly" }
+      ]
+    },
+    {
+      "cells": [
+        { "kind": "label", "colspan": 5, "text": "Compliance for Enhanced Requirement" },
+        { "kind": "field", "param": "total_floor_area", "type": "readonly" }
+      ]
+    }
+  ],
+  "scalarParams": ["total_complied_area", "total_floor_area"],
+  "scalarPipeline": [
+    {
+      "set": "total_complied_area",
+      "expr": { "op": "allRowsYes", "field": "meet_or_exceed" }
+    },
+    {
+      "set": "total_floor_area",
+      "expr": { "op": "allRowsYes", "field": "meet_exceed" }
+    }
+  ]
+}

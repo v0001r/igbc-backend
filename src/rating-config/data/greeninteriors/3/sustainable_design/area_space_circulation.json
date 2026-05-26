@@ -1,0 +1,348 @@
+{
+  "id": "area_space_circulation",
+  "title": "Cal Area Statement / Circulation / Sensors",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexAreaSpacesCirculation",
+  "table": {
+    "addRowLabel": "Add More",
+    "defaultRowCount": 5,
+    "minRows": 1,
+    "maxRows": 50,
+    "stickyFirstColumns": 2,
+    "columns": [
+      {
+        "id": "reqularly_occupied_spaces",
+        "param": "reqularly_occupied_spaces",
+        "header": "Description of spaces (e.g. core workstation, meeting room, electrical room, restroom etc)",
+        "type": "text",
+        "width": "min-w-[220px]"
+      },
+      {
+        "id": "reqularly_non_occupied_spaces",
+        "param": "reqularly_non_occupied_spaces",
+        "header": "Regularly / non regularly occupied spaces",
+        "type": "select",
+        "width": "min-w-[200px]",
+        "options": {
+          "": "Select",
+          "regularly_occupied_spaces": "Regularly occupied spaces",
+          "non_regularly_occupied_spaces": "Non Regularly occupied spaces"
+        }
+      },
+      {
+        "id": "air_condition_spaces",
+        "param": "air_condition_spaces",
+        "header": "Air conditioned / Non - Air conditioned spaces",
+        "type": "select",
+        "width": "min-w-[200px]",
+        "options": {
+          "": "Select",
+          "air_conditioned_space": "Air conditioned space",
+          "non_air_conditioned_space": "Non air conditioned space"
+        }
+      },
+      {
+        "id": "total_carpet_area_circulation",
+        "param": "total_carpet_area_circulation",
+        "header": "Total carpet area (sq ft)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "total_furniture_circulation",
+        "param": "total_furniture_circulation",
+        "header": "Total Area of Furniture (sq ft)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "total_area_storage",
+        "param": "total_area_storage",
+        "header": "Total Area of Storage (sq ft)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "circulation_spaces",
+        "param": "circulation_spaces",
+        "header": "Circulation space (sq ft)",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "area_covered_by_sensors",
+        "param": "area_covered_by_sensors",
+        "header": "Area covered by daylight / occupancy / motion sensors (sq ft)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[160px]"
+      }
+    ]
+  },
+  "rowPipeline": [
+    {
+      "set": "circulation_spaces",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "row:total_carpet_area_circulation" } },
+            {
+              "op": "add",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "row:total_furniture_circulation" } },
+                { "op": "parseNum", "arg": { "ref": "row:total_area_storage" } }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "scalarParams": [
+    "optimise_total_carpet_area",
+    "optimise_circulation_total_area",
+    "optimise_total_percentage",
+    "total_regularly_occupied_spaces",
+    "total_regularly_occupied_spaces_sensors",
+    "sensors_occupied_spaces",
+    "total_non_regularly_occupied_area",
+    "total_non_regularly_occupied_area_sensors",
+    "non_regularly_occupied_area_sensors_percentage",
+    "air_conditioned_sapces_area",
+    "non_air_conditioned_sapces_area"
+  ],
+  "scalarPipeline": [
+    {
+      "set": "optimise_total_carpet_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "total_carpet_area_circulation" }
+      }
+    },
+    {
+      "set": "optimise_circulation_total_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "circulation_spaces" }
+      }
+    },
+    {
+      "set": "optimise_total_percentage",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gt",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:optimise_total_carpet_area" } },
+          "right": { "const": 0 }
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  { "op": "parseNum", "arg": { "ref": "scalar:optimise_circulation_total_area" } },
+                  { "op": "parseNum", "arg": { "ref": "scalar:optimise_total_carpet_area" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          }
+        },
+        "else": { "const": "0.00" }
+      }
+    },
+    {
+      "set": "total_regularly_occupied_spaces",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sumRowsInclude",
+          "field": "total_carpet_area_circulation",
+          "includeField": "reqularly_non_occupied_spaces",
+          "includeValues": ["regularly_occupied_spaces"]
+        }
+      }
+    },
+    {
+      "set": "total_regularly_occupied_spaces_sensors",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sumRowsInclude",
+          "field": "area_covered_by_sensors",
+          "includeField": "reqularly_non_occupied_spaces",
+          "includeValues": ["regularly_occupied_spaces"]
+        }
+      }
+    },
+    {
+      "set": "sensors_occupied_spaces",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gt",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_regularly_occupied_spaces" } },
+          "right": { "const": 0 }
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_regularly_occupied_spaces_sensors" } },
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_regularly_occupied_spaces" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          }
+        },
+        "else": { "const": "0.00" }
+      }
+    },
+    {
+      "set": "total_non_regularly_occupied_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sumRowsInclude",
+          "field": "total_carpet_area_circulation",
+          "includeField": "reqularly_non_occupied_spaces",
+          "includeValues": ["non_regularly_occupied_spaces"]
+        }
+      }
+    },
+    {
+      "set": "total_non_regularly_occupied_area_sensors",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sumRowsInclude",
+          "field": "area_covered_by_sensors",
+          "includeField": "reqularly_non_occupied_spaces",
+          "includeValues": ["non_regularly_occupied_spaces"]
+        }
+      }
+    },
+    {
+      "set": "non_regularly_occupied_area_sensors_percentage",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gt",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_non_regularly_occupied_area" } },
+          "right": { "const": 0 }
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_non_regularly_occupied_area_sensors" } },
+                  { "op": "parseNum", "arg": { "ref": "scalar:total_non_regularly_occupied_area" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          }
+        },
+        "else": { "const": "0.00" }
+      }
+    },
+    {
+      "set": "air_conditioned_sapces_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sumRowsInclude",
+          "field": "total_carpet_area_circulation",
+          "includeField": "air_condition_spaces",
+          "includeValues": ["air_conditioned_space"]
+        }
+      }
+    },
+    {
+      "set": "non_air_conditioned_sapces_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sumRowsInclude",
+          "field": "total_carpet_area_circulation",
+          "includeField": "air_condition_spaces",
+          "includeValues": ["non_air_conditioned_space"]
+        }
+      }
+    }
+  ],
+  "summaryGroups": [
+    {
+      "title": "Optimise Circulation Spaces",
+      "rows": [
+        { "param": "optimise_total_carpet_area", "label": "Total carpet area (sq.ft)", "type": "readonly" },
+        { "param": "optimise_circulation_total_area", "label": "Total circulation area (sq.ft)", "type": "readonly" },
+        { "param": "optimise_total_percentage", "label": "Percentage of circulation area (%)", "type": "readonly" }
+      ]
+    },
+    {
+      "title": "Energy Efficient Lighting (Sensors Regularly occupied spaces)",
+      "rows": [
+        { "param": "total_regularly_occupied_spaces", "label": "Total regularly occupied area (sq.ft)", "type": "readonly" },
+        {
+          "param": "total_regularly_occupied_spaces_sensors",
+          "label": "Total regularly occupied area covered by sensors (sq.ft)",
+          "type": "readonly"
+        },
+        {
+          "param": "sensors_occupied_spaces",
+          "label": "Percentage of regularly occupied spaces covered by sensors (%)",
+          "type": "readonly"
+        }
+      ]
+    },
+    {
+      "title": "Energy Efficient Lighting (Sensors Non - Regularly occupied spaces)",
+      "rows": [
+        { "param": "total_non_regularly_occupied_area", "label": "Total non regularly occupied area (sq ft)", "type": "readonly" },
+        {
+          "param": "total_non_regularly_occupied_area_sensors",
+          "label": "Total non regularly occupied area covered by sensors (sq ft)",
+          "type": "readonly"
+        },
+        {
+          "param": "non_regularly_occupied_area_sensors_percentage",
+          "label": "Percentage of non regularly occupied spaces covered by sensors (%)",
+          "type": "readonly"
+        }
+      ]
+    }
+  ]
+}

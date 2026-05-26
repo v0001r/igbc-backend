@@ -1,0 +1,155 @@
+{
+  "id": "annex_rwh_one_one",
+  "title": "Annex RHW 1.2: Summary of Daylight (Prescriptive & Simulation approach)",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.rwh-one_one",
+  "sourceAnnex": {
+    "tab": "resident_health_wellbeing",
+    "subtab": "annex_rwh_one",
+    "mappings": [
+      {
+        "target": "dwelling_name",
+        "source": "dwelling_type",
+        "readonly": true
+      },
+      {
+        "target": "percentage_dwelling",
+        "source": "percentage_home",
+        "prefillOnly": true
+      }
+    ]
+  },
+  "table": {
+    "allowAddRows": false,
+    "defaultRowCount": 1,
+    "minRows": 1,
+    "stickyFirstColumns": 2,
+    "headerRows": [
+      [{ "colspan": 4, "text": "Dwelling Unit Type" }]
+    ],
+    "columns": [
+      {
+        "id": "dwelling_name",
+        "param": "dwelling_name",
+        "header": "Name of Dwelling Unit",
+        "type": "readonly",
+        "width": "min-w-[180px]"
+      },
+      {
+        "id": "dwelling_units",
+        "param": "dwelling_units",
+        "header": "Number of Dwelling Units",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[160px]"
+      },
+      {
+        "id": "percentage_dwelling",
+        "param": "percentage_dwelling",
+        "header": "Percentage",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      }
+    ]
+  },
+  "footerRows": [
+    {
+      "cells": [
+        {
+          "kind": "label",
+          "colspan": 3,
+          "text": "Minimum Percentage of Complaint area in Dwelling Units and Amenity spaces"
+        },
+        { "kind": "field", "param": "total_complied_area", "type": "readonly" }
+      ]
+    },
+    {
+      "cells": [
+        { "kind": "label", "colspan": 3, "text": "Compliance" },
+        { "kind": "field", "param": "total_floor_area", "type": "readonly" }
+      ]
+    }
+  ],
+  "scalarParams": ["total_complied_area", "total_floor_area"],
+  "scalarPipeline": [
+    {
+      "set": "total_complied_area",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gt",
+          "left": { "op": "minRowsPositive", "field": "percentage_dwelling" },
+          "right": { "const": 0 }
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": { "op": "minRowsPositive", "field": "percentage_dwelling" }
+        },
+        "else": { "const": "" }
+      }
+    },
+    {
+      "set": "total_floor_area",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "isEmpty",
+          "arg": { "ref": "scalar:total_complied_area" }
+        },
+        "then": { "const": "" },
+        "else": {
+          "op": "if",
+          "cond": {
+            "op": "gte",
+            "left": { "op": "parseNum", "arg": { "ref": "scalar:total_complied_area" } },
+            "right": { "const": 95 }
+          },
+          "then": { "const": "2 Credit Points" },
+          "else": {
+            "op": "if",
+            "cond": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "gte",
+                  "left": { "op": "parseNum", "arg": { "ref": "scalar:total_complied_area" } },
+                  "right": { "const": 75 }
+                },
+                {
+                  "op": "lt",
+                  "left": { "op": "parseNum", "arg": { "ref": "scalar:total_complied_area" } },
+                  "right": { "const": 95 }
+                }
+              ]
+            },
+            "then": { "const": "1 Credit Point" },
+            "else": {
+              "op": "if",
+              "cond": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "gte",
+                    "left": { "op": "parseNum", "arg": { "ref": "scalar:total_complied_area" } },
+                    "right": { "const": 50 }
+                  },
+                  {
+                    "op": "lt",
+                    "left": { "op": "parseNum", "arg": { "ref": "scalar:total_complied_area" } },
+                    "right": { "const": 75 }
+                  }
+                ]
+              },
+              "then": { "const": "Mandatory" },
+              "else": { "const": "Doesn't meet" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

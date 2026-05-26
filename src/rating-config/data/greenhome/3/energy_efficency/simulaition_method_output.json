@@ -1,0 +1,367 @@
+{
+  "id": "simulaition_method_output",
+  "title": "Annex EE 3: Simulation Method Output",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.simulaition_method_output",
+  "table": {
+    "addRowLabel": "Add More",
+    "defaultRowCount": 5,
+    "minRows": 1,
+    "maxRows": 50,
+    "stickyFirstColumns": 2,
+    "columns": [
+      {
+        "id": "overall_enegry",
+        "param": "overall_enegry",
+        "header": "Overall Energy Summary",
+        "type": "text",
+        "width": "min-w-[160px]"
+      },
+      {
+        "id": "baseline_simulation",
+        "param": "baseline_simulation",
+        "header": "Baseline 0 Deg (kWh)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "baseline_90",
+        "param": "baseline_90",
+        "header": "Baseline 90 Deg (kWh)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "baseline_180",
+        "param": "baseline_180",
+        "header": "Baseline 180 Deg (kWh)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "baseline_270",
+        "param": "baseline_270",
+        "header": "Baseline 270 Deg (kWh)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "baseline_average",
+        "param": "baseline_average",
+        "header": "Baseline Average (kWh)",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[130px]"
+      },
+      {
+        "id": "simulation_output_proposed",
+        "param": "simulation_output_proposed",
+        "header": "Proposed Case (kWh)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[120px]"
+      }
+    ]
+  },
+  "rowPipeline": [
+    {
+      "set": "baseline_average",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "div",
+          "args": [
+            {
+              "op": "add",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "row:baseline_simulation" } },
+                { "op": "parseNum", "arg": { "ref": "row:baseline_90" } },
+                { "op": "parseNum", "arg": { "ref": "row:baseline_180" } },
+                { "op": "parseNum", "arg": { "ref": "row:baseline_270" } }
+              ]
+            },
+            { "const": 4 }
+          ]
+        }
+      }
+    }
+  ],
+  "footerRows": [
+    {
+      "cells": [
+        { "kind": "label", "colspan": 2, "text": "Total Energy Consumption" },
+        { "kind": "field", "param": "total_baseline_simulation", "type": "readonly" },
+        { "kind": "field", "param": "total_baseline_90", "type": "readonly" },
+        { "kind": "field", "param": "total_baseline_180", "type": "readonly" },
+        { "kind": "field", "param": "total_baseline_270", "type": "readonly" },
+        { "kind": "field", "param": "total_baseline_average", "type": "readonly" },
+        { "kind": "field", "param": "total_proposed_case", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    },
+    {
+      "cells": [
+        { "kind": "label", "colspan": 2, "text": "Onsite R.E genenration" },
+        {
+          "kind": "field",
+          "param": "simulation_on_site",
+          "editable": true,
+          "inputType": "number",
+          "step": "0.01"
+        },
+        {
+          "kind": "field",
+          "param": "simulation_baseline_90",
+          "editable": true,
+          "inputType": "number",
+          "step": "0.01"
+        },
+        {
+          "kind": "field",
+          "param": "simulation_baseline_180",
+          "editable": true,
+          "inputType": "number",
+          "step": "0.01"
+        },
+        {
+          "kind": "field",
+          "param": "simulation_baseline_270",
+          "editable": true,
+          "inputType": "number",
+          "step": "0.01"
+        },
+        {
+          "kind": "field",
+          "param": "simulation_baseline_average",
+          "editable": true,
+          "inputType": "number",
+          "step": "0.01"
+        },
+        {
+          "kind": "field",
+          "param": "simulation_proposed_case",
+          "editable": true,
+          "inputType": "number",
+          "step": "0.01"
+        },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    },
+    {
+      "cells": [
+        { "kind": "label", "colspan": 2, "text": "Net Energy Consumtion" },
+        { "kind": "field", "param": "simulation_net_baseline", "type": "readonly" },
+        { "kind": "field", "param": "simulation_net_baseline_90", "type": "readonly" },
+        { "kind": "field", "param": "simulation_net_baseline_180", "type": "readonly" },
+        { "kind": "field", "param": "simulation_net_baseline_270", "type": "readonly" },
+        { "kind": "field", "param": "simulation_net_average", "type": "readonly" },
+        { "kind": "field", "param": "simulation_net_proposed", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    },
+    {
+      "cells": [
+        { "kind": "label", "colspan": 7, "text": "Overall Energy Savings" },
+        { "kind": "field", "param": "overall_energy_savings_output", "type": "readonly" },
+        { "kind": "spacer", "colspan": 1 }
+      ]
+    }
+  ],
+  "scalarPipeline": [
+    {
+      "set": "total_baseline_simulation",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "baseline_simulation" }
+      }
+    },
+    {
+      "set": "total_baseline_90",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "baseline_90" }
+      }
+    },
+    {
+      "set": "total_baseline_180",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "baseline_180" }
+      }
+    },
+    {
+      "set": "total_baseline_270",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "baseline_270" }
+      }
+    },
+    {
+      "set": "total_baseline_average",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "baseline_average" }
+      }
+    },
+    {
+      "set": "total_proposed_case",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "simulation_output_proposed" }
+      }
+    },
+    {
+      "set": "simulation_net_baseline",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "scalar:total_baseline_simulation" } },
+            { "op": "parseNum", "arg": { "ref": "scalar:simulation_on_site" } }
+          ]
+        }
+      }
+    },
+    {
+      "set": "simulation_net_baseline_90",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "scalar:total_baseline_90" } },
+            { "op": "parseNum", "arg": { "ref": "scalar:simulation_baseline_90" } }
+          ]
+        }
+      }
+    },
+    {
+      "set": "simulation_net_baseline_180",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "scalar:total_baseline_180" } },
+            { "op": "parseNum", "arg": { "ref": "scalar:simulation_baseline_180" } }
+          ]
+        }
+      }
+    },
+    {
+      "set": "simulation_net_baseline_270",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "scalar:total_baseline_270" } },
+            { "op": "parseNum", "arg": { "ref": "scalar:simulation_baseline_270" } }
+          ]
+        }
+      }
+    },
+    {
+      "set": "simulation_net_average",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "scalar:total_baseline_average" } },
+            { "op": "parseNum", "arg": { "ref": "scalar:simulation_baseline_average" } }
+          ]
+        }
+      }
+    },
+    {
+      "set": "simulation_net_proposed",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "sub",
+          "args": [
+            { "op": "parseNum", "arg": { "ref": "scalar:total_proposed_case" } },
+            { "op": "parseNum", "arg": { "ref": "scalar:simulation_proposed_case" } }
+          ]
+        }
+      }
+    },
+    {
+      "set": "overall_energy_savings_output",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "if",
+          "cond": {
+            "op": "gt",
+            "left": { "op": "parseNum", "arg": { "ref": "scalar:simulation_net_average" } },
+            "right": { "const": 0 }
+          },
+          "then": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  {
+                    "op": "sub",
+                    "args": [
+                      { "op": "parseNum", "arg": { "ref": "scalar:simulation_net_average" } },
+                      { "op": "parseNum", "arg": { "ref": "scalar:simulation_net_proposed" } }
+                    ]
+                  },
+                  { "op": "parseNum", "arg": { "ref": "scalar:simulation_net_average" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          },
+          "else": { "const": 0 }
+        }
+      }
+    }
+  ],
+  "scalarParams": [
+    "total_baseline_simulation",
+    "total_baseline_90",
+    "total_baseline_180",
+    "total_baseline_270",
+    "total_baseline_average",
+    "total_proposed_case",
+    "simulation_on_site",
+    "simulation_baseline_90",
+    "simulation_baseline_180",
+    "simulation_baseline_270",
+    "simulation_baseline_average",
+    "simulation_proposed_case",
+    "simulation_net_baseline",
+    "simulation_net_baseline_90",
+    "simulation_net_baseline_180",
+    "simulation_net_baseline_270",
+    "simulation_net_average",
+    "simulation_net_proposed",
+    "overall_energy_savings_output"
+  ]
+}

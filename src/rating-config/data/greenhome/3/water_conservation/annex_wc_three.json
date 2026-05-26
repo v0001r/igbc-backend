@@ -1,0 +1,136 @@
+{
+  "id": "annex_wc_three",
+  "title": "Annex WC 3: Water Balance Calculation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [2],
+  "renderMode": "waterBalance",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.annexThree",
+  "waterBalanceLayout": {
+    "annualDays": 365,
+    "consumptionFromAnnex": {
+      "tab": "water_conservation",
+      "subtab": "annex_wc_two",
+      "flushDailyParam": "flush_proposed_total",
+      "flowDailyParam": "fixture_proposed_total"
+    },
+    "sections": [
+      {
+        "id": "availability",
+        "title": "Water Availability",
+        "totalDailyParam": "availability_daily_total",
+        "totalAnnualParam": "availability_annual_total",
+        "rows": [
+          {
+            "label": "Municipal Water (in Litres)",
+            "dailyParam": "municipal_daily",
+            "annualParam": "municipal_annual"
+          },
+          {
+            "label": "Ground Water (in Litres)",
+            "dailyParam": "ground_daily",
+            "annualParam": "ground_annual"
+          },
+          {
+            "label": "Treated Water (in Litres)",
+            "dailyParam": "treated_daily",
+            "annualParam": "treated_annual"
+          },
+          {
+            "label": "Stored Water (in Litres)",
+            "dailyParam": "stored_daily",
+            "annualParam": "stored_annual"
+          },
+          {
+            "label": "Other Sources - Please specify (in Litres)",
+            "dailyParam": "others_daily",
+            "annualParam": "others_annual"
+          }
+        ]
+      },
+      {
+        "id": "consumption",
+        "title": "Water Demand/Consumption",
+        "totalDailyParam": "consumption_daily_total",
+        "totalAnnualParam": "consumption_annual_total",
+        "rows": [
+          {
+            "label": "Flush fixtures (in Litres)",
+            "dailyParam": "flush_daily",
+            "annualParam": "flush_annual",
+            "source": "wcTwoFlush",
+            "editableDaily": false
+          },
+          {
+            "label": "Flow Fixtures (in Litres)",
+            "dailyParam": "flow_daily",
+            "annualParam": "flow_annual",
+            "source": "wcTwoFlow",
+            "editableDaily": false
+          },
+          {
+            "label": "Landscaping (in Litres)",
+            "dailyParam": "landscaping_daily",
+            "annualParam": "landscaping_annual"
+          },
+          {
+            "label": "Airconditioning Makeup (in Litres)",
+            "dailyParam": "ac_daily",
+            "annualParam": "ac_annual"
+          },
+          {
+            "label": "Others - Please specify (in Litres)",
+            "dailyParam": "others_consumption_daily",
+            "annualParam": "others_consumption_annual"
+          }
+        ]
+      },
+      {
+        "id": "wastage",
+        "title": "Water Wastage",
+        "totalDailyParam": "waste_daily_total",
+        "totalAnnualParam": "waste_annual_total",
+        "rows": [
+          {
+            "label": "To the drainage (in Litres)",
+            "dailyParam": "drain_daily",
+            "annualParam": "drain_annual"
+          },
+          {
+            "label": "Other Sources - Please specify (in Litres)",
+            "dailyParam": "waste_other_daily",
+            "annualParam": "waste_other_annual"
+          }
+        ]
+      },
+      {
+        "id": "reuse",
+        "title": "Reuse of various Treated Waste Water/ Stored Water for Various Applications",
+        "totalDailyParam": "reuse_daily_total",
+        "totalAnnualParam": "reuse_annual_total",
+        "rows": [
+          {
+            "label": "Flushing (in Litres)",
+            "dailyParam": "flushing_daily",
+            "annualParam": "flushing_annual"
+          },
+          {
+            "label": "Landscaping (in Litres)",
+            "dailyParam": "lands_daily",
+            "annualParam": "lands_annual"
+          },
+          {
+            "label": "Airconditioning Makeup (in Litres)",
+            "dailyParam": "acmakeup_daily",
+            "annualParam": "acmakeup_annual"
+          },
+          {
+            "label": "Others - Please specify (in Litres)",
+            "dailyParam": "others_reuse_daily",
+            "annualParam": "others_reuse_annual"
+          }
+        ]
+      }
+    ]
+  }
+}
