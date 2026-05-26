@@ -9,6 +9,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UsersService } from "../users/users.service";
 import { ApExamRegistration } from "./ap-exam-registration.entity";
+import { ApExamEmailService } from "./ap-exam-email.service";
 import { ApExamStorageService } from "./ap-exam-storage.service";
 import { PaymentUpdateDto } from "./dto/payment-update.dto";
 import { RegisterApExamDto } from "./dto/register-ap-exam.dto";
@@ -32,6 +33,7 @@ export class ApExamService {
     private readonly apExamRepository: Repository<ApExamRegistration>,
     private readonly usersService: UsersService,
     private readonly apExamStorageService: ApExamStorageService,
+    private readonly apExamEmailService: ApExamEmailService,
   ) {}
 
   async getAdminExamList(requesterEmail: string, query?: { page?: number; limit?: number; search?: string }) {
@@ -172,11 +174,20 @@ export class ApExamService {
     registration.resultStatus = dto.result;
     registration.resultUpdatedAt = new Date();
     const updated = await this.apExamRepository.save(registration);
+    const emailNotification = await this.apExamEmailService.sendExamResultEmail({
+      to: updated.email,
+      firstName: updated.firstName,
+      lastName: updated.lastName,
+      result: dto.result,
+      score: updated.examScore,
+      examId: updated.examId ?? null,
+    });
     return {
       registrationId: updated.id,
       examId: updated.examId ?? null,
       result: updated.resultStatus,
       resultUpdatedAt: updated.resultUpdatedAt,
+      emailNotification,
       message: "Exam result updated successfully",
     };
   }

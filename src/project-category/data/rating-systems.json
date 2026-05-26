@@ -1,0 +1,214 @@
+[
+  {
+    "id": 1,
+    "categoryId": 2,
+    "ratingName": "IGBC Green New Buildings",
+    "shortRatingName": "NB",
+    "type": ["New / Upcoming"],
+    "specifics": ["Owner Occupied", "Tentant Occupied"],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 2,
+    "categoryId": 1,
+    "ratingName": "IGBC Green Homes",
+    "shortRatingName": "GH",
+    "type": ["New / Upcoming"],
+    "specifics": ["Individual Dwelling Unit", "Multi-Dwelling Units"],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 3,
+    "categoryId": 3,
+    "ratingName": "IGBC Green Factory Buildings",
+    "shortRatingName": "GFB",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 4,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Existing Buildings",
+    "shortRatingName": "EB",
+    "type": ["Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 5,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Interiors",
+    "shortRatingName": "GI",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 6,
+    "categoryId": 1,
+    "ratingName": "IGBC Green Affordable Housing",
+    "shortRatingName": "GAH",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 7,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Healthcare Facilities",
+    "shortRatingName": "GHF",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": ["Hospital Block(s) only", "Healthcare University / Medical College"],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 8,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Resorts",
+    "shortRatingName": "GR",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 9,
+    "categoryId": 5,
+    "ratingName": "IGBC Health & Well Being",
+    "shortRatingName": "HWB",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 10,
+    "categoryId": 3,
+    "ratingName": "IGBC Green Logistics Parks & Warehouses",
+    "shortRatingName": "GLPW",
+    "type": ["Owner Occupied", "Tenant Occupied", "Interior Fit-out(s)"],
+    "specifics": [
+      "New Logistics Park (with 4 or more Warehouses) Owner Occupied",
+      "New Logistics Park (with 4 or more Warehouses) Tenant Occupied",
+      "Existing Logistics Park (with 4 or more Warehouses) Owner Occupied",
+      "Existing Logistics Park (with 4 or more Warehouses) Tenant Occupied",
+      "New Warehouses (upto 3 in number) Owner Occupied",
+      "New Warehouses (upto 3 in number) Tenant Occupied",
+      "Existing Warehouses (upto 3 in number) Owner Occupied",
+      "Existing Warehouses (upto 3 in number) Tenant Occupied",
+      "Interior Fit-out(s) Tenant Occupied - New Warehouses",
+      "Interior Fit-out(s) Tenant Occupied - Existing Warehouses"
+    ],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 11,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Service Buildings",
+    "shortRatingName": "GSB",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": ["Service Building(s) < 2,500 sq m", "Small Office Building(s) < 1,500 sq m"],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 12,
+    "categoryId": 1,
+    "ratingName": "IGBC Green Residential Societies",
+    "shortRatingName": "GRS",
+    "type": ["Existing"],
+    "specifics": [],
+    "fees": { "annual": 10000, "founding": 10000, "nonMember": 10000 }
+  },
+  {
+    "id": 13,
+    "categoryId": 4,
+    "ratingName": "IGBC Green Places of Worship",
+    "shortRatingName": "GPW",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 5000, "founding": 5000, "nonMember": 5000 }
+  },
+  {
+    "id": 14,
+    "categoryId": 4,
+    "ratingName": "IGBC Green Schools",
+    "shortRatingName": "GS",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 25000 }
+  },
+  {
+    "id": 15,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Campus",
+    "shortRatingName": "GC",
+    "type": ["New / Upcoming", "Existing", "New / Upcoming and Existing"],
+    "specifics": ["Campus of Educational Institution", "Campus of Corporate/ Public Sector Unit/ Other"],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 16,
+    "categoryId": 7,
+    "ratingName": "IGBC Green Townships",
+    "shortRatingName": "GT",
+    "type": ["New / Upcoming"],
+    "specifics": [],
+    "fees": { "annual": 90000, "founding": 90000, "nonMember": 95000 }
+  },
+  {
+    "id": 17,
+    "categoryId": 7,
+    "ratingName": "IGBC Green Cities",
+    "shortRatingName": "IGC",
+    "type": ["New / Upcoming"],
+    "specifics": [],
+    "fees": { "annual": 95000, "founding": 95000, "nonMember": 100000 }
+  },
+  {
+    "id": 18,
+    "categoryId": 7,
+    "ratingName": "IGBC Green Existing Cities",
+    "shortRatingName": "GEC",
+    "type": ["New / Upcoming"],
+    "specifics": [],
+    "fees": { "annual": 95000, "founding": 95000, "nonMember": 100000 }
+  },
+  {
+    "id": 19,
+    "categoryId": 7,
+    "ratingName": "IGBC Green Landscapes",
+    "shortRatingName": "GL",
+    "type": ["New / Upcoming"],
+    "specifics": [
+      "For Commercial & Industrial Projects",
+      "For Government, Residential, Institutional, NGO Projects"
+    ],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 20,
+    "categoryId": 7,
+    "ratingName": "IGBC Green Villages",
+    "shortRatingName": "GV",
+    "type": ["New / Upcoming"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 21,
+    "categoryId": 2,
+    "ratingName": "Green Data Centers",
+    "shortRatingName": "DC",
+    "type": ["New / Upcoming"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  },
+  {
+    "id": 22,
+    "categoryId": 2,
+    "ratingName": "IGBC Green Hotels",
+    "shortRatingName": "GHL",
+    "type": ["New / Upcoming"],
+    "specifics": [],
+    "fees": { "annual": 25000, "founding": 25000, "nonMember": 30000 }
+  }
+]
