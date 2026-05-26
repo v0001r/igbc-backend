@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Residential" },
+  { "id": 2, "name": "Commercial" },
+  { "id": 3, "name": "Industrial" },
+  { "id": 4, "name": "Educational" },
+  { "id": 5, "name": "Health and Wellbeing" },
+  { "id": 7, "name": "Green Built Environment" }
+]

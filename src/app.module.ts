@@ -4,6 +4,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ApExamModule } from "./ap-exam/ap-exam.module";
 import { ApExamRegistration } from "./ap-exam/ap-exam-registration.entity";
 import { AuthModule } from "./auth/auth.module";
+import { CertificationApplicationModule } from "./certification-application/certification-application.module";
+import { CertificationApplication } from "./certification-application/certification-application.entity";
 import { Event } from "./events/event.entity";
 import { EventsModule } from "./events/events.module";
 import { MembershipApplication } from "./membership/membership-application.entity";
@@ -11,6 +13,13 @@ import { MembershipCategoryMaster } from "./membership/membership-category.entit
 import { MembershipModule } from "./membership/membership.module";
 import { MembershipPlanMaster } from "./membership/membership-plan.entity";
 import { MembershipTypeMaster } from "./membership/membership-type.entity";
+import { ProjectCategoryModule } from "./project-category/project-category.module";
+import { ProjectContact } from "./projects/project-contact.entity";
+import { ProjectDetail } from "./projects/project-detail.entity";
+import { ProjectInvoice } from "./projects/project-invoice.entity";
+import { ProjectPayment } from "./projects/project-payment.entity";
+import { Project } from "./projects/project.entity";
+import { ProjectsModule } from "./projects/projects.module";
 import { SupportEntry } from "./support/support.entity";
 import { SupportModule } from "./support/support.module";
 import { Project } from "./projects/project.entity";
@@ -46,6 +55,12 @@ import { UsersModule } from "./users/users.module";
           MembershipTypeMaster,
           MembershipCategoryMaster,
           MembershipPlanMaster,
+          Project,
+          ProjectDetail,
+          ProjectContact,
+          ProjectInvoice,
+          ProjectPayment,
+          CertificationApplication,
           Event,
           SupportEntry,
           RatingType,
@@ -60,6 +75,9 @@ import { UsersModule } from "./users/users.module";
     AuthModule,
     ApExamModule,
     MembershipModule,
+    ProjectCategoryModule,
+    ProjectsModule,
+    CertificationApplicationModule,
     EventsModule,
     SupportModule,
     ProjectsModule,
