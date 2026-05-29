@@ -17,8 +17,8 @@ export class RatingDocument {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: "uuid", name: "project_id" })
-  projectId!: string;
+  @Column({ type: "int", name: "project_id" })
+  projectId!: number;
 
   @ManyToOne(() => Project, { onDelete: "CASCADE" })
   @JoinColumn({ name: "project_id" })

@@ -10,7 +10,7 @@ export const RATING_TYPE_SEED: Array<{
   { id: 2, name: "IGBC Green Homes", abbreviation: "GH", configKey: "green_homes", versionTypes: ["3"] },
   { id: 3, name: "IGBC Green Factory Buildings", abbreviation: "GFB", configKey: "green_factories", versionTypes: ["3", "3.3.1"] },
   { id: 4, name: "IGBC Green Existing Buildings", abbreviation: "EB", configKey: "green_existing_buildings", versionTypes: ["3"] },
-  { id: 5, name: "IGBC Green Interiors", abbreviation: "GI", configKey: "green_interiors", versionTypes: ["3"] },
+  { id: 5, name: "IGBC Green Interiors", abbreviation: "CI", configKey: "green_interiors", versionTypes: ["3"] },
   { id: 6, name: "IGBC Green Affordable Housing", abbreviation: "GAH", configKey: null, versionTypes: ["3"] },
   { id: 7, name: "IGBC Green Healthcare Facilities", abbreviation: "GHF", configKey: null, versionTypes: ["3"] },
   { id: 8, name: "IGBC Green Resorts", abbreviation: "GR", configKey: null, versionTypes: ["3"] },

@@ -32,6 +32,13 @@ export class CreateProjectStepOneDto {
   @IsNotEmpty()
   ratingSystem!: string;
 
+  @ApiPropertyOptional({ example: 2, description: "rating_type.id from database" })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  ratingTypeId?: number;
+
   @ApiPropertyOptional({ example: "Owner Occupied", description: "Specific/sub rating type" })
   @IsOptional()
   @IsString()

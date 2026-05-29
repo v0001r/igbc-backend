@@ -1,8 +1,5 @@
 import {
-<<<<<<< HEAD
-=======
   BadRequestException,
->>>>>>> 1a65c5fd1385100852a1babe840f1fbe50e22a05
   Body,
   Controller,
   Get,
@@ -11,163 +8,12 @@ import {
   Post,
   Query,
   Req,
-<<<<<<< HEAD
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CertificationFormResponse } from "./certification-form.types";
-import type { CertificationWorkspaceResponse } from "../rating-config/rating-config.types";
-import { CreateProjectDto } from "./dto/create-project.dto";
-import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
-import { UploadCertificationDocumentsDto } from "./dto/upload-certification-documents.dto";
-import { UpdateProjectStatusDto } from "./dto/update-project-status.dto";
-import { ProjectsService } from "./projects.service";
-import type { UploadedFile } from "./uploaded-file.type";
-
-type AuthRequest = { user: { sub: string; email: string } };
-
-@ApiTags("projects")
-@Controller()
-export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
-
-  @Get("rating-types")
-  listRatingTypes() {
-    return this.projectsService.listRatingTypes();
-  }
-
-  @Get("projects")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  listProjects(@Req() req: AuthRequest) {
-    return this.projectsService.listForUser(req.user.sub);
-  }
-
-  @Get("projects/:id")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  getProject(@Param("id") id: string, @Req() req: AuthRequest) {
-    return this.projectsService.getByIdForUser(id, req.user.sub);
-  }
-
-  @Get("projects/:id/certification-form")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  getCertificationForm(
-    @Param("id") id: string,
-    @Req() req: AuthRequest,
-  ): Promise<CertificationFormResponse> {
-    return this.projectsService.getCertificationForm(id, req.user.sub);
-  }
-
-  @Get("projects/:id/certification-workspace")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  getCertificationWorkspace(
-    @Param("id") id: string,
-    @Req() req: AuthRequest,
-  ): Promise<CertificationWorkspaceResponse> {
-    return this.projectsService.getCertificationWorkspace(id, req.user.sub);
-  }
-
-  @Post("projects")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  createProject(@Body() dto: CreateProjectDto, @Req() req: AuthRequest) {
-    return this.projectsService.create(req.user.sub, dto);
-  }
-
-  @Patch("projects/:id/certification-form")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  saveCertificationSection(
-    @Param("id") id: string,
-    @Body() dto: SaveCertificationSectionDto,
-    @Req() req: AuthRequest,
-  ): Promise<CertificationFormResponse> {
-    return this.projectsService.saveCertificationSection(id, req.user.sub, dto);
-  }
-
-  @Post("projects/:id/certification-form/upload")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiConsumes("multipart/form-data")
-  @UseInterceptors(FilesInterceptor("files", 20))
-  uploadCertificationDocuments(
-    @Param("id") id: string,
-    @Body() dto: UploadCertificationDocumentsDto,
-    @UploadedFiles() files: UploadedFile[],
-    @Req() req: AuthRequest,
-  ): Promise<CertificationFormResponse> {
-    const replace = dto.replaceExisting !== "false";
-    return this.projectsService.uploadCertificationDocuments(
-      id,
-      req.user.sub,
-      dto,
-      files ?? [],
-      replace,
-    );
-  }
-
-  @Get("admin/projects")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  listProjectsForAdmin(
-    @Req() req: AuthRequest,
-    @Query("registrationStatus") registrationStatus?: string,
-    @Query("certificationStatus") certificationStatus?: string,
-  ) {
-    return this.projectsService.listForAdmin(req.user.email, {
-      registrationStatus,
-      certificationStatus,
-    });
-  }
-
-  @Get("admin/projects/:id")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  getProjectForAdmin(@Param("id") id: string, @Req() req: AuthRequest) {
-    return this.projectsService.getByIdForAdmin(id, req.user.email);
-  }
-
-  @Patch("admin/projects/:id/status")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  updateProjectStatusForAdmin(
-    @Param("id") id: string,
-    @Body() dto: UpdateProjectStatusDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.projectsService.updateStatusForAdmin(id, req.user.email, dto);
-  }
-
-  @Post("admin/projects/:id/approve-registration")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  approveProjectRegistration(@Param("id") id: string, @Req() req: AuthRequest) {
-    return this.projectsService.approveRegistrationForAdmin(id, req.user.email);
-  }
-
-  @Post("admin/projects/:id/reject-registration")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  rejectProjectRegistration(@Param("id") id: string, @Req() req: AuthRequest) {
-    return this.projectsService.rejectRegistrationForAdmin(id, req.user.email);
-  }
-
-  @Post("admin/projects/:id/approve-certification")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  approveProjectCertification(@Param("id") id: string, @Req() req: AuthRequest) {
-    return this.projectsService.approveCertificationForAdmin(id, req.user.email);
-=======
-  UseGuards,
-} from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CreateProjectStepOneDto } from "./dto/create-project-step-one.dto";
 import { RejectProjectDto } from "./dto/reject-project.dto";
@@ -175,6 +21,7 @@ import { UpsertProjectStepFourDto } from "./dto/upsert-project-step-four.dto";
 import { UpsertProjectStepFiveDto } from "./dto/upsert-project-step-five.dto";
 import { UpsertProjectStepThreeDto } from "./dto/upsert-project-step-three.dto";
 import { UpsertProjectStepTwoDto } from "./dto/upsert-project-step-two.dto";
+import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
 import { ProjectsService } from "./projects.service";
 
 @ApiTags("projects")
@@ -300,6 +147,95 @@ export class ProjectsController {
       throw new BadRequestException("projectId must be a number");
     }
     return this.projectsService.getProjectFullDetails(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary:
+      "Load certification workspace (tabs, subtabs, annexures, field rules) for an approved registration project",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get(":projectId/certification-workspace")
+  getCertificationWorkspace(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.getCertificationWorkspace(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Get saved certification form values for an approved registration project",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get(":projectId/certification-form")
+  getCertificationForm(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.getCertificationForm(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Save certification section field values for an approved registration project",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Patch(":projectId/certification-form")
+  saveCertificationSection(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body() dto: SaveCertificationSectionDto,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.saveCertificationSection(request.user.email, projectId, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Upload certification documents for an approved registration project",
+  })
+  @ApiConsumes("multipart/form-data")
+  @UseGuards(JwtAuthGuard)
+  @Post(":projectId/certification-form/upload")
+  @UseInterceptors(FilesInterceptor("files"))
+  uploadCertificationDocuments(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body("tab") tab: string,
+    @Body("subtab") subtab: string,
+    @Body("paramName") paramName: string,
+    @Body("replaceExisting") replaceExisting: string | undefined,
+    @UploadedFiles()
+    files: Array<{ originalname: string; mimetype: string; buffer: Buffer }> | undefined,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    if (!tab?.trim() || !subtab?.trim() || !paramName?.trim()) {
+      throw new BadRequestException("tab, subtab, and paramName are required");
+    }
+    return this.projectsService.uploadCertificationDocuments(
+      request.user.email,
+      projectId,
+      tab,
+      subtab,
+      paramName,
+      files ?? [],
+      replaceExisting !== "false",
+    );
   }
 
   @ApiBearerAuth()
@@ -446,6 +382,5 @@ export class ProjectsController {
       throw new BadRequestException("projectId must be a number");
     }
     return this.projectsService.upsertStepFive(request.user.email, projectId, dto);
->>>>>>> 1a65c5fd1385100852a1babe840f1fbe50e22a05
   }
 }
