@@ -68,7 +68,7 @@ export const RATING_CONFIG_REGISTRY: RatingConfigEntryMeta[] = [
     label: "IGBC Green Interiors",
     registerId: "green-interiors",
     ratingTypeIds: [5],
-    abbreviations: ["GI"],
+    abbreviations: ["GI", "CI"],
     defaultVersion: "3",
     versionPaths: {
       "3": join(CONFIG_ROOT, "greeninteriors", "greeninteriors.json"),

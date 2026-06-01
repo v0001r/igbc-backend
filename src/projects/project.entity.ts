@@ -20,6 +20,12 @@ export class Project {
   @Column({ type: "varchar" })
   ratingSystem!: string;
 
+  @Column({ name: "rating_type_id", type: "int", nullable: true })
+  ratingTypeId?: number | null;
+
+  @Column({ name: "version_type", type: "varchar", length: 16, default: "3" })
+  versionType!: string;
+
   @Column({ type: "varchar", nullable: true })
   subRatingType?: string;
 

@@ -20,11 +20,10 @@ import { ProjectInvoice } from "./projects/project-invoice.entity";
 import { ProjectPayment } from "./projects/project-payment.entity";
 import { Project } from "./projects/project.entity";
 import { ProjectsModule } from "./projects/projects.module";
+import { RatingTypesModule } from "./projects/rating-types.module";
+import { RatingData } from "./projects/rating-data.entity";
 import { SupportEntry } from "./support/support.entity";
 import { SupportModule } from "./support/support.module";
-import { Project } from "./projects/project.entity";
-import { ProjectsModule } from "./projects/projects.module";
-import { RatingData } from "./projects/rating-data.entity";
 import { RatingDocument } from "./projects/rating-document.entity";
 import { RatingType } from "./projects/rating-type.entity";
 import { Client } from "./users/client.entity";
@@ -64,7 +63,6 @@ import { UsersModule } from "./users/users.module";
           Event,
           SupportEntry,
           RatingType,
-          Project,
           RatingData,
           RatingDocument,
         ],
@@ -77,10 +75,10 @@ import { UsersModule } from "./users/users.module";
     MembershipModule,
     ProjectCategoryModule,
     ProjectsModule,
+    RatingTypesModule,
     CertificationApplicationModule,
     EventsModule,
     SupportModule,
-    ProjectsModule,
   ],
 })
 export class AppModule {}

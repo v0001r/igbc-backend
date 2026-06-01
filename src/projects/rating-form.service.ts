@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
@@ -14,15 +10,15 @@ import {
   RatingDocumentDto,
 } from "./certification-form.types";
 import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
-import { Project } from "./project.entity";
 import { RatingData } from "./rating-data.entity";
 import { RatingDocument } from "./rating-document.entity";
 import type { UploadedFile } from "./uploaded-file.type";
 
-type ProjectContext = {
-  project: Project;
+export type RegistrationRatingContext = {
+  projectId: number;
   ratingType: string;
   versionType: string;
+  ratingTypeId: number;
 };
 
 @Injectable()
@@ -36,30 +32,33 @@ export class RatingFormService {
     private readonly ratingDocumentRepo: Repository<RatingDocument>,
   ) {}
 
-  async getForm(project: Project): Promise<CertificationFormResponse> {
-    const ctx = this.contextFromProject(project);
+  async getForm(ctx: RegistrationRatingContext): Promise<CertificationFormResponse> {
     const [dataRows, docRows] = await Promise.all([
-      this.ratingDataRepo.find({ where: { projectId: project.id }, order: { updatedAt: "ASC" } }),
-      this.ratingDocumentRepo.find({ where: { projectId: project.id }, order: { createdAt: "ASC" } }),
+      this.ratingDataRepo.find({
+        where: { projectId: ctx.projectId },
+        order: { updatedAt: "ASC" },
+      }),
+      this.ratingDocumentRepo.find({
+        where: { projectId: ctx.projectId },
+        order: { createdAt: "ASC" },
+      }),
     ]);
 
     return {
-      projectId: project.id,
+      projectId: String(ctx.projectId),
       ratingType: ctx.ratingType,
       versionType: ctx.versionType,
-      currentTab: project.certificationCurrentTab ?? null,
-      currentSubtab: project.certificationCurrentSubtab ?? null,
+      currentTab: null,
+      currentSubtab: null,
       data: dataRows.map((r) => this.toDataDto(r)),
       documents: docRows.map((r) => this.toDocumentDto(r)),
     };
   }
 
   async saveSection(
-    project: Project,
+    ctx: RegistrationRatingContext,
     dto: SaveCertificationSectionDto,
   ): Promise<CertificationFormResponse> {
-    const ctx = this.contextFromProject(project);
-
     for (const field of dto.fields) {
       if (!field.paramName?.trim()) continue;
       if (isFileFieldType(field.type)) continue;
@@ -67,32 +66,31 @@ export class RatingFormService {
       await this.upsertDataRow(ctx, dto.tab, dto.subtab, field.paramName, field.value ?? "");
     }
 
-    return this.getForm(project);
+    return this.getForm(ctx);
   }
 
   async uploadDocuments(
-    project: Project,
+    ctx: RegistrationRatingContext,
     tab: string,
     subtab: string,
     paramName: string,
     files: UploadedFile[],
     replaceExisting = true,
   ): Promise<CertificationFormResponse> {
-    const ctx = this.contextFromProject(project);
     if (!files.length) {
-      return this.getForm(project);
+      return this.getForm(ctx);
     }
 
     if (replaceExisting) {
       await this.ratingDocumentRepo.delete({
-        projectId: project.id,
+        projectId: ctx.projectId,
         tab,
         subtab,
         paramName,
       });
     }
 
-    const dir = join(this.uploadRoot, project.id, tab, subtab, paramName);
+    const dir = join(this.uploadRoot, String(ctx.projectId), tab, subtab, paramName);
     await mkdir(dir, { recursive: true });
 
     for (const file of files) {
@@ -101,9 +99,9 @@ export class RatingFormService {
       const absolutePath = join(dir, diskName);
       await writeFile(absolutePath, file.buffer);
 
-      const relativePath = `/uploads/${project.id}/${tab}/${subtab}/${paramName}/${diskName}`;
+      const relativePath = `/uploads/${ctx.projectId}/${tab}/${subtab}/${paramName}/${diskName}`;
       const row = this.ratingDocumentRepo.create({
-        projectId: project.id,
+        projectId: ctx.projectId,
         ratingType: ctx.ratingType,
         versionType: ctx.versionType,
         tab,
@@ -116,11 +114,11 @@ export class RatingFormService {
       await this.ratingDocumentRepo.save(row);
     }
 
-    return this.getForm(project);
+    return this.getForm(ctx);
   }
 
   private async upsertDataRow(
-    ctx: ProjectContext,
+    ctx: RegistrationRatingContext,
     tab: string,
     subtab: string,
     paramName: string,
@@ -128,7 +126,7 @@ export class RatingFormService {
   ): Promise<void> {
     const existing = await this.ratingDataRepo.findOne({
       where: {
-        projectId: ctx.project.id,
+        projectId: ctx.projectId,
         tab,
         subtab,
         paramName,
@@ -144,7 +142,7 @@ export class RatingFormService {
     }
 
     const row = this.ratingDataRepo.create({
-      projectId: ctx.project.id,
+      projectId: ctx.projectId,
       ratingType: ctx.ratingType,
       versionType: ctx.versionType,
       tab,
@@ -153,18 +151,6 @@ export class RatingFormService {
       value,
     });
     await this.ratingDataRepo.save(row);
-  }
-
-  private contextFromProject(project: Project): ProjectContext {
-    const ratingType = project.ratingType?.configKey;
-    if (!ratingType) {
-      throw new NotFoundException("Project rating type has no config key");
-    }
-    return {
-      project,
-      ratingType,
-      versionType: project.versionType,
-    };
   }
 
   private safeFileName(name: string): string {
@@ -192,10 +178,4 @@ export class RatingFormService {
       fileType: row.fileType ?? null,
     };
   }
-}
-
-export function certificationLocked(): ForbiddenException {
-  return new ForbiddenException(
-    "Certification workspace is available after admin approves the certification application",
-  );
 }

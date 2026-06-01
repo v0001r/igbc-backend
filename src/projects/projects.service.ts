@@ -3,8 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Like, Repository } from "typeorm";
+import { RatingConfigService } from "../rating-config/rating-config.service";
+import { RatingTypeService } from "./rating-type.service";
 import { UsersService } from "../users/users.service";
 import { CreateProjectStepOneDto } from "./dto/create-project-step-one.dto";
+import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
 import { UpsertProjectStepFourDto } from "./dto/upsert-project-step-four.dto";
 import { UpsertProjectStepFiveDto } from "./dto/upsert-project-step-five.dto";
 import { UpsertProjectStepTwoDto } from "./dto/upsert-project-step-two.dto";
@@ -15,6 +18,8 @@ import { ProjectInvoice } from "./project-invoice.entity";
 import { ProjectPayment } from "./project-payment.entity";
 import { ProjectsEmailService } from "./projects-email.service";
 import { Project } from "./project.entity";
+import { RatingFormService, type RegistrationRatingContext } from "./rating-form.service";
+import type { UploadedFile } from "./uploaded-file.type";
 
 interface RatingSystemFeeItem {
   ratingName: string;
@@ -41,6 +46,9 @@ export class ProjectsService {
     private readonly projectPaymentRepository: Repository<ProjectPayment>,
     private readonly usersService: UsersService,
     private readonly projectsEmailService: ProjectsEmailService,
+    private readonly ratingConfigService: RatingConfigService,
+    private readonly ratingFormService: RatingFormService,
+    private readonly ratingTypeService: RatingTypeService,
   ) {}
 
   async createStepOne(email: string, dto: CreateProjectStepOneDto) {
@@ -67,12 +75,18 @@ export class ProjectsService {
     }
 
     const registrationFee = this.getNonMemberFeeByRatingSystem(dto.ratingSystem);
+    const rating = await this.ratingTypeService.resolveForProject({
+      ratingTypeId: dto.ratingTypeId ?? null,
+      ratingSystemName: dto.ratingSystem,
+    }).catch(() => null);
 
     const saved = await this.projectRepository.save(
       this.projectRepository.create({
         createdByUserId: user.id,
         categoryId: dto.category,
-        ratingSystem: dto.ratingSystem,
+        ratingSystem: rating?.ratingTypeName ?? dto.ratingSystem,
+        ratingTypeId: rating?.ratingTypeId ?? dto.ratingTypeId ?? null,
+        versionType: rating?.versionType ?? "3",
         subRatingType: dto.subRatingType,
         projectType: dto.projectType,
         constructionType: dto.constructionType,
@@ -125,11 +139,17 @@ export class ProjectsService {
     }
 
     const registrationFee = this.getNonMemberFeeByRatingSystem(dto.ratingSystem);
+    const rating = await this.ratingTypeService.resolveForProject({
+      ratingTypeId: dto.ratingTypeId ?? project.ratingTypeId ?? null,
+      ratingSystemName: dto.ratingSystem,
+    }).catch(() => null);
 
     const updatedProject = await this.projectRepository.save(
       this.projectRepository.merge(project, {
         categoryId: dto.category,
-        ratingSystem: dto.ratingSystem,
+        ratingSystem: rating?.ratingTypeName ?? dto.ratingSystem,
+        ratingTypeId: rating?.ratingTypeId ?? dto.ratingTypeId ?? project.ratingTypeId ?? null,
+        versionType: rating?.versionType ?? project.versionType ?? "3",
         subRatingType: dto.subRatingType,
         projectType: dto.projectType,
         constructionType: dto.constructionType,
@@ -994,6 +1014,23 @@ export class ProjectsService {
 
     const ownerUser = owner[0];
 
+    let ratingTypeId = project.ratingTypeId ?? null;
+    let versionType = project.versionType ?? "3";
+    let hasCertificationConfig = false;
+    const ratingRow =
+      (ratingTypeId != null ? await this.ratingTypeService.findById(ratingTypeId) : null) ??
+      (await this.ratingTypeService.findByRatingName(project.ratingSystem));
+    if (ratingRow) {
+      ratingTypeId = ratingRow.id;
+      versionType =
+        this.ratingTypeService.resolveVersionForRow(
+          ratingRow,
+          this.ratingTypeService.resolveConfigKeyForRow(ratingRow) ?? "",
+          project.versionType,
+        ) ?? versionType;
+      hasCertificationConfig = this.ratingTypeService.hasCertificationConfig(ratingRow);
+    }
+
     return {
       projectId: project.id,
       igbcProjectId: project.igbcProjectId ?? null,
@@ -1015,6 +1052,9 @@ export class ProjectsService {
       stepOne: {
         category: project.categoryId,
         ratingSystem: project.ratingSystem,
+        ratingTypeId,
+        versionType,
+        hasCertificationConfig,
         subRatingType: project.subRatingType ?? null,
         projectType: project.projectType,
         constructionType: project.constructionType,
@@ -1076,6 +1116,118 @@ export class ProjectsService {
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
     };
+  }
+
+  async getCertificationWorkspace(email: string, projectId: number) {
+    const { project, detail, ctx, resolved } = await this.assertRegistrationWorkspaceAccess(
+      email,
+      projectId,
+    );
+
+    const form = await this.ratingFormService.getForm(ctx);
+
+    return this.ratingConfigService.buildWorkspacePayload({
+      projectId: String(project.id),
+      projectCode:
+        project.igbcProjectId ?? project.temporaryProjectId ?? `P00${project.id}`,
+      projectName: detail?.projectName ?? project.ratingSystem,
+      ratingTypeId: resolved.ratingTypeId,
+      ratingTypeName: resolved.ratingTypeName,
+      configKey: ctx.ratingType,
+      versionType: ctx.versionType,
+      form,
+    });
+  }
+
+  async getCertificationForm(email: string, projectId: number) {
+    const { ctx } = await this.assertRegistrationWorkspaceAccess(email, projectId);
+    return this.ratingFormService.getForm(ctx);
+  }
+
+  async saveCertificationSection(
+    email: string,
+    projectId: number,
+    dto: SaveCertificationSectionDto,
+  ) {
+    const { ctx } = await this.assertRegistrationWorkspaceAccess(email, projectId);
+    return this.ratingFormService.saveSection(ctx, dto);
+  }
+
+  async uploadCertificationDocuments(
+    email: string,
+    projectId: number,
+    tab: string,
+    subtab: string,
+    paramName: string,
+    files: UploadedFile[],
+    replaceExisting = true,
+  ) {
+    const { ctx } = await this.assertRegistrationWorkspaceAccess(email, projectId);
+    return this.ratingFormService.uploadDocuments(
+      ctx,
+      tab,
+      subtab,
+      paramName,
+      files,
+      replaceExisting,
+    );
+  }
+
+  private async assertRegistrationWorkspaceAccess(email: string, projectId: number) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const project = await this.projectRepository.findOne({ where: { id: projectId } });
+    if (!project) {
+      throw new NotFoundException("Project not found");
+    }
+    if (project.createdByUserId !== user.id) {
+      throw new ForbiddenException("You can access only your own project");
+    }
+
+    const isApprovedProject =
+      project.status === "approved" &&
+      (project.paymentStatus === "paid" || project.paymentStatus === "approved");
+    if (!isApprovedProject) {
+      throw new ForbiddenException(
+        "Certification workspace is available after your project registration is approved",
+      );
+    }
+
+    const resolved = await this.ratingTypeService.resolveForProject({
+      ratingTypeId: project.ratingTypeId,
+      ratingSystemName: project.ratingSystem,
+      versionTypeOverride: project.versionType,
+    });
+
+    if (
+      project.ratingTypeId !== resolved.ratingTypeId ||
+      project.versionType !== resolved.versionType ||
+      project.ratingSystem !== resolved.ratingTypeName
+    ) {
+      await this.projectRepository.save(
+        this.projectRepository.merge(project, {
+          ratingTypeId: resolved.ratingTypeId,
+          versionType: resolved.versionType,
+          ratingSystem: resolved.ratingTypeName,
+        }),
+      );
+    }
+
+    const detail = await this.projectDetailRepository.findOne({
+      where: { projectId: project.id },
+    });
+
+    const ctx: RegistrationRatingContext = {
+      projectId: project.id,
+      ratingType: resolved.configKey,
+      versionType: resolved.versionType,
+      ratingTypeId: resolved.ratingTypeId,
+    };
+
+    return { project, detail, ctx, resolved };
   }
 
   private readRatingSystems() {

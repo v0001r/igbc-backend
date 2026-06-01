@@ -18,7 +18,7 @@ export class ProjectCategoryController {
       "Get rating systems by category (includes specifics as subcategory and annual/founding/non-member fee)",
   })
   @Get(":categoryId/rating-systems")
-  getRatingSystemsByCategory(@Param("categoryId") categoryIdParam: string) {
+  async getRatingSystemsByCategory(@Param("categoryId") categoryIdParam: string) {
     const categoryId = Number(categoryIdParam);
     if (Number.isNaN(categoryId)) {
       throw new BadRequestException("categoryId must be a number");

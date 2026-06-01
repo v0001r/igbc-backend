@@ -8,9 +8,12 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { FilesInterceptor } from "@nestjs/platform-express";
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CreateProjectStepOneDto } from "./dto/create-project-step-one.dto";
 import { RejectProjectDto } from "./dto/reject-project.dto";
@@ -18,6 +21,7 @@ import { UpsertProjectStepFourDto } from "./dto/upsert-project-step-four.dto";
 import { UpsertProjectStepFiveDto } from "./dto/upsert-project-step-five.dto";
 import { UpsertProjectStepThreeDto } from "./dto/upsert-project-step-three.dto";
 import { UpsertProjectStepTwoDto } from "./dto/upsert-project-step-two.dto";
+import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
 import { ProjectsService } from "./projects.service";
 
 @ApiTags("projects")
@@ -143,6 +147,95 @@ export class ProjectsController {
       throw new BadRequestException("projectId must be a number");
     }
     return this.projectsService.getProjectFullDetails(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary:
+      "Load certification workspace (tabs, subtabs, annexures, field rules) for an approved registration project",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get(":projectId/certification-workspace")
+  getCertificationWorkspace(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.getCertificationWorkspace(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Get saved certification form values for an approved registration project",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get(":projectId/certification-form")
+  getCertificationForm(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.getCertificationForm(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Save certification section field values for an approved registration project",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Patch(":projectId/certification-form")
+  saveCertificationSection(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body() dto: SaveCertificationSectionDto,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.saveCertificationSection(request.user.email, projectId, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Upload certification documents for an approved registration project",
+  })
+  @ApiConsumes("multipart/form-data")
+  @UseGuards(JwtAuthGuard)
+  @Post(":projectId/certification-form/upload")
+  @UseInterceptors(FilesInterceptor("files"))
+  uploadCertificationDocuments(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body("tab") tab: string,
+    @Body("subtab") subtab: string,
+    @Body("paramName") paramName: string,
+    @Body("replaceExisting") replaceExisting: string | undefined,
+    @UploadedFiles()
+    files: Array<{ originalname: string; mimetype: string; buffer: Buffer }> | undefined,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    if (!tab?.trim() || !subtab?.trim() || !paramName?.trim()) {
+      throw new BadRequestException("tab, subtab, and paramName are required");
+    }
+    return this.projectsService.uploadCertificationDocuments(
+      request.user.email,
+      projectId,
+      tab,
+      subtab,
+      paramName,
+      files ?? [],
+      replaceExisting !== "false",
+    );
   }
 
   @ApiBearerAuth()
