@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { RatingType } from "../projects/rating-type.entity";
 import { RatingTypeService } from "../projects/rating-type.service";
 
 export interface ProjectCategoryItem {
@@ -26,6 +27,20 @@ export interface RatingSystemItem {
   };
 }
 
+interface RatingSystemCatalogItem {
+  id: number;
+  categoryId: number;
+  ratingName: string;
+  shortRatingName: string;
+  type: string[];
+  specifics: string[];
+  fees: {
+    annual: number;
+    founding: number;
+    nonMember: number;
+  };
+}
+
 @Injectable()
 export class ProjectCategoryService {
   constructor(private readonly ratingTypeService: RatingTypeService) {}
@@ -42,25 +57,33 @@ export class ProjectCategoryService {
   async getRatingSystemsByCategory(categoryId: number) {
     const categories = this.readCategories();
     const category = categories.find((item) => item.id === categoryId);
-    const rows = await this.ratingTypeService.findByCategory(categoryId);
+    const catalogItems = this.readRatingSystems().filter((item) => item.categoryId === categoryId);
+    const rows = await this.ratingTypeService.findAll();
+    const rowsById = new Map(rows.map((row) => [row.id, row]));
+    const rowsByRatingName = new Map(rows.map((row) => [row.ratingName, row]));
 
-    const ratingSystems: RatingSystemItem[] = rows.map((row) => ({
-      id: row.id,
-      categoryId: row.category,
-      ratingName: row.ratingName,
-      shortRatingName: row.shortRatingName,
-      type: Array.isArray(row.type) ? row.type : [],
-      specifics: Array.isArray(row.specifics) ? row.specifics : [],
-      configKey: this.ratingTypeService.resolveConfigKeyForRow(row),
-      versionTypes: row.versionTypes ?? ["3"],
-      defaultVersion: row.defaultVersion ?? null,
-      hasCertificationConfig: this.ratingTypeService.hasCertificationConfig(row),
-      fees: {
-        annual: Number(row.igbcAnnualRegFee ?? 25000),
-        founding: Number(row.igbcFoundingRegFee ?? 25000),
-        nonMember: Number(row.nonMemberRegFee ?? 30000),
-      },
-    }));
+    const ratingSystems: RatingSystemItem[] = catalogItems.map((item) => {
+      const row = rowsById.get(item.id) ?? rowsByRatingName.get(item.ratingName);
+      const metadataSource = row ?? this.catalogItemToRatingType(item);
+
+      return {
+        id: item.id,
+        categoryId: item.categoryId,
+        ratingName: item.ratingName,
+        shortRatingName: item.shortRatingName,
+        type: Array.isArray(item.type) ? item.type : [],
+        specifics: Array.isArray(item.specifics) ? item.specifics : [],
+        configKey: this.ratingTypeService.resolveConfigKeyForRow(metadataSource),
+        versionTypes: metadataSource.versionTypes ?? ["3"],
+        defaultVersion: metadataSource.defaultVersion ?? null,
+        hasCertificationConfig: this.ratingTypeService.hasCertificationConfig(metadataSource),
+        fees: {
+          annual: Number(item.fees?.annual ?? 25000),
+          founding: Number(item.fees?.founding ?? 25000),
+          nonMember: Number(item.fees?.nonMember ?? 30000),
+        },
+      };
+    });
 
     return {
       categoryId,
@@ -72,6 +95,11 @@ export class ProjectCategoryService {
   private readCategories() {
     const content = readFileSync(this.resolveCategoriesJsonPath(), "utf8");
     return JSON.parse(content) as ProjectCategoryItem[];
+  }
+
+  private readRatingSystems() {
+    const content = readFileSync(this.resolveRatingSystemsJsonPath(), "utf8");
+    return JSON.parse(content) as RatingSystemCatalogItem[];
   }
 
   private resolveJsonPath() {
@@ -94,5 +122,40 @@ export class ProjectCategoryService {
       "project-categories.json",
     );
     return existsSync(sourcePath) ? sourcePath : distPath;
+  }
+
+  private resolveRatingSystemsJsonPath() {
+    const sourcePath = join(
+      process.cwd(),
+      "src",
+      "project-category",
+      "data",
+      "rating-systems.json",
+    );
+    const distPath = join(
+      process.cwd(),
+      "dist",
+      "project-category",
+      "data",
+      "rating-systems.json",
+    );
+    return existsSync(sourcePath) ? sourcePath : distPath;
+  }
+
+  private catalogItemToRatingType(item: RatingSystemCatalogItem): RatingType {
+    return {
+      id: item.id,
+      ratingName: item.ratingName,
+      shortRatingName: item.shortRatingName,
+      category: item.categoryId,
+      type: item.type,
+      specifics: item.specifics,
+      nonMemberRegFee: String(item.fees?.nonMember ?? 30000),
+      igbcAnnualRegFee: String(item.fees?.annual ?? 25000),
+      igbcFoundingRegFee: String(item.fees?.founding ?? 25000),
+      configKey: null,
+      versionTypes: ["3"],
+      defaultVersion: "3",
+    };
   }
 }
