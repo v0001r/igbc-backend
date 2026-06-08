@@ -6,9 +6,12 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { ProjectContact } from "../projects/project-contact.entity";
 import { ProjectDetail } from "../projects/project-detail.entity";
 import { ProjectInvoice } from "../projects/project-invoice.entity";
+import { ProjectPayment } from "../projects/project-payment.entity";
 import { Project } from "../projects/project.entity";
+import { RejectCertificationApplicationDto } from "./dto/reject-certification-application.dto";
 import { UsersService } from "../users/users.service";
 import { CertificationApplication } from "./certification-application.entity";
 import { CreateCertificationStepOneDto } from "./dto/create-certification-step-one.dto";
@@ -28,8 +31,35 @@ export class CertificationApplicationService {
     private readonly projectDetailRepository: Repository<ProjectDetail>,
     @InjectRepository(ProjectInvoice)
     private readonly projectInvoiceRepository: Repository<ProjectInvoice>,
+    @InjectRepository(ProjectPayment)
+    private readonly projectPaymentRepository: Repository<ProjectPayment>,
+    @InjectRepository(ProjectContact)
+    private readonly projectContactRepository: Repository<ProjectContact>,
     private readonly usersService: UsersService,
   ) {}
+
+  private isCertificationPaymentApproved(paymentStatus: string): boolean {
+    const normalized = paymentStatus.toLowerCase();
+    return normalized === "paid" || normalized === "approved" || normalized === "success";
+  }
+
+  private matchesCertificationTab(
+    application: CertificationApplication,
+    tab: "submitted" | "approved" | "rejected",
+  ): boolean {
+    const payment = application.paymentStatus.toLowerCase();
+    const status = application.status.toLowerCase();
+    if (tab === "submitted") {
+      return status === "submitted" && payment === "pending";
+    }
+    if (tab === "approved") {
+      return (
+        status === "approved" ||
+        (status === "submitted" && this.isCertificationPaymentApproved(application.paymentStatus))
+      );
+    }
+    return status === "submitted" && payment === "rejected";
+  }
 
   async createStepOne(email: string, dto: CreateCertificationStepOneDto) {
     const user = await this.usersService.findByEmail(email);
@@ -155,25 +185,18 @@ export class CertificationApplicationService {
       if (!tab) {
         return true;
       }
-      const isSubmitted = application.status === "submitted";
-      if (tab === "submitted") {
-        return isSubmitted;
-      }
-      if (tab === "approved") {
-        return isSubmitted && application.paymentStatus === "paid";
-      }
-      return isSubmitted && application.paymentStatus === "rejected";
+      return this.matchesCertificationTab(application, tab);
     });
 
     const counts = {
-      submitted: applications.filter((application) => application.status === "submitted").length,
-      approved: applications.filter(
-        (application) =>
-          application.status === "submitted" && application.paymentStatus === "paid",
+      submitted: applications.filter((application) =>
+        this.matchesCertificationTab(application, "submitted"),
       ).length,
-      rejected: applications.filter(
-        (application) =>
-          application.status === "submitted" && application.paymentStatus === "rejected",
+      approved: applications.filter((application) =>
+        this.matchesCertificationTab(application, "approved"),
+      ).length,
+      rejected: applications.filter((application) =>
+        this.matchesCertificationTab(application, "rejected"),
       ).length,
     };
 
@@ -241,6 +264,202 @@ export class CertificationApplicationService {
             : null,
         };
       }),
+    };
+  }
+
+  async getAdminCertificationApplicationView(email: string, applicationId: number) {
+    await this.ensureAdminAccess(email);
+    const application = await this.findApplicationById(applicationId);
+    const project = await this.projectRepository.findOne({
+      where: { id: application.projectId },
+    });
+    if (!project) {
+      throw new NotFoundException("Linked project not found");
+    }
+
+    const [registrationPayment, registrationInvoice, contact, ownerUsers] = await Promise.all([
+      this.projectPaymentRepository.findOne({ where: { projectId: project.id } }),
+      this.projectInvoiceRepository.findOne({ where: { projectId: project.id } }),
+      this.projectContactRepository.findOne({ where: { projectId: project.id } }),
+      this.usersService.getUsersByIds([project.createdByUserId]),
+    ]);
+    const owner = ownerUsers[0];
+
+    const certificationTypeLabel =
+      application.certificationType === 1
+        ? "Pre-certification"
+        : application.certificationType === 2
+          ? "Certification"
+          : null;
+
+    const canApproveOrReject =
+      application.status === "submitted" &&
+      application.paymentStatus.toLowerCase() === "pending";
+
+    return {
+      certificationApplicationId: application.id,
+      projectId: application.projectId,
+      igbcProjectId:
+        application.igbcProjectId ?? project.igbcProjectId ?? project.temporaryProjectId,
+      temporaryProjectId: application.temporaryProjectId,
+      canApproveOrReject,
+      certificationApplication: {
+        status: application.status,
+        paymentStatus: application.paymentStatus,
+        currentStep: application.currentStep,
+        certificationFee: Number(application.certificationFee ?? 0),
+        finalPayableAmount: Number(
+          application.finalPayableAmount ?? application.certificationFee ?? 0,
+        ),
+        certificationType: application.certificationType ?? null,
+        certificationTypeLabel,
+        expediteReview: application.expediteReview,
+        paymentMethod: application.paymentMethod ?? null,
+        paymentType: application.paymentType ?? null,
+        transactionReference: application.transactionReference ?? null,
+        ifscCode: application.ifscCode ?? null,
+        bankName: application.bankName ?? null,
+        branch: application.branch ?? null,
+        paymentAmount: application.paymentAmount ? Number(application.paymentAmount) : null,
+        paymentDate: application.paymentDate ?? null,
+        paymentRemarks: application.paymentRemarks ?? null,
+        organizationName: application.organizationName ?? null,
+        organizationAddress: application.organizationAddress ?? null,
+        organizationCity: application.organizationCity ?? null,
+        organizationState: application.organizationState ?? null,
+        organizationPinCode: application.organizationPinCode ?? null,
+        panNumber: application.panNumber ?? null,
+        hasGstNumber: application.hasGstNumber,
+        gstNumber: application.gstNumber ?? null,
+        sezSelected: application.sezSelected,
+        tdsSelected: application.tdsSelected,
+        gstAmount: application.gstAmount ? Number(application.gstAmount) : null,
+        tdsAmount: application.tdsAmount ? Number(application.tdsAmount) : null,
+        rejectRemark: application.paymentRemarks ?? null,
+      },
+      project: {
+        status: project.status,
+        paymentStatus: project.paymentStatus,
+        certificateAppliedStatus: project.certificateAppliedStatus,
+        ratingSystem: project.ratingSystem,
+        subRatingType: project.subRatingType ?? null,
+        projectType: project.projectType,
+        constructionType: project.constructionType,
+        categoryId: project.categoryId,
+      },
+      projectDetails: {
+        projectName: application.projectName,
+        address: application.address,
+        city: application.city,
+        state: application.state,
+        pincode: application.pincode,
+        siteAreaSqm: Number(application.siteAreaSqm),
+        siteAreaSqft: Number(application.siteAreaSqft),
+        numberOfBuildings: application.numberOfBuildings,
+        totalBuiltUpAreaSqm: Number(application.totalBuiltUpAreaSqm),
+        totalBuiltUpAreaSqft: Number(application.totalBuiltUpAreaSqft),
+        constructionStartDate: application.constructionStartDate ?? null,
+        targetCertificationDate: application.targetCertificationDate ?? null,
+      },
+      contacts: contact?.formData ?? null,
+      owner: owner
+        ? {
+            name: owner.displayName,
+            email: owner.email,
+            mobile: owner.mobile ?? owner.telephone ?? null,
+          }
+        : null,
+      registrationPayment: registrationPayment
+        ? {
+            paymentMethod: registrationPayment.paymentMethod,
+            paymentType: registrationPayment.paymentType ?? null,
+            transactionReference: registrationPayment.transactionReference ?? null,
+            bankName: registrationPayment.bankName ?? null,
+            branch: registrationPayment.branch ?? null,
+            amount: registrationPayment.amount ? Number(registrationPayment.amount) : null,
+            paymentDate: registrationPayment.paymentDate ?? null,
+            remarks: registrationPayment.remarks ?? null,
+          }
+        : null,
+      registrationInvoice: registrationInvoice
+        ? {
+            organizationName: registrationInvoice.organizationName,
+            address: registrationInvoice.address,
+            city: registrationInvoice.city,
+            state: registrationInvoice.state,
+            pinCode: registrationInvoice.pinCode,
+            totalPayable: Number(registrationInvoice.totalPayable ?? 0),
+          }
+        : null,
+    };
+  }
+
+  async approveAdminCertificationApplication(email: string, applicationId: number) {
+    await this.ensureAdminAccess(email);
+    const application = await this.findApplicationById(applicationId);
+
+    if (application.status !== "submitted") {
+      throw new BadRequestException(
+        "Only submitted certification applications can be approved",
+      );
+    }
+    if (application.paymentStatus.toLowerCase() !== "pending") {
+      throw new BadRequestException(
+        `Certification payment is already ${application.paymentStatus}. Approve is only allowed when payment status is pending.`,
+      );
+    }
+
+    const saved = await this.certificationApplicationRepository.save(
+      this.certificationApplicationRepository.merge(application, {
+        paymentStatus: "paid",
+        status: "approved",
+      }),
+    );
+
+    return {
+      certificationApplicationId: saved.id,
+      projectId: saved.projectId,
+      status: saved.status,
+      paymentStatus: saved.paymentStatus,
+      message:
+        "Certification payment approved. Application will appear in the Approved tab.",
+    };
+  }
+
+  async rejectAdminCertificationApplication(
+    email: string,
+    applicationId: number,
+    dto: RejectCertificationApplicationDto,
+  ) {
+    await this.ensureAdminAccess(email);
+    const application = await this.findApplicationById(applicationId);
+
+    if (application.status !== "submitted") {
+      throw new BadRequestException(
+        "Only submitted certification applications can be rejected",
+      );
+    }
+    if (application.paymentStatus.toLowerCase() !== "pending") {
+      throw new BadRequestException(
+        `Certification payment is already ${application.paymentStatus}. Reject is only allowed when payment status is pending.`,
+      );
+    }
+
+    const saved = await this.certificationApplicationRepository.save(
+      this.certificationApplicationRepository.merge(application, {
+        paymentStatus: "rejected",
+        paymentRemarks: dto.remark,
+      }),
+    );
+
+    return {
+      certificationApplicationId: saved.id,
+      projectId: saved.projectId,
+      status: saved.status,
+      paymentStatus: saved.paymentStatus,
+      rejectRemark: saved.paymentRemarks ?? null,
+      message:
+        "Certification payment rejected. Application will appear in the Rejected tab.",
     };
   }
 
@@ -714,6 +933,16 @@ export class CertificationApplicationService {
       );
     }
     return { user, project, application };
+  }
+
+  private async findApplicationById(applicationId: number): Promise<CertificationApplication> {
+    const application = await this.certificationApplicationRepository.findOne({
+      where: { id: applicationId },
+    });
+    if (!application) {
+      throw new NotFoundException("Certification application not found");
+    }
+    return application;
   }
 
   private async ensureAdminAccess(email: string) {

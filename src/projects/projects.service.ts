@@ -2,7 +2,8 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { InjectRepository } from "@nestjs/typeorm";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { Like, Repository } from "typeorm";
+import { In, Like, Repository } from "typeorm";
+import { CertificationApplication } from "../certification-application/certification-application.entity";
 import { RatingConfigService } from "../rating-config/rating-config.service";
 import { RatingTypeService } from "./rating-type.service";
 import { UsersService } from "../users/users.service";
@@ -44,6 +45,8 @@ export class ProjectsService {
     private readonly projectInvoiceRepository: Repository<ProjectInvoice>,
     @InjectRepository(ProjectPayment)
     private readonly projectPaymentRepository: Repository<ProjectPayment>,
+    @InjectRepository(CertificationApplication)
+    private readonly certificationApplicationRepository: Repository<CertificationApplication>,
     private readonly usersService: UsersService,
     private readonly projectsEmailService: ProjectsEmailService,
     private readonly ratingConfigService: RatingConfigService,
@@ -198,31 +201,44 @@ export class ProjectsService {
     });
 
     const projectIds = allProjects.map((project) => project.id);
-    const details = projectIds.length
-      ? await this.projectDetailRepository.find({
-          where: projectIds.map((projectId) => ({ projectId })),
-        })
-      : [];
+    const [details, certifications] = await Promise.all([
+      projectIds.length
+        ? this.projectDetailRepository.find({
+            where: projectIds.map((projectId) => ({ projectId })),
+          })
+        : Promise.resolve([]),
+      projectIds.length
+        ? this.certificationApplicationRepository.find({
+            where: { projectId: In(projectIds) },
+          })
+        : Promise.resolve([]),
+    ]);
     const detailByProjectId = new Map(details.map((detail) => [detail.projectId, detail]));
+    const certByProjectId = new Map(
+      certifications.map((application) => [application.projectId, application]),
+    );
 
     const counts = {
       saved: allProjects.filter((project) => project.status === "saved").length,
       submitted: allProjects.filter((project) => project.status === "submitted").length,
-      approved: allProjects.filter(
-        (project) => project.paymentStatus === "approved" || project.paymentStatus === "paid",
+      approved: allProjects.filter((project) =>
+        this.matchesMyProjectsApprovedTab(project, certByProjectId.get(project.id)),
       ).length,
-      rejected: allProjects.filter((project) => project.paymentStatus === "rejected").length,
+      rejected: allProjects.filter((project) =>
+        this.matchesMyProjectsRejectedTab(project, certByProjectId.get(project.id)),
+      ).length,
     };
 
     const filtered = tab
       ? allProjects.filter((project) => {
+          const cert = certByProjectId.get(project.id);
           if (tab === "saved" || tab === "submitted") {
             return project.status === tab;
           }
           if (tab === "approved") {
-            return project.paymentStatus === "approved" || project.paymentStatus === "paid";
+            return this.matchesMyProjectsApprovedTab(project, cert);
           }
-          return project.paymentStatus === tab;
+          return this.matchesMyProjectsRejectedTab(project, cert);
         })
       : allProjects;
 
@@ -232,28 +248,8 @@ export class ProjectsService {
       total: filtered.length,
       items: filtered.map((project) => {
         const detail = detailByProjectId.get(project.id);
-        return {
-          id: project.id,
-          igbcProjectId: project.igbcProjectId ?? null,
-          temporaryProjectId: project.temporaryProjectId,
-          status: project.status,
-          paymentStatus: project.paymentStatus,
-          certificateAppliedStatus: project.certificateAppliedStatus,
-          currentStep: project.currentStep,
-          categoryId: project.categoryId,
-          ratingSystem: project.ratingSystem,
-          subRatingType: project.subRatingType,
-          projectType: project.projectType,
-          constructionType: project.constructionType,
-          registrationFee: Number(project.registrationFee ?? 0),
-          finalPayableAmount: Number(project.finalPayableAmount ?? 0),
-          rejectRemark: project.rejectRemark ?? null,
-          projectName: detail?.projectName ?? null,
-          city: detail?.city ?? null,
-          state: detail?.state ?? null,
-          createdAt: project.createdAt,
-          updatedAt: project.updatedAt,
-        };
+        const cert = certByProjectId.get(project.id);
+        return this.mapMyProjectListItem(project, detail, cert);
       }),
     };
   }
@@ -491,9 +487,14 @@ export class ProjectsService {
       );
     }
 
-    const projectDetail = await this.projectDetailRepository.findOne({
-      where: { projectId: project.id },
-    });
+    const [projectDetail, certificationApplication] = await Promise.all([
+      this.projectDetailRepository.findOne({
+        where: { projectId: project.id },
+      }),
+      this.certificationApplicationRepository.findOne({
+        where: { projectId: project.id },
+      }),
+    ]);
     if (!projectDetail) {
       throw new NotFoundException("Project registration details not found");
     }
@@ -503,6 +504,18 @@ export class ProjectsService {
       igbcProjectId: project.igbcProjectId ?? null,
       temporaryProjectId: project.temporaryProjectId,
       certificationApplicationStatus: project.certificateAppliedStatus,
+      certificationApplicationId: certificationApplication?.id ?? null,
+      certificationStatus: certificationApplication?.status ?? null,
+      certificationPaymentStatus: certificationApplication?.paymentStatus ?? null,
+      certificationRejectRemark: certificationApplication?.paymentRemarks ?? null,
+      certificationCurrentStep: certificationApplication?.currentStep ?? null,
+      certificationType: certificationApplication?.certificationType ?? null,
+      canReapplyCertification:
+        certificationApplication?.paymentStatus?.toLowerCase() === "rejected",
+      isCertificationWorkspaceReady: this.isCertificationWorkspaceReady(
+        project,
+        certificationApplication ?? undefined,
+      ),
       status: project.status,
       paymentStatus: project.paymentStatus,
       stepOne: {
@@ -511,6 +524,8 @@ export class ProjectsService {
         subRatingType: project.subRatingType ?? null,
         projectType: project.projectType,
         constructionType: project.constructionType,
+        certificationType: certificationApplication?.certificationType ?? null,
+        expediteReview: certificationApplication?.expediteReview ?? null,
         projectName: projectDetail.projectName,
         address: projectDetail.address,
         city: projectDetail.city,
@@ -1004,13 +1019,15 @@ export class ProjectsService {
       throw new NotFoundException("Project not found");
     }
 
-    const [detail, contact, invoice, payment, owner] = await Promise.all([
-      this.projectDetailRepository.findOne({ where: { projectId: project.id } }),
-      this.projectContactRepository.findOne({ where: { projectId: project.id } }),
-      this.projectInvoiceRepository.findOne({ where: { projectId: project.id } }),
-      this.projectPaymentRepository.findOne({ where: { projectId: project.id } }),
-      this.usersService.getUsersByIds([project.createdByUserId]),
-    ]);
+    const [detail, contact, invoice, payment, owner, certificationApplication] =
+      await Promise.all([
+        this.projectDetailRepository.findOne({ where: { projectId: project.id } }),
+        this.projectContactRepository.findOne({ where: { projectId: project.id } }),
+        this.projectInvoiceRepository.findOne({ where: { projectId: project.id } }),
+        this.projectPaymentRepository.findOne({ where: { projectId: project.id } }),
+        this.usersService.getUsersByIds([project.createdByUserId]),
+        this.certificationApplicationRepository.findOne({ where: { projectId: project.id } }),
+      ]);
 
     const ownerUser = owner[0];
 
@@ -1041,6 +1058,29 @@ export class ProjectsService {
       registrationFee: Number(project.registrationFee ?? 0),
       finalPayableAmount: Number(project.finalPayableAmount ?? 0),
       rejectRemark: project.rejectRemark ?? null,
+      certificateAppliedStatus: project.certificateAppliedStatus,
+      certificationApplication: certificationApplication
+        ? {
+            id: certificationApplication.id,
+            status: certificationApplication.status,
+            paymentStatus: certificationApplication.paymentStatus,
+            paymentRemarks: certificationApplication.paymentRemarks ?? null,
+            currentStep: certificationApplication.currentStep,
+            certificationType: certificationApplication.certificationType ?? null,
+            certificationFee: Number(certificationApplication.certificationFee ?? 0),
+            finalPayableAmount: Number(
+              certificationApplication.finalPayableAmount ??
+                certificationApplication.certificationFee ??
+                0,
+            ),
+          }
+        : null,
+      canReapplyCertification:
+        certificationApplication?.paymentStatus?.toLowerCase() === "rejected",
+      isCertificationWorkspaceReady: this.isCertificationWorkspaceReady(
+        project,
+        certificationApplication ?? undefined,
+      ),
       owner: ownerUser
         ? {
             id: ownerUser.id,
@@ -1187,12 +1227,18 @@ export class ProjectsService {
       throw new ForbiddenException("You can access only your own project");
     }
 
-    const isApprovedProject =
-      project.status === "approved" &&
-      (project.paymentStatus === "paid" || project.paymentStatus === "approved");
-    if (!isApprovedProject) {
+    if (!this.isRegistrationApprovedAndPaid(project)) {
       throw new ForbiddenException(
         "Certification workspace is available after your project registration is approved",
+      );
+    }
+
+    const certificationApplication = await this.certificationApplicationRepository.findOne({
+      where: { projectId: project.id },
+    });
+    if (!this.isCertificationWorkspaceReady(project, certificationApplication ?? undefined)) {
+      throw new ForbiddenException(
+        "Certification workspace is available after your certification application is approved by admin",
       );
     }
 
@@ -1299,5 +1345,113 @@ export class ProjectsService {
 
     walk(value);
     return [...emails];
+  }
+
+  private isRegistrationApprovedAndPaid(project: Project): boolean {
+    return (
+      project.status === "approved" &&
+      (project.paymentStatus === "paid" || project.paymentStatus === "approved")
+    );
+  }
+
+  private isCertificationPaymentApproved(paymentStatus: string): boolean {
+    const normalized = paymentStatus.toLowerCase();
+    return normalized === "paid" || normalized === "approved" || normalized === "success";
+  }
+
+  private isCertificationWorkspaceReady(
+    project: Project,
+    certificationApplication?: CertificationApplication,
+  ): boolean {
+    if (!this.isRegistrationApprovedAndPaid(project)) {
+      return false;
+    }
+    if (!certificationApplication) {
+      return false;
+    }
+    const paymentApproved = this.isCertificationPaymentApproved(
+      certificationApplication.paymentStatus,
+    );
+    if (!paymentApproved) {
+      return false;
+    }
+    return (
+      certificationApplication.status === "approved" ||
+      certificationApplication.status === "submitted"
+    );
+  }
+
+  private matchesMyProjectsRejectedTab(
+    project: Project,
+    certificationApplication?: CertificationApplication,
+  ): boolean {
+    if (project.status === "rejected") {
+      return true;
+    }
+    if (project.paymentStatus === "rejected") {
+      return true;
+    }
+    return certificationApplication?.paymentStatus?.toLowerCase() === "rejected";
+  }
+
+  private matchesMyProjectsApprovedTab(
+    project: Project,
+    certificationApplication?: CertificationApplication,
+  ): boolean {
+    if (!this.isRegistrationApprovedAndPaid(project)) {
+      return false;
+    }
+    if (certificationApplication?.paymentStatus?.toLowerCase() === "rejected") {
+      return false;
+    }
+    return true;
+  }
+
+  private mapMyProjectListItem(
+    project: Project,
+    detail: ProjectDetail | undefined,
+    certificationApplication?: CertificationApplication,
+  ) {
+    const certPayment = certificationApplication?.paymentStatus?.toLowerCase() ?? null;
+    const registrationRejected =
+      project.status === "rejected" || project.paymentStatus === "rejected";
+    const certificationRejected = certPayment === "rejected";
+
+    return {
+      id: project.id,
+      igbcProjectId: project.igbcProjectId ?? null,
+      temporaryProjectId: project.temporaryProjectId,
+      status: project.status,
+      paymentStatus: project.paymentStatus,
+      certificateAppliedStatus: project.certificateAppliedStatus,
+      currentStep: project.currentStep,
+      categoryId: project.categoryId,
+      ratingSystem: project.ratingSystem,
+      subRatingType: project.subRatingType,
+      projectType: project.projectType,
+      constructionType: project.constructionType,
+      registrationFee: Number(project.registrationFee ?? 0),
+      finalPayableAmount: Number(project.finalPayableAmount ?? 0),
+      rejectRemark: project.rejectRemark ?? null,
+      certificationApplicationId: certificationApplication?.id ?? null,
+      certificationStatus: certificationApplication?.status ?? null,
+      certificationPaymentStatus: certificationApplication?.paymentStatus ?? null,
+      certificationRejectRemark: certificationApplication?.paymentRemarks ?? null,
+      canReapplyCertification: certificationRejected,
+      isCertificationWorkspaceReady: this.isCertificationWorkspaceReady(
+        project,
+        certificationApplication,
+      ),
+      rejectionType: certificationRejected
+        ? "certification"
+        : registrationRejected
+          ? "registration"
+          : null,
+      projectName: detail?.projectName ?? null,
+      city: detail?.city ?? null,
+      state: detail?.state ?? null,
+      createdAt: project.createdAt,
+      updatedAt: project.updatedAt,
+    };
   }
 }

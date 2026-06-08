@@ -165,7 +165,7 @@ export class CertificationApplication {
   currentStep!: number;
 
   @Column({ type: "varchar", default: "saved" })
-  status!: "saved" | "submitted";
+  status!: "saved" | "submitted" | "approved";
 
   @CreateDateColumn()
   createdAt!: Date;

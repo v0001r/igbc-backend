@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { CertificationApplication } from "../certification-application/certification-application.entity";
 import { RatingConfigModule } from "../rating-config/rating-config.module";
 import { UsersModule } from "../users/users.module";
 import { ProjectContact } from "./project-contact.entity";
@@ -26,6 +27,7 @@ import { RatingTypesModule } from "./rating-types.module";
       ProjectContact,
       ProjectInvoice,
       ProjectPayment,
+      CertificationApplication,
       RatingData,
       RatingDocument,
     ]),

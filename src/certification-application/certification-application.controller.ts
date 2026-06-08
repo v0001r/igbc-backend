@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CertificationApplicationService } from "./certification-application.service";
 import { CreateCertificationStepOneDto } from "./dto/create-certification-step-one.dto";
+import { RejectCertificationApplicationDto } from "./dto/reject-certification-application.dto";
 import { UpsertCertificationStepThreePaymentDto } from "./dto/upsert-certification-step-three-payment.dto";
 import { UpsertCertificationStepTwoDto } from "./dto/upsert-certification-step-two.dto";
 
@@ -79,6 +80,70 @@ export class CertificationApplicationController {
     return this.certificationApplicationService.getAdminCertificationApplications(
       request.user.email,
       "rejected",
+    );
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Admin: full certification application detail for review (approve/reject when payment pending)",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get("admin/application/:applicationId/view")
+  getAdminCertificationApplicationView(
+    @Req() request: { user: { email: string } },
+    @Param("applicationId") applicationIdParam: string,
+  ) {
+    const applicationId = Number(applicationIdParam);
+    if (Number.isNaN(applicationId)) {
+      throw new BadRequestException("applicationId must be a number");
+    }
+    return this.certificationApplicationService.getAdminCertificationApplicationView(
+      request.user.email,
+      applicationId,
+    );
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary:
+      "Admin: approve certification payment (sets certification_applications.paymentStatus to paid)",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Patch("admin/application/:applicationId/approve")
+  approveAdminCertificationApplication(
+    @Req() request: { user: { email: string } },
+    @Param("applicationId") applicationIdParam: string,
+  ) {
+    const applicationId = Number(applicationIdParam);
+    if (Number.isNaN(applicationId)) {
+      throw new BadRequestException("applicationId must be a number");
+    }
+    return this.certificationApplicationService.approveAdminCertificationApplication(
+      request.user.email,
+      applicationId,
+    );
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary:
+      "Admin: reject certification payment (sets certification_applications.paymentStatus to rejected)",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Patch("admin/application/:applicationId/reject")
+  rejectAdminCertificationApplication(
+    @Req() request: { user: { email: string } },
+    @Param("applicationId") applicationIdParam: string,
+    @Body() dto: RejectCertificationApplicationDto,
+  ) {
+    const applicationId = Number(applicationIdParam);
+    if (Number.isNaN(applicationId)) {
+      throw new BadRequestException("applicationId must be a number");
+    }
+    return this.certificationApplicationService.rejectAdminCertificationApplication(
+      request.user.email,
+      applicationId,
+      dto,
     );
   }
 
