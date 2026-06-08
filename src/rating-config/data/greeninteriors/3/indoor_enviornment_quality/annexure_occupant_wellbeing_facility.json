@@ -1,0 +1,15 @@
+{
+  "id": "annexure_occupant_wellbeing_facility",
+  "title": "Cal Occupant Wellbeing Facility",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "occupantWellbeing",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexOccupantWellbeingFacility",
+  "occupantWellbeingLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More",
+    "permanentOccupancyGlobalKey": "projects_details_permanent_occupancy"
+  }
+}

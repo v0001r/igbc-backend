@@ -1,0 +1,18 @@
+{
+  "id": "lpd_building_area_method",
+  "title": "Cal LPD Building Area Method",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "lpdBuildingAreaMethod",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexLpdBuildingMethodArea",
+  "baselineCatalogPath": "shared/lpd-building-typology-baselines.json",
+  "lpdBuildingAreaLayout": {
+    "sourceAnnex": {
+      "tab": "sustainable_design",
+      "subtab": "area_space_circulation",
+      "spaceNameField": "reqularly_occupied_spaces",
+      "areaField": "total_carpet_area_circulation"
+    }
+  }
+}

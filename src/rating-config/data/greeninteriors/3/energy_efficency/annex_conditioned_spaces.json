@@ -1,0 +1,66 @@
+{
+  "id": "annex_conditioned_spaces",
+  "title": "Cal Conditioned Space",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "conditionedSpaces",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexConditionedSpaces",
+  "conditionedSpacesLayout": {
+    "systemsTabLabel": "Air Condition system",
+    "areaTabLabel": "Air Conditioned Area",
+    "systemMinRows": 5,
+    "systemMaxRows": 50,
+    "sourceAnnex": {
+      "tab": "sustainable_design",
+      "subtab": "area_space_circulation",
+      "occupancyField": "reqularly_non_occupied_spaces",
+      "occupancyValue": "regularly_occupied_spaces",
+      "acField": "air_condition_spaces",
+      "acValue": "air_conditioned_space",
+      "spaceNameField": "reqularly_occupied_spaces",
+      "areaField": "total_carpet_area_circulation"
+    },
+    "acSystemOptions": {
+      "": "Select",
+      "unitary_split_ac": "Unitary Split AC",
+      "unitary_cassette_unit": "Unitary Cassette Unit",
+      "vrv_vrf": "VRV/VRF",
+      "water_cooled_chiller": "Water Cooled Chiller",
+      "water_cooled_scroll_chiller": "Water Cooled Scroll Chiller",
+      "water_cooled_rotary_screw_chiller": "Water Cooled Rotary Screw Chiller",
+      "air_cooled_chiller": "Air Cooled Chiller",
+      "air_cooled_scroll_chiller": "Air Cooled Scroll Chiller",
+      "unitary_packaged_air_conditioning": "Unitary Packaged Air Conditioning"
+    },
+    "efficiencyUnitOptions": {
+      "": "Select",
+      "bee_star_rating": "BEE Star Rating",
+      "iseer": "ISEER",
+      "eer": "EER",
+      "ieer": "IEER",
+      "cop": "COP",
+      "iplv": "IPLV",
+      "others": "Others"
+    },
+    "refrigerantOptions": {
+      "": "Type",
+      "1810": "R-22",
+      "1430": "R-134a",
+      "2088": "R-410A",
+      "1774": "R-407C",
+      "675": "R-32",
+      "4": "R-1234yf",
+      "6": "R-1234ze",
+      "631": "R-513A",
+      "3": "R-290",
+      "1": "R-744",
+      "77": "R-123"
+    },
+    "scopeOptions": {
+      "": "Select",
+      "client": "Client",
+      "developer": "Developer"
+    }
+  }
+}

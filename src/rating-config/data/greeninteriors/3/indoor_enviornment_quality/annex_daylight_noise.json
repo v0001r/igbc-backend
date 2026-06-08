@@ -1,0 +1,45 @@
+{
+  "id": "annex_daylight_noise",
+  "title": "Cal Daylight, Outdoor View & Noise",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "daylightNoise",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexDaylightcoTwoNoise",
+  "daylightNoiseLayout": {
+    "sourceAnnex": {
+      "tab": "sustainable_design",
+      "subtab": "area_space_circulation",
+      "occupancyField": "reqularly_non_occupied_spaces",
+      "occupancyValue": "regularly_occupied_spaces",
+      "acField": "air_condition_spaces",
+      "acValue": "air_conditioned_space",
+      "spaceNameField": "reqularly_occupied_spaces",
+      "areaField": "total_carpet_area_circulation"
+    },
+    "daylightSpaceTypes": {
+      "general_offices": { "label": "General Offices", "benchmarkLux": 300 },
+      "deep_plan_general_offices": { "label": "Deep Plan General Offices", "benchmarkLux": 500 },
+      "computer_work_stations": { "label": "Computer Work Stations", "benchmarkLux": 300 },
+      "conference_rooms_executive_offices": { "label": "Conference Rooms, Executive Offices", "benchmarkLux": 300 },
+      "computer_and_data_preparation_rooms": { "label": "Computer and Data Preparation Rooms", "benchmarkLux": 300 },
+      "drawing_boards": { "label": "Drawing Boards", "benchmarkLux": 500 },
+      "print_rooms": { "label": "Print rooms", "benchmarkLux": 200 },
+      "counter_office_areas": { "label": "Counter, Office Areas", "benchmarkLux": 300 },
+      "supermarkets_hyper_markets": { "label": "Supermarkets/ Hyper Markets", "benchmarkLux": 300 },
+      "showrooms_for_large_objects": { "label": "Showrooms for Large Objects example Cars, Furniture", "benchmarkLux": 300 },
+      "hotel_entrance_halls": { "label": "Hotel– Entrance Halls", "benchmarkLux": 50 },
+      "hotel_reception_casheirs": { "label": "Hotel–Reception cashiers", "benchmarkLux": 200 },
+      "hotel_bed_room": { "label": "Hotel– Bed room", "benchmarkLux": 30 },
+      "hotel_bathrooms": { "label": "Hotel– Bathrooms", "benchmarkLux": 50 },
+      "food_preparation_stores_cellars_lifts_corridors": {
+        "label": "Food Preparation & Stores, Cellars, Lifts &Corridors",
+        "benchmarkLux": 100
+      }
+    },
+    "acousticSpaceTypes": {
+      "35": { "label": "Enclosed Office", "baselineDb": 35 },
+      "40": { "label": "Open Office", "baselineDb": 40 }
+    }
+  }
+}

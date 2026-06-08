@@ -1,0 +1,26 @@
+{
+  "source": "IGBC Green Interiors — Space Function Method LPD baselines (W/sq.m). Sync with Laravel __baseline_lpd_data() when DB export is available.",
+  "slugify": "lowercase; spaces/commas/hyphens → underscore",
+  "entries": [
+    { "slug": "private_office", "label": "Private office / Manager cabin", "baseline": 7.7 },
+    { "slug": "open_plan_office", "label": "Open plan office / Workstation", "baseline": 10.8 },
+    { "slug": "conference_meeting_room", "label": "Conference / Meeting room", "baseline": 12.9 },
+    { "slug": "reception_lobby", "label": "Reception / Lobby", "baseline": 13.9 },
+    { "slug": "rest_room", "label": "Rest room / Washroom", "baseline": 6.8 },
+    { "slug": "pantry", "label": "Pantry", "baseline": 12.9 },
+    { "slug": "lounge", "label": "Lounge", "baseline": 15 },
+    { "slug": "storage_room", "label": "Storage room", "baseline": 6.4 },
+    { "slug": "corridor", "label": "Corridor", "baseline": 5.4 },
+    { "slug": "staircase", "label": "Staircase", "baseline": 5.4 },
+    { "slug": "electrical_room", "label": "Electrical room", "baseline": 6.4 },
+    { "slug": "server_room", "label": "Server / IT room", "baseline": 12.9 },
+    { "slug": "retail_sales_area", "label": "Retail sales area", "baseline": 14 },
+    { "slug": "banking_customer_area", "label": "Banking customer area", "baseline": 10.5 },
+    { "slug": "training_room", "label": "Training room", "baseline": 12.9 },
+    { "slug": "cafeteria", "label": "Cafeteria / Dining", "baseline": 12.9 },
+    { "slug": "copy_print_room", "label": "Copy / Print room", "baseline": 9.7 },
+    { "slug": "locker_room", "label": "Locker room", "baseline": 6.4 },
+    { "slug": "parking_area_interior", "label": "Parking area (interior)", "baseline": 2.5 },
+    { "slug": "other_space", "label": "Other", "baseline": 9.5 }
+  ]
+}

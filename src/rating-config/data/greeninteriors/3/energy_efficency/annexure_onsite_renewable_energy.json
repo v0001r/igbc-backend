@@ -1,0 +1,14 @@
+{
+  "id": "annexure_onsite_renewable_energy",
+  "title": "Cal On-Site / Off-site Renewable Energy",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "onsiteRenewableEnergy",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexOneSiteRenewable",
+  "onsiteRenewableLayout": {
+    "minRows": 5,
+    "maxRows": 24,
+    "addRowLabel": "Add More"
+  }
+}

@@ -83,6 +83,46 @@ function enrichSchemaFromGreenhomeCatalog(
       next = { ...next, table: { ...parsed.table, columns } };
     }
     lookupMaps.lpdBaselines = lpdBaselines;
+
+    if (parsed.renderMode === "lpdBuildingAreaMethod" && parsed.lpdBuildingAreaLayout) {
+      const typologyBaselines = entries
+        .filter(
+          (e): e is { slug: string; label: string; baseline: number } =>
+            Boolean(e && "baseline" in e && typeof (e as { baseline?: number }).baseline === "number"),
+        )
+        .map((e) => ({ slug: e.slug, label: e.label, baseline: e.baseline }));
+      const typologyOptions: Record<string, string> = { "": "Select" };
+      for (const e of typologyBaselines) typologyOptions[e.slug] = e.label;
+      lookupMaps.lpdBuildingTypology = lpdBaselines;
+      next = {
+        ...next,
+        lpdBuildingAreaLayout: {
+          ...parsed.lpdBuildingAreaLayout,
+          typologyBaselines,
+          typologyOptions,
+        },
+      };
+    }
+
+    if (parsed.renderMode === "lpdSpaceFunctionMethod" && parsed.lpdSpaceFunctionLayout) {
+      const spaceBaselines = entries
+        .filter(
+          (e): e is { slug: string; label: string; baseline: number } =>
+            Boolean(e && "baseline" in e && typeof (e as { baseline?: number }).baseline === "number"),
+        )
+        .map((e) => ({ slug: e.slug, label: e.label, baseline: e.baseline }));
+      const spaceTypeOptions: Record<string, string> = { "": "Select" };
+      for (const e of spaceBaselines) spaceTypeOptions[e.slug] = e.label;
+      lookupMaps.lpdSpaceBaselines = lpdBaselines;
+      next = {
+        ...next,
+        lpdSpaceFunctionLayout: {
+          ...parsed.lpdSpaceFunctionLayout,
+          spaceBaselines,
+          spaceTypeOptions,
+        },
+      };
+    }
   }
 
   if (first && "latitude" in first) {
@@ -146,6 +186,25 @@ function enrichSchemaFromGreenhomeCatalog(
   return { ...next, lookupMaps };
 }
 
+function enrichWasteMaterialOptions(
+  parsed: AnnexureSchemaDefinition,
+  schemaFilePath: string,
+): AnnexureSchemaDefinition {
+  const catalogPath = parsed.wasteManagementLayout?.materialOptionsCatalogPath;
+  if (!catalogPath || parsed.renderMode !== "wasteManagement") return parsed;
+  const versionDir = dirname(dirname(schemaFilePath));
+  const fullPath = join(versionDir, catalogPath);
+  if (!existsSync(fullPath)) return parsed;
+  const materialOptions = JSON.parse(readFileSync(fullPath, "utf8")) as Record<string, string>;
+  return {
+    ...parsed,
+    wasteManagementLayout: {
+      ...parsed.wasteManagementLayout!,
+      materialOptions,
+    },
+  };
+}
+
 export function resolveLaravelAnnexureBladesDir(): string | null {
   const candidates = [
     join(__dirname, "..", "data", "laravel-annexure-blades"),
@@ -195,15 +254,13 @@ export function findBladeFileForInclude(bladeInclude: string): string | null {
 
 function loadOneAnnexureFile(
   full: string,
-  greenhomeRoot: string | null,
   ratingTypeId: number | undefined,
 ): AnnexureSchemaDefinition | null {
   try {
     const raw = readFileSync(full, "utf8");
     let parsed = JSON.parse(raw) as AnnexureSchemaDefinition;
-    if (greenhomeRoot) {
-      parsed = enrichSchemaFromGreenhomeCatalog(parsed, full);
-    }
+    parsed = enrichSchemaFromGreenhomeCatalog(parsed, full);
+    parsed = enrichWasteMaterialOptions(parsed, full);
     const hasTable = (parsed.table?.columns?.length ?? 0) > 0;
     const hasComparison =
       parsed.renderMode === "comparison" && (parsed.comparisonLayout?.sections?.length ?? 0) > 0;
@@ -214,6 +271,39 @@ function loadOneAnnexureFile(
     const hasWaterEfficiency =
       parsed.renderMode === "waterEfficiency" &&
       (parsed.waterEfficiencyLayout?.presetRows?.length ?? 0) > 0;
+    const hasGiWcTwo =
+      parsed.renderMode === "greenInteriorsWcTwo" &&
+      (parsed.greenInteriorsWcTwoLayout?.presetRows?.length ?? 0) > 0;
+    const hasConditionedSpaces =
+      parsed.renderMode === "conditionedSpaces" &&
+      Boolean(parsed.conditionedSpacesLayout?.sourceAnnex?.subtab);
+    const hasNaturalVentilation =
+      parsed.renderMode === "naturalVentilation" &&
+      Boolean(parsed.naturalVentilationLayout?.sourceAnnex?.subtab);
+    const hasLpdBuildingAreaMethod =
+      parsed.renderMode === "lpdBuildingAreaMethod" &&
+      Boolean(parsed.lpdBuildingAreaLayout?.sourceAnnex?.subtab);
+    const hasLpdSpaceFunctionMethod =
+      parsed.renderMode === "lpdSpaceFunctionMethod" &&
+      Boolean(parsed.lpdSpaceFunctionLayout?.sourceAnnex?.subtab);
+    const hasOnsiteRenewableEnergy =
+      parsed.renderMode === "onsiteRenewableEnergy" &&
+      Boolean(parsed.onsiteRenewableLayout);
+    const hasMasterMaterial =
+      parsed.renderMode === "masterMaterial" &&
+      Boolean(parsed.masterMaterialLayout?.materialOptions);
+    const hasAcFreshAir =
+      parsed.renderMode === "acFreshAir" &&
+      Boolean(parsed.acFreshAirLayout?.sourceAnnex?.subtab);
+    const hasDaylightNoise =
+      parsed.renderMode === "daylightNoise" &&
+      Boolean(parsed.daylightNoiseLayout?.sourceAnnex?.subtab);
+    const hasOccupantWellbeing =
+      parsed.renderMode === "occupantWellbeing" &&
+      Boolean(parsed.occupantWellbeingLayout);
+    const hasWasteManagement =
+      parsed.renderMode === "wasteManagement" &&
+      Boolean(parsed.wasteManagementLayout?.sourceAnnex?.subtab);
     const hasWaterBalance =
       parsed.renderMode === "waterBalance" &&
       (parsed.waterBalanceLayout?.sections?.length ?? 0) > 0;
@@ -227,6 +317,17 @@ function loadOneAnnexureFile(
         !hasDwelling &&
         !hasRainwater &&
         !hasWaterEfficiency &&
+        !hasGiWcTwo &&
+        !hasConditionedSpaces &&
+        !hasNaturalVentilation &&
+        !hasLpdBuildingAreaMethod &&
+        !hasLpdSpaceFunctionMethod &&
+        !hasOnsiteRenewableEnergy &&
+        !hasMasterMaterial &&
+        !hasAcFreshAir &&
+        !hasDaylightNoise &&
+        !hasOccupantWellbeing &&
+        !hasWasteManagement &&
         !hasWaterBalance &&
         !hasWastewaterReuse)
     )
@@ -251,23 +352,23 @@ function loadJsonAnnexureSchemas(
 ): Record<string, AnnexureSchemaDefinition> {
   const index: Record<string, AnnexureSchemaDefinition> = {};
 
-  const roots: { base: string; greenhome?: string }[] = [];
+  const roots: string[] = [];
   const annexRoot = join(resolveAnnexuresRoot(), ratingKey, versionType);
-  if (existsSync(annexRoot)) roots.push({ base: annexRoot });
+  if (existsSync(annexRoot)) roots.push(annexRoot);
 
   const ghRoot = resolveGreenhomeDataRoot();
   if (ratingKey === "green_homes" && ghRoot) {
     const ghVersion = join(ghRoot, versionType);
-    if (existsSync(ghVersion)) roots.push({ base: ghVersion, greenhome: ghRoot });
+    if (existsSync(ghVersion)) roots.push(ghVersion);
   }
 
   const giRoot = resolveGreeninteriorsDataRoot();
   if (ratingKey === "green_interiors" && giRoot) {
     const giVersion = join(giRoot, versionType);
-    if (existsSync(giVersion)) roots.push({ base: giVersion });
+    if (existsSync(giVersion)) roots.push(giVersion);
   }
 
-  for (const { base, greenhome } of roots) {
+  for (const base of roots) {
     const files: { rel: string; full: string }[] = [];
     walkJsonFiles(base, "", files);
     for (const { rel, full } of files) {
@@ -277,7 +378,7 @@ function loadJsonAnnexureSchemas(
       const tab = parts[0];
       const subtab = parts.slice(1).join("/");
       const key = `${tab}/${subtab}`;
-      const parsed = loadOneAnnexureFile(full, greenhome ?? null, ratingTypeId);
+      const parsed = loadOneAnnexureFile(full, ratingTypeId);
       if (parsed) index[key] = parsed;
     }
   }
@@ -347,6 +448,28 @@ export function buildAnnexureSchemaIndex(
           Boolean(existing?.rainwaterLayout?.rainfall)) ||
         (existing?.renderMode === "waterEfficiency" &&
           (existing?.waterEfficiencyLayout?.presetRows?.length ?? 0) > 0) ||
+        (existing?.renderMode === "greenInteriorsWcTwo" &&
+          (existing?.greenInteriorsWcTwoLayout?.presetRows?.length ?? 0) > 0) ||
+        (existing?.renderMode === "conditionedSpaces" &&
+          Boolean(existing?.conditionedSpacesLayout?.sourceAnnex?.subtab)) ||
+        (existing?.renderMode === "naturalVentilation" &&
+          Boolean(existing?.naturalVentilationLayout?.sourceAnnex?.subtab)) ||
+        (existing?.renderMode === "lpdBuildingAreaMethod" &&
+          Boolean(existing?.lpdBuildingAreaLayout?.sourceAnnex?.subtab)) ||
+        (existing?.renderMode === "lpdSpaceFunctionMethod" &&
+          Boolean(existing?.lpdSpaceFunctionLayout?.sourceAnnex?.subtab)) ||
+        (existing?.renderMode === "onsiteRenewableEnergy" &&
+          Boolean(existing?.onsiteRenewableLayout)) ||
+        (existing?.renderMode === "masterMaterial" &&
+          Boolean(existing?.masterMaterialLayout?.materialOptions)) ||
+        (existing?.renderMode === "acFreshAir" &&
+          Boolean(existing?.acFreshAirLayout?.sourceAnnex?.subtab)) ||
+        (existing?.renderMode === "daylightNoise" &&
+          Boolean(existing?.daylightNoiseLayout?.sourceAnnex?.subtab)) ||
+        (existing?.renderMode === "occupantWellbeing" &&
+          Boolean(existing?.occupantWellbeingLayout)) ||
+        (existing?.renderMode === "wasteManagement" &&
+          Boolean(existing?.wasteManagementLayout?.sourceAnnex?.subtab)) ||
         (existing?.renderMode === "waterBalance" &&
           (existing?.waterBalanceLayout?.sections?.length ?? 0) > 0) ||
         (existing?.renderMode === "wastewaterReuse" &&

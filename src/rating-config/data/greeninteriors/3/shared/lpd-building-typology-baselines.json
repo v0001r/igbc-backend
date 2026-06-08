@@ -1,0 +1,11 @@
+{
+  "source": "IGBC Green Interiors — Building Area Method LPD baselines (W/sq.m). Sync with Laravel theme when available.",
+  "entries": [
+    { "slug": "office_building", "label": "Office Building", "baseline": 9.5 },
+    { "slug": "banking_building", "label": "Banking Building", "baseline": 10.5 },
+    { "slug": "retail_building", "label": "Retail Building", "baseline": 14 },
+    { "slug": "hospitality_building", "label": "Hospitality Building", "baseline": 11 },
+    { "slug": "healthcare_building", "label": "Healthcare Building", "baseline": 10 },
+    { "slug": "educational_building", "label": "Educational Building", "baseline": 9 }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "annexure_ac_fresh_air",
+  "title": "Cal Fresh Air Mechanical Ventilation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "acFreshAir",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexAc",
+  "acFreshAirLayout": {
+    "systemsTabLabel": "Fresh air system",
+    "areaTabLabel": "Mechanically ventilated area",
+    "systemMinRows": 5,
+    "systemMaxRows": 50,
+    "sourceAnnex": {
+      "tab": "sustainable_design",
+      "subtab": "area_space_circulation",
+      "occupancyField": "reqularly_non_occupied_spaces",
+      "occupancyValue": "regularly_occupied_spaces",
+      "acField": "air_condition_spaces",
+      "acValue": "air_conditioned_space",
+      "spaceNameField": "reqularly_occupied_spaces",
+      "areaField": "total_carpet_area_circulation"
+    },
+    "spaceTypeOptions": {
+      "restaurant_dining_rooms": { "label": "Restaurant Dining rooms", "baseline": 0.18, "outdoor": 7.5 },
+      "cafeteria_fast_food_dining": { "label": "Cafeteria/Fast food dining", "baseline": 0.18, "outdoor": 7.7 },
+      "conference_meeting": { "label": "Conference/meeting", "baseline": 0.06, "outdoor": 5 },
+      "hotel_bed_living_rooms": { "label": "Hotels-bed/living rooms", "baseline": 0.06, "outdoor": 5 },
+      "office_space_reception_area_telephone_data_entry_main_entry_lobby": {
+        "label": "Office space/ reception area/ telephone/ data entry/ main entry lobby",
+        "baseline": 0.06,
+        "outdoor": 5
+      },
+      "library": { "label": "Libraries", "baseline": 0.12, "outdoor": 5 },
+      "retail_spaces": { "label": "Retail Spaces", "baseline": 0.06, "outdoor": 7.5 },
+      "super_market": { "label": "Super Market", "baseline": 0.06, "outdoor": 7.5 },
+      "auditorium": { "label": "Auditorium", "baseline": 0.06, "outdoor": 5 },
+      "health_club": { "label": "Health Club", "baseline": 0.06, "outdoor": 20 },
+      "corridors": { "label": "Corridors", "baseline": 0.06, "outdoor": null },
+      "computer_lab": { "label": "Computer Lab", "baseline": 0.12, "outdoor": 10 }
+    }
+  }
+}

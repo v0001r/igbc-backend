@@ -1,0 +1,52 @@
+{
+  "id": "annexure_master_material",
+  "title": "Cal Master Material",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "masterMaterial",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexMasterMaterial",
+  "masterMaterialLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More",
+    "localDistanceMaxKm": 500,
+    "materialOptions": {
+      "": "Select",
+      "wall": "Wall",
+      "cement": "Cement",
+      "wood": "Wood",
+      "flooring": "Flooring",
+      "paint": "Paint",
+      "furniture": "Furniture",
+      "partition": "Partition",
+      "doors": "Doors",
+      "wall_panelling": "Wall Panelling",
+      "ceiling": "Ceiling",
+      "soft_furnishing": "Soft Furnishing",
+      "plumbing_fixtures": "Plumbing fixtures",
+      "indoor_plants": "Indoor plants",
+      "air_conditioning": "Air conditioning",
+      "electrical": "Electrical",
+      "other": "Other"
+    },
+    "subCategories": {
+      "wall": ["AAC", "Flyash", "Red Brick", "Other"],
+      "cement": ["Cement", "Other"],
+      "wood": ["Plywood", "MDF", "Laminate", "Other"],
+      "flooring": ["Vitrified Tile", "Granite", "Carpet", "RCC", "Raised Flooring Modular", "Laminate", "Tile", "Dado", "Wooden", "VDF", "Other"],
+      "paint": ["Emulsion", "Primer", "Enamel", "Texture", "Putty", "Other"],
+      "furniture": ["Workstation", "Chair", "Storage unit", "Meeting room table", "Cabin table", "Loose furniture", "Sofa", "Other"],
+      "partition": ["Glass", "wood", "Aluminium", "Gypsum with insulation", "Sliding & folding", "Other"],
+      "doors": ["Wooden Door", "Glass Door", "Other"],
+      "wall_panelling": ["Plywood", "Acoustic panel", "Other"],
+      "ceiling": ["Grid false ceiling", "Gypsum false ceiling", "Baffle ceiling", "Other"],
+      "soft_furnishing": ["Blinds for openings", "Signage", "Writing board", "Hardware for furniture", "Other"],
+      "plumbing_fixtures": ["Water closet", "Health faucet", "Urinal", "Faucet/Tap", "Kitchen / Pantry faucet", "Showerhead", "Handheld shower spray", "Other"],
+      "indoor_plants": ["Snake plant", "Peace lily", "ZZ Plant", "Other"],
+      "air_conditioning": ["Air conditioning high side", "Air conditioning low side"],
+      "electrical": ["Wires", "Cables", "MS/ GI pipes / Conduits - Fire hydrant system", "Raceways", "Lighting - Square light (12W)", "Lighting - Square light (22W)", "Lighting - Decorative light (22W)", "Lighting - Recessed light (6W)", "Sensors", "Switch boards", "Switches/ controls", "Electrical Panels", "Switch gear", "Energy sub-meter", "Appliances - Refrigerator", "Appliances - Printer", "Appliances - UPS", "Other"],
+      "other": ["Other"]
+    }
+  }
+}

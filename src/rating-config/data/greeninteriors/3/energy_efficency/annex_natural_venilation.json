@@ -1,0 +1,26 @@
+{
+  "id": "annex_natural_venilation",
+  "title": "Cal Natural Ventilation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "naturalVentilation",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexNaturalVenilation",
+  "naturalVentilationLayout": {
+    "sourceAnnex": {
+      "tab": "sustainable_design",
+      "subtab": "area_space_circulation",
+      "occupancyField": "reqularly_non_occupied_spaces",
+      "occupancyValue": "regularly_occupied_spaces",
+      "acField": "air_condition_spaces",
+      "acValue": "non_air_conditioned_space",
+      "spaceNameField": "reqularly_occupied_spaces",
+      "areaField": "total_carpet_area_circulation"
+    },
+    "yesNoOptions": {
+      "": "Select",
+      "Yes": "Yes",
+      "No": "No"
+    }
+  }
+}

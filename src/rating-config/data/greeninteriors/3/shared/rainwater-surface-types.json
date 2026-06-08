@@ -1,0 +1,24 @@
+{
+  "entries": [
+    { "slug": "1", "label": "Cemented/Tiled Roof", "coefficient": 0.95 },
+    { "slug": "2", "label": "Roof Garden (<100 mm thickness)", "coefficient": 0.5 },
+    { "slug": "3", "label": "Roof Garden (100 – 200 mm thickness)", "coefficient": 0.3 },
+    { "slug": "4", "label": "Roof Garden (201 – 500 mm thickness)", "coefficient": 0.2 },
+    { "slug": "5", "label": "Roof Garden (>500 mm thickness)", "coefficient": 0.1 },
+    { "slug": "6", "label": "Turf, Flat (0 - 1% slope)", "coefficient": 0.25 },
+    { "slug": "7", "label": "Turf, Average (1 - 3% slope)", "coefficient": 0.35 },
+    { "slug": "8", "label": "Turf, Hilly (3 - 10% slope)", "coefficient": 0.4 },
+    { "slug": "9", "label": "Turf, Steep (> 10% slope)", "coefficient": 0.45 },
+    { "slug": "10", "label": "Vegetation, Flat (0 - 1% slope)", "coefficient": 0.1 },
+    { "slug": "11", "label": "Vegetation, Average (1 - 3% slope)", "coefficient": 0.2 },
+    { "slug": "12", "label": "Vegetation, Hilly (1 - 3% slope)", "coefficient": 0.25 },
+    { "slug": "13", "label": "Vegetation, Steep (> 10% slope)", "coefficient": 0.3 },
+    { "slug": "14", "label": "Concrete Pavement", "coefficient": 0.95 },
+    { "slug": "15", "label": "Gravel Pavement", "coefficient": 0.75 },
+    { "slug": "16", "label": "Open-grid Concrete Pavement", "coefficient": 0.75 },
+    { "slug": "17", "label": "Open-grid Grass Pavement", "coefficient": 0.5 },
+    { "slug": "18", "label": "Water Bodies (lined) eg., Swimming Pool", "coefficient": 0.95 },
+    { "slug": "19", "label": "Water Bodies (un-lined) eg., Water Pond", "coefficient": 0 },
+    { "slug": "20", "label": "Open-grid Concrete Pavement", "coefficient": 0.75 }
+  ]
+}

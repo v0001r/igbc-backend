@@ -1,0 +1,21 @@
+{
+  "id": "lpd_space_function_method",
+  "title": "Cal LPD Space Function Method",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "lpdSpaceFunctionMethod",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexLpdSpaceMethod",
+  "baselineCatalogPath": "shared/lpd-baseline-spaces-interiors.json",
+  "lpdSpaceFunctionLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More",
+    "sourceAnnex": {
+      "tab": "sustainable_design",
+      "subtab": "area_space_circulation",
+      "spaceNameField": "reqularly_occupied_spaces",
+      "areaField": "total_carpet_area_circulation"
+    }
+  }
+}

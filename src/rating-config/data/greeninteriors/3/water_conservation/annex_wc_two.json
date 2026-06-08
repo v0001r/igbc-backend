@@ -1,0 +1,142 @@
+{
+  "id": "annex_wc_two",
+  "title": "Annex WC 2: Water Efficient Plumbing Fixtures",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "greenInteriorsWcTwo",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexTwo",
+  "greenInteriorsWcTwoLayout": {
+    "fteTabLabel": "FTE Calculations",
+    "fixturesTabLabel": "Water efficient plumbing fixtures",
+    "partTimeMinRows": 1,
+    "partTimeMaxRows": 50,
+    "presetRows": [
+      {
+        "id": "full_flush",
+        "fixtureType": "Water Closets (Full Flush)",
+        "prefix": "full_flush",
+        "occupantStatusParam": "occupant_status_01",
+        "unitTypeParam": "unit_type_01",
+        "proposedUnitParam": "proposed_unit_01",
+        "category": "flush",
+        "defaultFteKind": "division",
+        "defaults": {
+          "duration": "1",
+          "daily": "1",
+          "baseTopology1": "6",
+          "baseDefault": "4.84",
+          "unit": "lpf"
+        }
+      },
+      {
+        "id": "half_flush",
+        "fixtureType": "Water Closets (Half Flush)",
+        "prefix": "half_flush",
+        "occupantStatusParam": "occupant_status_02",
+        "unitTypeParam": "unit_type_02",
+        "proposedUnitParam": "proposed_unit_02",
+        "category": "flush",
+        "defaultFteKind": "division",
+        "defaults": {
+          "duration": "1",
+          "daily": "2",
+          "baseTopology1": "3",
+          "baseDefault": "2.8",
+          "unit": "lpf"
+        }
+      },
+      {
+        "id": "urinal",
+        "fixtureType": "Urinals",
+        "prefix": "urinal",
+        "occupantStatusParam": "occupant_status_06",
+        "unitTypeParam": "unit_type_06",
+        "proposedUnitParam": "proposed_unit_06",
+        "category": "flush",
+        "defaultFteKind": "division",
+        "defaults": {
+          "duration": "1",
+          "daily": "2",
+          "baseTopology1": "4",
+          "baseDefault": "2",
+          "unit": "lpf"
+        }
+      },
+      {
+        "id": "sink",
+        "fixtureType": "Kitchen/Pantry Faucet",
+        "prefix": "sink",
+        "occupantStatusParam": "occupant_status_05",
+        "unitTypeParam": "unit_type_05",
+        "proposedUnitParam": "proposed_unit_05",
+        "category": "flow",
+        "defaultFteKind": "total",
+        "defaults": {
+          "duration": "0.25",
+          "daily": "1",
+          "baseDefault": "6",
+          "unit": "lpm",
+          "defaultOccupantStatus": "both",
+          "readOnlyOccupantStatus": true
+        }
+      },
+      {
+        "id": "taps",
+        "fixtureType": "Faucet/ taps",
+        "prefix": "taps",
+        "occupantStatusParam": "occupant_status_04",
+        "unitTypeParam": "unit_type_04",
+        "proposedUnitParam": "proposed_unit_04",
+        "category": "flow",
+        "defaultFteKind": "total",
+        "defaults": {
+          "duration": "0.25",
+          "daily": "4",
+          "baseDefault": "6",
+          "unit": "lpm",
+          "defaultOccupantStatus": "both",
+          "readOnlyOccupantStatus": true
+        }
+      },
+      {
+        "id": "hand_spary",
+        "fixtureType": "Health Faucet",
+        "prefix": "hand_spary",
+        "occupantStatusParam": "occupant_status_03",
+        "unitTypeParam": "unit_type_03",
+        "proposedUnitParam": "proposed_unit_03",
+        "category": "flush",
+        "defaultFteKind": "total",
+        "defaults": {
+          "duration": "0.25",
+          "daily": "1",
+          "baseTopology1": "6",
+          "baseDefault": "5",
+          "unit": "lpm",
+          "defaultOccupantStatus": "both",
+          "readOnlyOccupantStatus": true
+        }
+      },
+      {
+        "id": "shower",
+        "fixtureType": "Showerhead/Hand-held Spray",
+        "prefix": "shower",
+        "occupantStatusParam": "occupant_status_07",
+        "unitTypeParam": "unit_type_07",
+        "proposedUnitParam": "proposed_unit_07",
+        "category": "flow",
+        "defaultFteKind": "total",
+        "defaults": {
+          "duration": "8",
+          "daily": "0.1",
+          "baseTopology1": "10",
+          "baseDefault": "8",
+          "unit": "lpm",
+          "defaultOccupantStatus": "both",
+          "readOnlyOccupantStatus": true
+        }
+      }
+    ]
+  }
+}

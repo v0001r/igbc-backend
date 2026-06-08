@@ -1,0 +1,24 @@
+{
+  "id": "annexure_waste_management",
+  "title": "Cal Waste Management",
+  "schemaVersion": 1,
+  "ratingTypeIds": [5],
+  "renderMode": "wasteManagement",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.annexMasterWaste",
+  "wasteManagementLayout": {
+    "minRows": 5,
+    "sourceAnnex": {
+      "tab": "material_resources",
+      "subtab": "annexure_master_material",
+      "materialField": "sub_category",
+      "otherMaterialField": "other_sub_catg"
+    },
+    "unitOptions": {
+      "": "Select Unit",
+      "kgs": "Weight (Kgs)",
+      "volume": "Volume (m³)"
+    },
+    "materialOptionsCatalogPath": "shared/waste-material-options.json"
+  }
+}
