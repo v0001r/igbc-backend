@@ -1,0 +1,25 @@
+{
+  "id": "existing_enchanced_water_efficiency",
+  "title": "Annexure 4 - WC CR 1_Option 1",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingWaterEfficiency",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.existingbuilding.existingenchancedwaterefficiency",
+  "existingWaterEfficiencyLayout": {
+    "addBuildingLabel": "Add Building",
+    "defaultBuildingCount": 1,
+    "minBuildings": 1,
+    "maxBuildings": 20,
+    "minRowsPerBuilding": 1,
+    "maxRowsPerBuilding": 50,
+    "lockedRows": [],
+    "lockExtraRowCalcFields": false,
+    "showMandatoryRequirement": false,
+    "saveAnnexMandatory": false,
+    "saveOverallsavedpercentage": false,
+    "showBuildingIndexInHeader": true,
+    "dailyUsesHeader": "Daily Uses per Person",
+    "flowRateHeader": "Flowrate / Capacity"
+  }
+}

@@ -6,6 +6,7 @@ export type RatingDocumentDto = {
   fileName: string;
   filePath: string;
   fileType: string | null;
+  updatedAt?: string;
 };
 
 export type RatingDataRowDto = {
@@ -14,6 +15,7 @@ export type RatingDataRowDto = {
   subtab: string;
   paramName: string;
   value: string | null;
+  updatedAt?: string;
 };
 
 export type CertificationFormResponse = {

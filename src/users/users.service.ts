@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
@@ -32,7 +37,9 @@ export class UsersService {
       ...registerDto,
       email: registerDto.email.toLowerCase(),
       password: hashedPassword,
-      userType: registerDto.userType ?? "m",
+      userType: "m",
+      status: "active",
+      isFirstLogin: false,
     });
     const savedUser = await this.usersRepository.save(user);
     const savedClient = await this.clientRepository.save(this.clientRepository.create({ user: savedUser }));
@@ -43,6 +50,7 @@ export class UsersService {
   async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { email: email.toLowerCase() },
+      relations: { role: true },
     });
   }
 
@@ -189,11 +197,31 @@ export class UsersService {
     ) as Partial<T>;
   }
 
+  async changePasswordByEmail(
+    email: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) {
+      throw new UnauthorizedException("Current password is incorrect");
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.isFirstLogin = false;
+    await this.usersRepository.save(user);
+    return this.getPublicProfileByEmail(email);
+  }
+
   private toPublicUser(user: User) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, client, ...publicUser } = user;
     return {
       ...publicUser,
+      roleName: user.role?.roleName ?? null,
       city: client?.city,
       pincode: client?.pincode,
       addressLine1: client?.addressLine1,

@@ -1,0 +1,20 @@
+{
+  "id": "existing_urban_heat_non_roof",
+  "title": "Annexure 2 - SF CR 3_Non Roof Area",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "urbanHeatNonRoof",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingUrbenHeadIsland",
+  "urbanHeatNonRoofLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "table1TabLabel": "Non Roof - Table 1",
+    "table2TabLabel": "Non Roof - Table 2",
+    "totalNonSource": {
+      "tab": "project_details",
+      "subtab": "project_details",
+      "param": "non_total"
+    }
+  }
+}

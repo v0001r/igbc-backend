@@ -1,0 +1,17 @@
+{
+  "id": "existing_water_consumption",
+  "title": "Annexure 5 - WC CR 1_Option 2",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingWaterConsumption",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.existingbuilding.exisitingWaterConsumption",
+  "existingWaterConsumptionLayout": {
+    "addBuildingLabel": "Add Building",
+    "defaultBuildingCount": 1,
+    "minBuildings": 1,
+    "maxBuildings": 20,
+    "minRowsPerBuilding": 5,
+    "maxRowsPerBuilding": 50
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "epi_calculation",
+  "title": "Annexure 2 - EE MR 2  & EE CR 2_Prescriptive Approach : BPO",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "epiCalculation",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingEPIcalculation",
+  "epiCalculationLayout": {
+    "minEnergyRows": 5,
+    "maxEnergyRows": 50
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "epi_limit_calculation",
+  "title": "Annexure 3 - EE MR 2 & EE Cr 2 _ Prescriptive Approach : Mall",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "epiLimitCalculation",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingepilimitcal",
+  "epiLimitCalculationLayout": {
+    "minEnergyRows": 5,
+    "maxEnergyRows": 50
+  }
+}

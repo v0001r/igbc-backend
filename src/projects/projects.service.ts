@@ -17,6 +17,9 @@ import { ProjectContact } from "./project-contact.entity";
 import { ProjectDetail } from "./project-detail.entity";
 import { ProjectInvoice } from "./project-invoice.entity";
 import { ProjectPayment } from "./project-payment.entity";
+import { CertificationWorkflowService } from "../certification-application/certification-workflow.service";
+import { CertificationCompletionService } from "./certification-completion.service";
+import { ProjectAccessService } from "./project-access.service";
 import { ProjectsEmailService } from "./projects-email.service";
 import { Project } from "./project.entity";
 import { RatingFormService, type RegistrationRatingContext } from "./rating-form.service";
@@ -28,6 +31,11 @@ interface RatingSystemFeeItem {
   fees: {
     nonMember: number;
   };
+}
+
+interface ProjectCategoryItem {
+  id: number;
+  name: string;
 }
 
 @Injectable()
@@ -52,6 +60,9 @@ export class ProjectsService {
     private readonly ratingConfigService: RatingConfigService,
     private readonly ratingFormService: RatingFormService,
     private readonly ratingTypeService: RatingTypeService,
+    private readonly projectAccessService: ProjectAccessService,
+    private readonly certificationWorkflowService: CertificationWorkflowService,
+    private readonly certificationCompletionService: CertificationCompletionService,
   ) {}
 
   async createStepOne(email: string, dto: CreateProjectStepOneDto) {
@@ -73,6 +84,7 @@ export class ProjectsService {
       if (project.createdByUserId !== user.id) {
         throw new ForbiddenException("You can update only your own project");
       }
+      await this.assertClientCanModifyProject(email, project.id);
 
       return this.upsertStepOne(email, project.id, dto);
     }
@@ -140,6 +152,7 @@ export class ProjectsService {
     if (project.createdByUserId !== user.id) {
       throw new ForbiddenException("You can update only your own project");
     }
+    await this.assertClientCanModifyProject(email, projectId);
 
     const registrationFee = this.getNonMemberFeeByRatingSystem(dto.ratingSystem);
     const rating = await this.ratingTypeService.resolveForProject({
@@ -557,6 +570,7 @@ export class ProjectsService {
     if (project.createdByUserId !== user.id) {
       throw new ForbiddenException("You can update only your own project");
     }
+    await this.assertClientCanModifyProject(email, projectId);
 
     const existingDetail = await this.projectDetailRepository.findOne({
       where: { projectId: project.id },
@@ -623,6 +637,7 @@ export class ProjectsService {
     if (project.createdByUserId !== user.id) {
       throw new ForbiddenException("You can update only your own project");
     }
+    await this.assertClientCanModifyProject(email, projectId);
 
     const existingContact = await this.projectContactRepository.findOne({
       where: { projectId: project.id },
@@ -664,6 +679,7 @@ export class ProjectsService {
     if (project.createdByUserId !== user.id) {
       throw new ForbiddenException("You can update only your own project");
     }
+    await this.assertClientCanModifyProject(email, projectId);
 
     const existingInvoice = await this.projectInvoiceRepository.findOne({
       where: { projectId: project.id },
@@ -764,6 +780,7 @@ export class ProjectsService {
     if (project.createdByUserId !== user.id) {
       throw new ForbiddenException("You can update only your own project");
     }
+    await this.assertClientCanModifyProject(email, projectId);
 
     const existingPayment = await this.projectPaymentRepository.findOne({
       where: { projectId: project.id },
@@ -1048,6 +1065,17 @@ export class ProjectsService {
       hasCertificationConfig = this.ratingTypeService.hasCertificationConfig(ratingRow);
     }
 
+    const categoryName =
+      this.readProjectCategories().find((item) => item.id === project.categoryId)?.name ?? null;
+
+    const certificationTypeLabel = certificationApplication
+      ? certificationApplication.certificationType === 1
+        ? "Pre-certification"
+        : certificationApplication.certificationType === 2
+          ? "Certification"
+          : null
+      : null;
+
     return {
       projectId: project.id,
       igbcProjectId: project.igbcProjectId ?? null,
@@ -1059,6 +1087,7 @@ export class ProjectsService {
       finalPayableAmount: Number(project.finalPayableAmount ?? 0),
       rejectRemark: project.rejectRemark ?? null,
       certificateAppliedStatus: project.certificateAppliedStatus,
+      categoryName,
       certificationApplication: certificationApplication
         ? {
             id: certificationApplication.id,
@@ -1067,12 +1096,33 @@ export class ProjectsService {
             paymentRemarks: certificationApplication.paymentRemarks ?? null,
             currentStep: certificationApplication.currentStep,
             certificationType: certificationApplication.certificationType ?? null,
+            certificationTypeLabel,
             certificationFee: Number(certificationApplication.certificationFee ?? 0),
             finalPayableAmount: Number(
               certificationApplication.finalPayableAmount ??
                 certificationApplication.certificationFee ??
                 0,
             ),
+            paymentMethod: certificationApplication.paymentMethod ?? null,
+            paymentType: certificationApplication.paymentType ?? null,
+            transactionReference: certificationApplication.transactionReference ?? null,
+            ifscCode: certificationApplication.ifscCode ?? null,
+            bankName: certificationApplication.bankName ?? null,
+            branch: certificationApplication.branch ?? null,
+            paymentAmount: certificationApplication.paymentAmount
+              ? Number(certificationApplication.paymentAmount)
+              : null,
+            paymentDate: certificationApplication.paymentDate ?? null,
+            organizationName: certificationApplication.organizationName ?? null,
+            address: certificationApplication.address,
+            city: certificationApplication.city,
+            state: certificationApplication.state,
+            pincode: certificationApplication.pincode,
+            siteAreaSqm: Number(certificationApplication.siteAreaSqm),
+            siteAreaSqft: Number(certificationApplication.siteAreaSqft),
+            numberOfBuildings: certificationApplication.numberOfBuildings,
+            totalBuiltUpAreaSqm: Number(certificationApplication.totalBuiltUpAreaSqm),
+            totalBuiltUpAreaSqft: Number(certificationApplication.totalBuiltUpAreaSqft),
           }
         : null,
       canReapplyCertification:
@@ -1091,6 +1141,7 @@ export class ProjectsService {
         : null,
       stepOne: {
         category: project.categoryId,
+        categoryName,
         ratingSystem: project.ratingSystem,
         ratingTypeId,
         versionType,
@@ -1159,14 +1210,17 @@ export class ProjectsService {
   }
 
   async getCertificationWorkspace(email: string, projectId: number) {
-    const { project, detail, ctx, resolved } = await this.assertRegistrationWorkspaceAccess(
+    const { project, detail, ctx, resolved, access } = await this.assertWorkspaceContext(
       email,
       projectId,
+      "read",
     );
 
     const form = await this.ratingFormService.getForm(ctx);
+    const workflow = await this.certificationWorkflowService.getWorkflowSummary(projectId);
+    const completion = this.certificationCompletionService.validateCompletion(ctx, form);
 
-    return this.ratingConfigService.buildWorkspacePayload({
+    const payload = this.ratingConfigService.buildWorkspacePayload({
       projectId: String(project.id),
       projectCode:
         project.igbcProjectId ?? project.temporaryProjectId ?? `P00${project.id}`,
@@ -1177,10 +1231,25 @@ export class ProjectsService {
       versionType: ctx.versionType,
       form,
     });
+
+    return {
+      ...payload,
+      isSubmitted: access.isSubmitted,
+      workflowStatus: access.workflowStatus,
+      readOnly: !access.canWrite,
+      canFinalSubmit: access.canWrite && !access.isSubmitted,
+      completion: {
+        complete: completion.complete,
+        missingCount: completion.missing.length,
+        missing: completion.missing,
+      },
+      assignedStaff: workflow.assignedStaff,
+      assignedTpa: workflow.assignedTpa,
+    };
   }
 
   async getCertificationForm(email: string, projectId: number) {
-    const { ctx } = await this.assertRegistrationWorkspaceAccess(email, projectId);
+    const { ctx } = await this.assertWorkspaceContext(email, projectId, "read");
     return this.ratingFormService.getForm(ctx);
   }
 
@@ -1189,7 +1258,7 @@ export class ProjectsService {
     projectId: number,
     dto: SaveCertificationSectionDto,
   ) {
-    const { ctx } = await this.assertRegistrationWorkspaceAccess(email, projectId);
+    const { ctx } = await this.assertWorkspaceContext(email, projectId, "write");
     return this.ratingFormService.saveSection(ctx, dto);
   }
 
@@ -1202,7 +1271,7 @@ export class ProjectsService {
     files: UploadedFile[],
     replaceExisting = true,
   ) {
-    const { ctx } = await this.assertRegistrationWorkspaceAccess(email, projectId);
+    const { ctx } = await this.assertWorkspaceContext(email, projectId, "write");
     return this.ratingFormService.uploadDocuments(
       ctx,
       tab,
@@ -1213,19 +1282,27 @@ export class ProjectsService {
     );
   }
 
-  private async assertRegistrationWorkspaceAccess(email: string, projectId: number) {
-    const user = await this.usersService.findByEmail(email);
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
+  async finalSubmitCertification(email: string, projectId: number) {
+    const { ctx } = await this.assertWorkspaceContext(email, projectId, "write");
+    return this.certificationWorkflowService.finalSubmit(email, projectId, ctx);
+  }
 
-    const project = await this.projectRepository.findOne({ where: { id: projectId } });
-    if (!project) {
-      throw new NotFoundException("Project not found");
-    }
-    if (project.createdByUserId !== user.id) {
-      throw new ForbiddenException("You can access only your own project");
-    }
+  async getProjectWorkflow(email: string, projectId: number) {
+    await this.assertWorkspaceContext(email, projectId, "read");
+    return this.certificationWorkflowService.getWorkflowSummary(projectId);
+  }
+
+  private async assertClientCanModifyProject(email: string, projectId: number) {
+    await this.projectAccessService.assertClientRegistrationWritable(email, projectId);
+  }
+
+  private async assertWorkspaceContext(
+    email: string,
+    projectId: number,
+    mode: "read" | "write",
+  ) {
+    const access = await this.projectAccessService.resolveAccess(email, projectId, mode);
+    const { project } = access;
 
     if (!this.isRegistrationApprovedAndPaid(project)) {
       throw new ForbiddenException(
@@ -1273,12 +1350,35 @@ export class ProjectsService {
       ratingTypeId: resolved.ratingTypeId,
     };
 
-    return { project, detail, ctx, resolved };
+    return { project, detail, ctx, resolved, access };
   }
 
   private readRatingSystems() {
     const content = readFileSync(this.resolveRatingSystemsJsonPath(), "utf8");
     return JSON.parse(content) as RatingSystemFeeItem[];
+  }
+
+  private readProjectCategories() {
+    const content = readFileSync(this.resolveProjectCategoriesJsonPath(), "utf8");
+    return JSON.parse(content) as ProjectCategoryItem[];
+  }
+
+  private resolveProjectCategoriesJsonPath() {
+    const sourcePath = join(
+      process.cwd(),
+      "src",
+      "project-category",
+      "data",
+      "project-categories.json",
+    );
+    const distPath = join(
+      process.cwd(),
+      "dist",
+      "project-category",
+      "data",
+      "project-categories.json",
+    );
+    return existsSync(sourcePath) ? sourcePath : distPath;
   }
 
   private resolveRatingSystemsJsonPath() {
@@ -1442,6 +1542,9 @@ export class ProjectsService {
         project,
         certificationApplication,
       ),
+      isSubmitted: certificationApplication?.isSubmitted ?? false,
+      workflowStatus: certificationApplication?.workflowStatus ?? "draft",
+      submittedAt: certificationApplication?.submittedAt?.toISOString?.() ?? null,
       rejectionType: certificationRejected
         ? "certification"
         : registrationRejected

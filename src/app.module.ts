@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ApExamModule } from "./ap-exam/ap-exam.module";
 import { ApExamRegistration } from "./ap-exam/ap-exam-registration.entity";
@@ -18,6 +20,9 @@ import { ProjectContact } from "./projects/project-contact.entity";
 import { ProjectDetail } from "./projects/project-detail.entity";
 import { ProjectInvoice } from "./projects/project-invoice.entity";
 import { ProjectPayment } from "./projects/project-payment.entity";
+import { ProjectAuditLog } from "./projects/project-audit-log.entity";
+import { ProjectStaffAssignment } from "./projects/project-staff-assignment.entity";
+import { ProjectTpaAssignment } from "./projects/project-tpa-assignment.entity";
 import { Project } from "./projects/project.entity";
 import { ProjectsModule } from "./projects/projects.module";
 import { RatingTypesModule } from "./projects/rating-types.module";
@@ -28,14 +33,27 @@ import { RatingDocument } from "./projects/rating-document.entity";
 import { RatingType } from "./projects/rating-type.entity";
 import { Client } from "./users/client.entity";
 import { Organization } from "./users/organization.entity";
+import { Role } from "./rbac/role.entity";
+import { RbacModule } from "./rbac/rbac.module";
+import { AuditLog } from "./users/audit-log.entity";
+import { UserProjectAssignment } from "./users/user-project-assignment.entity";
+import { UserRatingType } from "./users/user-rating-type.entity";
 import { User } from "./users/user.entity";
 import { UsersModule } from "./users/users.module";
+import { DashboardModule } from "./dashboard/dashboard.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: "default",
+        ttl: 900000,
+        limit: 100,
+      },
+    ]),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -65,11 +83,20 @@ import { UsersModule } from "./users/users.module";
           RatingType,
           RatingData,
           RatingDocument,
+          Role,
+          UserRatingType,
+          UserProjectAssignment,
+          AuditLog,
+          ProjectStaffAssignment,
+          ProjectTpaAssignment,
+          ProjectAuditLog,
         ],
         synchronize: true,
       }),
     }),
     UsersModule,
+    RbacModule,
+    DashboardModule,
     AuthModule,
     ApExamModule,
     MembershipModule,
@@ -79,6 +106,12 @@ import { UsersModule } from "./users/users.module";
     CertificationApplicationModule,
     EventsModule,
     SupportModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

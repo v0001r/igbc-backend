@@ -1,0 +1,15 @@
+{
+  "id": "existing_simulaition_method_output",
+  "title": "Annexure 4 - EE MR 2 & EE CR 2_Calibrated Simulation Approach",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingSimulationMethod",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existing_simulaition_method_output",
+  "existingSimulationMethodLayout": {
+    "minHvacRows": 5,
+    "maxHvacRows": 50,
+    "minSimulationRows": 5,
+    "maxSimulationRows": 50
+  }
+}

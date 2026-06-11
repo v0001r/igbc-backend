@@ -164,6 +164,7 @@ export class RatingFormService {
       subtab: row.subtab,
       paramName: row.paramName,
       value: row.value,
+      updatedAt: row.updatedAt?.toISOString(),
     };
   }
 
@@ -176,6 +177,7 @@ export class RatingFormService {
       fileName: row.fileName,
       filePath: row.filePath,
       fileType: row.fileType ?? null,
+      updatedAt: row.updatedAt?.toISOString(),
     };
   }
 }

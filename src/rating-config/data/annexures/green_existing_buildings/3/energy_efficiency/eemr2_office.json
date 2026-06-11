@@ -1,0 +1,15 @@
+{
+  "id": "eemr2_office",
+  "title": "Annexure 1 - EE MR 2 & EE CR 2_Prescriptive Approach : Office",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "eemr2Office",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.exisitingEemr2office",
+  "eemr2OfficeLayout": {
+    "minFloorRows": 5,
+    "maxFloorRows": 50,
+    "minEnergyRows": 5,
+    "maxEnergyRows": 50
+  }
+}

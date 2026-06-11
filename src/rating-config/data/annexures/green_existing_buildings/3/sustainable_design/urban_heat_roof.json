@@ -1,0 +1,10 @@
+{
+  "id": "existing_urban_heat_roof",
+  "title": "Annexure 1 - SF CR 3_Exposed Roof Area",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "urbanHeatRoof",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingUrbanHeatRoof",
+  "urbanHeatRoofLayout": {}
+}

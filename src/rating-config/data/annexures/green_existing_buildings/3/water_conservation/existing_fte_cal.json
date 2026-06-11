@@ -1,0 +1,161 @@
+{
+  "id": "existing_fte_cal",
+  "title": "Annexure 2 - WC MR 2 & WC CR 1_FTE Calculations",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "dwelling",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.existingbuilding.existingFteCal",
+  "dwellingLayout": {
+    "layoutMode": "rowTable",
+    "rowTableHeaderStyle": "fte",
+    "towerNameLabel": "Building Name / Building Typology / Space Name",
+    "addTowerLabel": "Add Another FTE Details",
+    "addRowLabel": "Add Row",
+    "defaultTowerCount": 1,
+    "minTowers": 1,
+    "maxTowers": 20,
+    "orientationRowCount": 5,
+    "minOrientationRows": 5,
+    "maxOrientationRows": 50,
+    "towerNameParam": "dwelling_type",
+    "orientationColumnGroups": [
+      {
+        "label": "TRANSIENT OCCUPANTS",
+        "params": ["ex_window_glazing_home", "ex_skylight_area_home"]
+      }
+    ],
+    "rowTableFooter": [
+      {
+        "cells": [
+          { "kind": "label", "colspan": 4, "text": "Total" },
+          { "kind": "field", "param": "ex_total_complied_area" },
+          { "kind": "field", "param": "ex_total_floor_area" },
+          { "kind": "empty" },
+          { "kind": "field", "param": "ex_total_evalated_area" }
+        ]
+      }
+    ],
+    "orientationColumns": [
+      {
+        "param": "ex_rwh_one",
+        "header": "Floors",
+        "type": "text",
+        "width": "min-w-[100px]"
+      },
+      {
+        "param": "ex_type_reg_occ",
+        "header": "Space",
+        "type": "text",
+        "width": "min-w-[120px]"
+      },
+      {
+        "param": "ex_floor_area_home",
+        "header": "Number of Working Hours",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_window_area_home",
+        "header": "Number of PERMANENT OCCUPANTS",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_window_glazing_home",
+        "header": "Number of TRANSIENT OCCUPANTS",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_skylight_area_home",
+        "header": "Duration of Stay (in Hrs)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_skylight_glazing_home",
+        "header": "FULL TIME EQUIVALENT (FTE)",
+        "type": "readonly",
+        "computed": true
+      }
+    ]
+  },
+  "dwellingStore": {
+    "towerStringParams": ["dwelling_type"],
+    "towerScalarParams": [
+      "ex_total_complied_area",
+      "ex_total_floor_area",
+      "ex_total_evalated_area"
+    ],
+    "orientationParams": [
+      "ex_rwh_one",
+      "ex_type_reg_occ",
+      "ex_floor_area_home",
+      "ex_window_area_home",
+      "ex_window_glazing_home",
+      "ex_skylight_area_home",
+      "ex_skylight_glazing_home"
+    ]
+  },
+  "dwellingRowPipeline": [
+    {
+      "set": "ex_skylight_glazing_home",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "div",
+          "args": [
+            {
+              "op": "add",
+              "args": [
+                {
+                  "op": "mul",
+                  "args": [
+                    { "op": "parseNum", "arg": { "ref": "row:ex_window_area_home" } },
+                    { "op": "parseNum", "arg": { "ref": "row:ex_floor_area_home" } }
+                  ]
+                },
+                {
+                  "op": "mul",
+                  "args": [
+                    { "op": "parseNum", "arg": { "ref": "row:ex_window_glazing_home" } },
+                    { "op": "parseNum", "arg": { "ref": "row:ex_skylight_area_home" } }
+                  ]
+                }
+              ]
+            },
+            { "const": 8 }
+          ]
+        }
+      }
+    }
+  ],
+  "dwellingTowerPipeline": [
+    {
+      "set": "ex_total_complied_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "ex_window_area_home" }
+      }
+    },
+    {
+      "set": "ex_total_floor_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "ex_window_glazing_home" }
+      }
+    },
+    {
+      "set": "ex_total_evalated_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "ex_skylight_glazing_home" }
+      }
+    }
+  ]
+}

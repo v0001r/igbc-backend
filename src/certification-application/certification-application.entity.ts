@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import type { CertificationWorkflowStatus } from "./certification-workflow-status.enum";
 
 @Entity("certification_applications")
 export class CertificationApplication {
@@ -166,6 +167,15 @@ export class CertificationApplication {
 
   @Column({ type: "varchar", default: "saved" })
   status!: "saved" | "submitted" | "approved";
+
+  @Column({ name: "is_submitted", type: "boolean", default: false })
+  isSubmitted!: boolean;
+
+  @Column({ name: "submitted_at", type: "timestamptz", nullable: true })
+  submittedAt?: Date | null;
+
+  @Column({ name: "workflow_status", type: "varchar", length: 32, default: "draft" })
+  workflowStatus!: CertificationWorkflowStatus;
 
   @CreateDateColumn()
   createdAt!: Date;

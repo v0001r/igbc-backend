@@ -1,0 +1,15 @@
+{
+  "id": "outdoor_air_system",
+  "title": "Annexure 2 - HC MR 2 & HC CR 1_Outdoor Air System",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingOutdoorAirSystem",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingoutdoorairystem",
+  "ventilationRatesCatalogPath": "shared/minimum-ventilation-rates.json",
+  "existingOutdoorAirSystemLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More"
+  }
+}

@@ -10,7 +10,9 @@ function resolveAnnexuresRoot(): string {
   const candidates = [
     join(__dirname, "..", "data", "annexures"),
     join(process.cwd(), "src", "rating-config", "data", "annexures"),
+    join(process.cwd(), "igbc-backend", "src", "rating-config", "data", "annexures"),
     join(process.cwd(), "dist", "rating-config", "data", "annexures"),
+    join(process.cwd(), "igbc-backend", "dist", "rating-config", "data", "annexures"),
   ];
   for (const p of candidates) {
     if (existsSync(p)) return p;
@@ -161,6 +163,15 @@ function enrichSchemaFromGreenhomeCatalog(
         rainwaterLayout: { ...next.rainwaterLayout, surfaceTable: { ...next.rainwaterLayout.surfaceTable, columns } },
       };
     }
+    if (parsed.renderMode === "existingRainfall" && parsed.existingRainfallLayout) {
+      next = {
+        ...next,
+        existingRainfallLayout: {
+          ...parsed.existingRainfallLayout,
+          surfaceOptions: selectOptions,
+        },
+      };
+    }
     lookupMaps.runoffCoefficients = runoffCoefficients;
   }
 
@@ -184,6 +195,61 @@ function enrichSchemaFromGreenhomeCatalog(
   }
 
   return { ...next, lookupMaps };
+}
+
+type VentilationRateCatalogEntry = {
+  slug: string;
+  label: string;
+  outdoor_air_rate: number | null;
+  area_outdoor_rate: number;
+};
+
+function enrichExistingSingleZoneVentilationRates(
+  parsed: AnnexureSchemaDefinition,
+  schemaFilePath: string,
+): AnnexureSchemaDefinition {
+  const catalogPath = parsed.ventilationRatesCatalogPath;
+  if (
+    !catalogPath ||
+    (parsed.renderMode !== "existingSingleZoneSystem" &&
+      parsed.renderMode !== "existingOutdoorAirSystem")
+  ) {
+    return parsed;
+  }
+  const versionDir = dirname(dirname(schemaFilePath));
+  const fullPath = join(versionDir, catalogPath);
+  if (!existsSync(fullPath)) return parsed;
+  const catalogRaw = JSON.parse(readFileSync(fullPath, "utf8")) as {
+    entries?: VentilationRateCatalogEntry[];
+  };
+  const areaDescriptionOptions: Record<
+    string,
+    { label: string; outdoor_air_rate: number | null; area_outdoor_rate: number }
+  > = {};
+  for (const e of catalogRaw.entries ?? []) {
+    if (!e?.slug) continue;
+    areaDescriptionOptions[e.slug] = {
+      label: e.label,
+      outdoor_air_rate: e.outdoor_air_rate,
+      area_outdoor_rate: e.area_outdoor_rate,
+    };
+  }
+  if (parsed.renderMode === "existingOutdoorAirSystem") {
+    return {
+      ...parsed,
+      existingOutdoorAirSystemLayout: {
+        ...parsed.existingOutdoorAirSystemLayout,
+        areaDescriptionOptions,
+      },
+    };
+  }
+  return {
+    ...parsed,
+    existingSingleZoneLayout: {
+      ...parsed.existingSingleZoneLayout,
+      areaDescriptionOptions,
+    },
+  };
 }
 
 function enrichWasteMaterialOptions(
@@ -260,6 +326,7 @@ function loadOneAnnexureFile(
     const raw = readFileSync(full, "utf8");
     let parsed = JSON.parse(raw) as AnnexureSchemaDefinition;
     parsed = enrichSchemaFromGreenhomeCatalog(parsed, full);
+    parsed = enrichExistingSingleZoneVentilationRates(parsed, full);
     parsed = enrichWasteMaterialOptions(parsed, full);
     const hasTable = (parsed.table?.columns?.length ?? 0) > 0;
     const hasComparison =
@@ -310,6 +377,39 @@ function loadOneAnnexureFile(
     const hasWastewaterReuse =
       parsed.renderMode === "wastewaterReuse" &&
       (parsed.wastewaterReuseLayout?.reuseSection?.rows?.length ?? 0) > 0;
+    const hasUrbanHeatRoof =
+      parsed.renderMode === "urbanHeatRoof" && Boolean(parsed.urbanHeatRoofLayout);
+    const hasUrbanHeatNonRoof =
+      parsed.renderMode === "urbanHeatNonRoof" && Boolean(parsed.urbanHeatNonRoofLayout);
+    const hasExistingRainfall =
+      parsed.renderMode === "existingRainfall" && Boolean(parsed.existingRainfallLayout);
+    const hasExistingWaterEfficiency =
+      parsed.renderMode === "existingWaterEfficiency" &&
+      Boolean(parsed.existingWaterEfficiencyLayout);
+    const hasExistingWaterConsumption =
+      parsed.renderMode === "existingWaterConsumption" &&
+      Boolean(parsed.existingWaterConsumptionLayout);
+    const hasExistingAlternativePerformance =
+      parsed.renderMode === "existingAlternativePerformance" &&
+      Boolean(parsed.existingAlternativePerformanceLayout);
+    const hasEemr2Office =
+      parsed.renderMode === "eemr2Office" && Boolean(parsed.eemr2OfficeLayout);
+    const hasEpiCalculation =
+      parsed.renderMode === "epiCalculation" && Boolean(parsed.epiCalculationLayout);
+    const hasEpiLimitCalculation =
+      parsed.renderMode === "epiLimitCalculation" && Boolean(parsed.epiLimitCalculationLayout);
+    const hasExistingSimulationMethod =
+      parsed.renderMode === "existingSimulationMethod" &&
+      Boolean(parsed.existingSimulationMethodLayout);
+    const hasExistingOneSiteRenewable =
+      parsed.renderMode === "existingOneSiteRenewable" &&
+      Boolean(parsed.existingOneSiteRenewableLayout);
+    const hasExistingSingleZoneSystem =
+      parsed.renderMode === "existingSingleZoneSystem" &&
+      Boolean(parsed.existingSingleZoneLayout);
+    const hasExistingOutdoorAirSystem =
+      parsed.renderMode === "existingOutdoorAirSystem" &&
+      Boolean(parsed.existingOutdoorAirSystemLayout);
     if (
       !parsed?.id ||
       (!hasTable &&
@@ -329,7 +429,20 @@ function loadOneAnnexureFile(
         !hasOccupantWellbeing &&
         !hasWasteManagement &&
         !hasWaterBalance &&
-        !hasWastewaterReuse)
+        !hasWastewaterReuse &&
+        !hasUrbanHeatRoof &&
+        !hasUrbanHeatNonRoof &&
+        !hasExistingRainfall &&
+        !hasExistingWaterEfficiency &&
+        !hasExistingWaterConsumption &&
+        !hasExistingAlternativePerformance &&
+        !hasEemr2Office &&
+        !hasEpiCalculation &&
+        !hasEpiLimitCalculation &&
+        !hasExistingSimulationMethod &&
+        !hasExistingOneSiteRenewable &&
+        !hasExistingSingleZoneSystem &&
+        !hasExistingOutdoorAirSystem)
     )
       return null;
     if (
@@ -474,6 +587,27 @@ export function buildAnnexureSchemaIndex(
           (existing?.waterBalanceLayout?.sections?.length ?? 0) > 0) ||
         (existing?.renderMode === "wastewaterReuse" &&
           (existing?.wastewaterReuseLayout?.reuseSection?.rows?.length ?? 0) > 0) ||
+        (existing?.renderMode === "urbanHeatRoof" && Boolean(existing?.urbanHeatRoofLayout)) ||
+        (existing?.renderMode === "urbanHeatNonRoof" && Boolean(existing?.urbanHeatNonRoofLayout)) ||
+        (existing?.renderMode === "existingRainfall" && Boolean(existing?.existingRainfallLayout)) ||
+        (existing?.renderMode === "existingWaterEfficiency" &&
+          Boolean(existing?.existingWaterEfficiencyLayout)) ||
+        (existing?.renderMode === "existingWaterConsumption" &&
+          Boolean(existing?.existingWaterConsumptionLayout)) ||
+        (existing?.renderMode === "existingAlternativePerformance" &&
+          Boolean(existing?.existingAlternativePerformanceLayout)) ||
+        (existing?.renderMode === "eemr2Office" && Boolean(existing?.eemr2OfficeLayout)) ||
+        (existing?.renderMode === "epiCalculation" && Boolean(existing?.epiCalculationLayout)) ||
+        (existing?.renderMode === "epiLimitCalculation" &&
+          Boolean(existing?.epiLimitCalculationLayout)) ||
+        (existing?.renderMode === "existingSimulationMethod" &&
+          Boolean(existing?.existingSimulationMethodLayout)) ||
+        (existing?.renderMode === "existingOneSiteRenewable" &&
+          Boolean(existing?.existingOneSiteRenewableLayout)) ||
+        (existing?.renderMode === "existingSingleZoneSystem" &&
+          Boolean(existing?.existingSingleZoneLayout)) ||
+        (existing?.renderMode === "existingOutdoorAirSystem" &&
+          Boolean(existing?.existingOutdoorAirSystemLayout)) ||
         Boolean(existing?.ventilationSummary?.sources?.length);
       if (hasFullEditor) continue;
 

@@ -1,0 +1,59 @@
+{
+  "id": "existing_water_efficiency",
+  "title": "Annexure 3 - WC MR 2_Water Efficient Plumbing Fixtures Calculations",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingWaterEfficiency",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.existingbuilding.existingWaterEfficiencyCalculation",
+  "existingWaterEfficiencyLayout": {
+    "addBuildingLabel": "Add Building",
+    "defaultBuildingCount": 1,
+    "minBuildings": 1,
+    "maxBuildings": 20,
+    "minRowsPerBuilding": 1,
+    "maxRowsPerBuilding": 50,
+    "lockedRows": [
+      {
+        "fixture_type": "Water Closets (Full Flush) - Male",
+        "fixture_detail": "JHC-WHT-2400",
+        "duration": "1",
+        "daily_uses": "1",
+        "fte": "28",
+        "baseline_flow": "6",
+        "baseline_flow_proposed": "6",
+        "readonlyFields": ["fixture_type", "duration", "daily_uses", "baseline_flow"]
+      },
+      {
+        "fixture_type": "Water Closets (Full Flush) - Female",
+        "fixture_detail": "JHC-WHT-2400",
+        "duration": "1",
+        "daily_uses": "3",
+        "fte": "28",
+        "baseline_flow": "6",
+        "baseline_flow_proposed": "6",
+        "readonlyFields": ["fixture_type", "duration", "daily_uses", "baseline_flow"]
+      },
+      {
+        "fixture_type": "Urinal",
+        "fixture_detail": "AHB-CHR-5309",
+        "duration": "1",
+        "daily_uses": "2",
+        "fte": "28",
+        "baseline_flow": "4",
+        "baseline_flow_proposed": "0",
+        "readonlyFields": ["fixture_type", "duration", "daily_uses", "baseline_flow"]
+      },
+      {
+        "fixture_type": "Faucet / taps",
+        "fixture_detail": "OHS-CHR-5302",
+        "duration": "0.25",
+        "daily_uses": "4",
+        "fte": "56",
+        "baseline_flow": "8",
+        "baseline_flow_proposed": "3.8",
+        "readonlyFields": ["fixture_type", "duration", "daily_uses", "baseline_flow"]
+      }
+    ]
+  }
+}

@@ -15,19 +15,53 @@ import {
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { DashboardService } from "../dashboard/dashboard.service";
+import { Permission } from "../rbac/permissions.enum";
+import { RequirePermissions } from "../rbac/permissions.decorator";
+import { PermissionsGuard } from "../rbac/permissions.guard";
+import { RoleName } from "../rbac/role.enum";
+import { Roles } from "../rbac/roles.decorator";
+import { RolesGuard } from "../rbac/roles.guard";
 import { CreateProjectStepOneDto } from "./dto/create-project-step-one.dto";
 import { RejectProjectDto } from "./dto/reject-project.dto";
 import { UpsertProjectStepFourDto } from "./dto/upsert-project-step-four.dto";
 import { UpsertProjectStepFiveDto } from "./dto/upsert-project-step-five.dto";
 import { UpsertProjectStepThreeDto } from "./dto/upsert-project-step-three.dto";
 import { UpsertProjectStepTwoDto } from "./dto/upsert-project-step-two.dto";
+import { AssignStaffDto } from "./dto/assign-staff.dto";
+import { AssignTpaDto } from "./dto/assign-tpa.dto";
 import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
+import { ProjectAssignmentService } from "./project-assignment.service";
 import { ProjectsService } from "./projects.service";
 
 @ApiTags("projects")
 @Controller("projects")
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly dashboardService: DashboardService,
+    private readonly projectAssignmentService: ProjectAssignmentService,
+  ) {}
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Staff/TPA: list assigned projects" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF, RoleName.TPA)
+  @RequirePermissions(Permission.PROJECTS_VIEW_ASSIGNED)
+  @Get("assigned")
+  getAssignedProjects(@Req() request: { user: { email: string } }) {
+    return this.dashboardService.getAssignedProjects(request.user.email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: list final-submitted projects by rating type" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Get("lead/submitted")
+  getLeadSubmittedProjects(@Req() request: { user: { email: string } }) {
+    return this.projectAssignmentService.listLeadSubmittedProjects(request.user.email);
+  }
 
   @ApiBearerAuth()
   @ApiOperation({
@@ -208,6 +242,110 @@ export class ProjectsController {
   })
   @ApiConsumes("multipart/form-data")
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Client: final submit certification package" })
+  @UseGuards(JwtAuthGuard)
+  @Post(":projectId/certification/final-submit")
+  finalSubmitCertification(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.finalSubmitCertification(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get project certification workflow timeline" })
+  @UseGuards(JwtAuthGuard)
+  @Get(":projectId/workflow")
+  getProjectWorkflow(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.getProjectWorkflow(request.user.email, projectId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: assign staff to project" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Post(":projectId/assign-staff")
+  assignStaff(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body() dto: AssignStaffDto,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectAssignmentService.assignStaff(
+      request.user.email,
+      projectId,
+      dto.staffId,
+    );
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Staff: assign TPA to project" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_TPA)
+  @Post(":projectId/assign-tpa")
+  assignTpa(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body() dto: AssignTpaDto,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectAssignmentService.assignTpa(request.user.email, projectId, dto.tpaId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: eligible staff for project rating type" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Get(":projectId/eligible-staff")
+  getEligibleStaff(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectAssignmentService.getEligibleStaff(projectId, request.user.email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Staff: eligible TPAs for project rating type" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_TPA)
+  @Get(":projectId/eligible-tpas")
+  getEligibleTpas(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectAssignmentService.getEligibleTpas(projectId, request.user.email);
+  }
+
   @Post(":projectId/certification-form/upload")
   @UseInterceptors(FilesInterceptor("files"))
   uploadCertificationDocuments(

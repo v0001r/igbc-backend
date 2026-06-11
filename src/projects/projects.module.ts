@@ -1,12 +1,24 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CertificationApplication } from "../certification-application/certification-application.entity";
+import { DashboardModule } from "../dashboard/dashboard.module";
 import { RatingConfigModule } from "../rating-config/rating-config.module";
+import { RbacModule } from "../rbac/rbac.module";
 import { UsersModule } from "../users/users.module";
 import { ProjectContact } from "./project-contact.entity";
 import { ProjectDetail } from "./project-detail.entity";
 import { ProjectInvoice } from "./project-invoice.entity";
 import { ProjectPayment } from "./project-payment.entity";
+import { UserRatingType } from "../users/user-rating-type.entity";
+import { User } from "../users/user.entity";
+import { CertificationWorkflowService } from "../certification-application/certification-workflow.service";
+import { CertificationCompletionService } from "./certification-completion.service";
+import { ProjectAccessService } from "./project-access.service";
+import { ProjectAssignmentService } from "./project-assignment.service";
+import { ProjectAuditLog } from "./project-audit-log.entity";
+import { ProjectAuditService } from "./project-audit.service";
+import { ProjectStaffAssignment } from "./project-staff-assignment.entity";
+import { ProjectTpaAssignment } from "./project-tpa-assignment.entity";
 import { Project } from "./project.entity";
 import { ProjectsController } from "./projects.controller";
 import { ProjectsEmailService } from "./projects-email.service";
@@ -19,6 +31,8 @@ import { RatingTypesModule } from "./rating-types.module";
 @Module({
   imports: [
     UsersModule,
+    RbacModule,
+    DashboardModule,
     RatingConfigModule,
     RatingTypesModule,
     TypeOrmModule.forFeature([
@@ -30,9 +44,24 @@ import { RatingTypesModule } from "./rating-types.module";
       CertificationApplication,
       RatingData,
       RatingDocument,
+      ProjectStaffAssignment,
+      ProjectTpaAssignment,
+      ProjectAuditLog,
+      User,
+      UserRatingType,
     ]),
   ],
   controllers: [ProjectsController],
-  providers: [ProjectsService, ProjectsEmailService, RatingFormService],
+  providers: [
+    ProjectsService,
+    ProjectsEmailService,
+    RatingFormService,
+    ProjectAccessService,
+    ProjectAuditService,
+    CertificationCompletionService,
+    CertificationWorkflowService,
+    ProjectAssignmentService,
+  ],
+  exports: [ProjectAccessService, ProjectAssignmentService, CertificationWorkflowService],
 })
 export class ProjectsModule {}

@@ -1,0 +1,42 @@
+{
+  "id": "existing_rainfall_calculations",
+  "title": "Annexure 1 - WC MR 1 & WC CR 2_Rainwater Harvesting Calculations",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingRainfall",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.existingbuilding.existingrainfall",
+  "baselineCatalogPath": "shared/rainwater-surface-types.json",
+  "existingRainfallLayout": {
+    "rainfallRowCount": 5,
+    "surfaceRowCount": 15,
+    "yearOptions": {
+      "": "Select Year",
+      "2014": "2014",
+      "2015": "2015",
+      "2016": "2016",
+      "2017": "2017",
+      "2018": "2018",
+      "2019": "2019",
+      "2020": "2020",
+      "2021": "2021",
+      "2022": "2022",
+      "2023": "2023"
+    },
+    "monthOptions": {
+      "": "Select Month",
+      "January": "January",
+      "Febuary": "Febuary",
+      "March": "March",
+      "April": "April",
+      "May": "May",
+      "June": "June",
+      "July": "July",
+      "August": "August",
+      "September": "September",
+      "October": "October",
+      "November": "November",
+      "December": "December"
+    }
+  }
+}

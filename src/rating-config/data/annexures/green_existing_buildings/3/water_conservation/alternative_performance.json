@@ -1,0 +1,14 @@
+{
+  "id": "existing_alternative_performance",
+  "title": "Annexure 6 - WC CR 4_Alternative Water Performance Calculations",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingAlternativePerformance",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingAlternativePerformance",
+  "existingAlternativePerformanceLayout": {
+    "addRowLabel": "Add More",
+    "minRows": 5,
+    "maxRows": 50
+  }
+}

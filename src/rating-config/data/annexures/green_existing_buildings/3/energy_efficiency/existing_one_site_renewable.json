@@ -1,0 +1,14 @@
+{
+  "id": "existing_one_site_renewable",
+  "title": "Annexure 5 - EE Cr 3_Green Power",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingOneSiteRenewable",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingOneSiteRenewable",
+  "existingOneSiteRenewableLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "single_zone_system",
+  "title": "Annexure 1 - HC MR 2 & HC CR 1_Single Zone System",
+  "schemaVersion": 1,
+  "ratingTypeIds": [4],
+  "renderMode": "existingSingleZoneSystem",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.existingbuilding.existingsinglezonesystem",
+  "ventilationRatesCatalogPath": "shared/minimum-ventilation-rates.json",
+  "existingSingleZoneLayout": {
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More"
+  }
+}
