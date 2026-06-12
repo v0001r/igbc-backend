@@ -168,6 +168,16 @@ export class ProjectsController {
 
   @ApiBearerAuth()
   @ApiOperation({
+    summary: "Get project registration fee rules by rating system",
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get("masters/fees")
+  getRegistrationFeeMasters() {
+    return this.projectsService.getRegistrationFeeMasters();
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
     summary: "Get all filled details of a particular project (step-1 to step-5)",
   })
   @UseGuards(JwtAuthGuard)

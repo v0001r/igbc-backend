@@ -69,6 +69,7 @@ export class PasswordResetService {
       });
 
       await this.writeAudit("FORGOT_PASSWORD_REQUESTED", user.id);
+      // ACTIVITY_LOG: Mirror FORGOT_PASSWORD_REQUESTED to ActivityLogService when self-service reset audit is needed.
     }
 
     return { message: GENERIC_FORGOT_MESSAGE };
@@ -109,6 +110,7 @@ export class PasswordResetService {
     await this.userRepository.save(user);
 
     await this.writeAudit("PASSWORD_RESET_COMPLETED", user.id);
+    // ACTIVITY_LOG: Mirror PASSWORD_RESET_COMPLETED to ActivityLogService when self-service reset audit is needed.
 
     return {
       message: "Password reset successfully. You can now sign in with your new password.",

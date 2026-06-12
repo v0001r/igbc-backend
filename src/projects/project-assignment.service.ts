@@ -132,7 +132,14 @@ export class ProjectAssignmentService {
       await this.certificationRepository.save(certApp);
     }
 
-    await this.auditService.log(projectId, action, lead.id, { staffId });
+    await this.auditService.log(projectId, action, lead.id, {
+      staffId,
+      staffName: staff.displayName,
+      previousStaffId: existing?.staffId ?? null,
+      assignedBy: lead.displayName,
+    });
+
+    // ACTIVITY_LOG: Add STAFF_CREDIT_REVIEW when staff credit review API is implemented.
 
     return { message: "Staff assigned successfully", staffId };
   }
@@ -183,7 +190,15 @@ export class ProjectAssignmentService {
       await this.certificationRepository.save(certApp);
     }
 
-    await this.auditService.log(projectId, action, staffUser.id, { tpaId });
+    await this.auditService.log(projectId, action, staffUser.id, {
+      tpaId,
+      tpaName: tpa.displayName,
+      previousTpaId: existing?.tpaId ?? null,
+      assignedBy: staffUser.displayName,
+    });
+
+    // ACTIVITY_LOG: Add TPA_POINTS_ASSIGNED / TPA_POINTS_UPDATED / TPA_POINTS_REMOVED when TPA scoring APIs exist.
+    // ACTIVITY_LOG: Add TPA_REMARKS_ADDED / TPA_REMARKS_UPDATED when per-credit TPA remark APIs exist.
 
     return { message: "TPA assigned successfully", tpaId };
   }

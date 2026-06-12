@@ -1,6 +1,8 @@
 import { ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import { ActivityType } from "../activity-log/activity-type.enum";
+import { ActivityLogService } from "../activity-log/activity-log.service";
 import { RegisterDto } from "../users/dto/register.dto";
 import { UsersService } from "../users/users.service";
 import { LoginDto } from "./dto/login.dto";
@@ -10,11 +12,15 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly activityLogService: ActivityLogService,
   ) {}
 
   async register(registerDto: RegisterDto) {
     const user = await this.usersService.create(registerDto);
     const publicUser = await this.usersService.getPublicProfileByEmail(user.email);
+
+    // ACTIVITY_LOG: Add CLIENT_REGISTERED log via activityLogService when client registration audit is required.
+
     return this.buildAuthResponse(user.id, user.email, publicUser);
   }
 
@@ -34,6 +40,17 @@ export class AuthService {
     }
 
     const publicUser = await this.usersService.getPublicProfileByEmail(user.email);
+
+    await this.activityLogService.log({
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.CLIENT_LOGIN,
+      module: "auth",
+      activityTitle: "User login",
+      activityDescription: `${user.displayName ?? user.email} logged in`,
+      newValue: { email: user.email, userType: user.userType },
+    });
+
     return {
       ...this.buildAuthResponse(user.id, user.email, publicUser),
       mustChangePassword: false,

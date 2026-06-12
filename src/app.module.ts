@@ -41,6 +41,8 @@ import { UserRatingType } from "./users/user-rating-type.entity";
 import { User } from "./users/user.entity";
 import { UsersModule } from "./users/users.module";
 import { DashboardModule } from "./dashboard/dashboard.module";
+import { ActivityLogModule } from "./activity-log/activity-log.module";
+import { ProjectActivityLog } from "./activity-log/project-activity-log.entity";
 
 @Module({
   imports: [
@@ -90,10 +92,12 @@ import { DashboardModule } from "./dashboard/dashboard.module";
           ProjectStaffAssignment,
           ProjectTpaAssignment,
           ProjectAuditLog,
+          ProjectActivityLog,
         ],
         synchronize: true,
       }),
     }),
+    ActivityLogModule,
     UsersModule,
     RbacModule,
     DashboardModule,

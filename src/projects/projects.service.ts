@@ -3,6 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { In, Like, Repository } from "typeorm";
+import { ActivityType } from "../activity-log/activity-type.enum";
+import { ActivityLogService } from "../activity-log/activity-log.service";
 import { CertificationApplication } from "../certification-application/certification-application.entity";
 import { RatingConfigService } from "../rating-config/rating-config.service";
 import { RatingTypeService } from "./rating-type.service";
@@ -63,6 +65,7 @@ export class ProjectsService {
     private readonly projectAccessService: ProjectAccessService,
     private readonly certificationWorkflowService: CertificationWorkflowService,
     private readonly certificationCompletionService: CertificationCompletionService,
+    private readonly activityLogService: ActivityLogService,
   ) {}
 
   async createStepOne(email: string, dto: CreateProjectStepOneDto) {
@@ -119,6 +122,21 @@ export class ProjectsService {
         temporaryProjectId,
       }),
     );
+
+    await this.activityLogService.log({
+      projectId: updated.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.PROJECT_CREATED,
+      module: "registration",
+      activityTitle: "Project created",
+      activityDescription: `Project ${updated.temporaryProjectId} created`,
+      newValue: {
+        temporaryProjectId: updated.temporaryProjectId,
+        ratingSystem: updated.ratingSystem,
+        status: updated.status,
+      },
+    });
 
     return {
       id: updated.id,
@@ -177,6 +195,17 @@ export class ProjectsService {
       updatedProject.id,
       registrationFee,
     );
+
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.PROJECT_UPDATED,
+      module: "registration",
+      activityTitle: "Project updated",
+      activityDescription: "Registration step 1 updated",
+      newValue: { step: 1, ratingSystem: updatedProject.ratingSystem },
+    });
 
     return {
       id: updatedProject.id,
@@ -401,6 +430,21 @@ export class ProjectsService {
       ratingSystem: updatedProject.ratingSystem,
     });
 
+    const admin = await this.usersService.findByEmail(email);
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: admin?.id ?? null,
+      userRole: admin?.userType ?? "a",
+      activityType: ActivityType.PROJECT_APPROVED,
+      module: "registration",
+      activityTitle: "Project approved",
+      activityDescription: `Project approved with IGBC ID ${updatedProject.igbcProjectId}`,
+      newValue: {
+        igbcProjectId: updatedProject.igbcProjectId,
+        status: updatedProject.status,
+      },
+    });
+
     return {
       projectId: updatedProject.id,
       igbcProjectId: updatedProject.igbcProjectId,
@@ -448,6 +492,18 @@ export class ProjectsService {
       projectName: detail?.projectName ?? null,
       ratingSystem: updatedProject.ratingSystem,
       remark,
+    });
+
+    const admin = await this.usersService.findByEmail(email);
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: admin?.id ?? null,
+      userRole: admin?.userType ?? "a",
+      activityType: ActivityType.PROJECT_REJECTED,
+      module: "registration",
+      activityTitle: "Project rejected",
+      activityDescription: remark,
+      newValue: { status: updatedProject.status, rejectRemark: remark },
     });
 
     return {
@@ -601,6 +657,17 @@ export class ProjectsService {
       }),
     );
 
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.PROJECT_UPDATED,
+      module: "registration",
+      activityTitle: "Project updated",
+      activityDescription: "Registration step 2 (project details) saved",
+      newValue: { step: 2, projectName: savedDetail.projectName },
+    });
+
     return {
       projectId: updatedProject.id,
       igbcProjectId: updatedProject.igbcProjectId ?? null,
@@ -656,6 +723,17 @@ export class ProjectsService {
         currentStep: Math.max(project.currentStep, 3),
       }),
     );
+
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.PROJECT_UPDATED,
+      module: "registration",
+      activityTitle: "Project updated",
+      activityDescription: "Registration step 3 (contacts) saved",
+      newValue: { step: 3 },
+    });
 
     return {
       projectId: updatedProject.id,
@@ -735,6 +813,17 @@ export class ProjectsService {
       }),
     );
 
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.PROJECT_UPDATED,
+      module: "registration",
+      activityTitle: "Project updated",
+      activityDescription: "Registration step 4 (invoice) saved",
+      newValue: { step: 4, totalPayable },
+    });
+
     return {
       projectId: updatedProject.id,
       igbcProjectId: updatedProject.igbcProjectId ?? null,
@@ -810,6 +899,20 @@ export class ProjectsService {
         status: "submitted",
       }),
     );
+
+    await this.activityLogService.log({
+      projectId: updatedProject.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: ActivityType.PROJECT_REGISTRATION_SUBMITTED,
+      module: "registration",
+      activityTitle: "Project registration submitted",
+      activityDescription: "Client submitted project registration for review",
+      newValue: {
+        paymentMethod: savedPayment.paymentMethod,
+        remarks: savedPayment.remarks ?? null,
+      },
+    });
 
     return {
       projectId: updatedProject.id,
@@ -1010,6 +1113,24 @@ export class ProjectsService {
     });
 
     return updatedInvoice;
+  }
+
+  getRegistrationFeeMasters() {
+    const ratingSystems = this.readRatingSystems();
+    const feesByRatingSystem = Object.fromEntries(
+      ratingSystems.map((item) => [
+        item.ratingName,
+        {
+          registrationFee: Number(item.fees?.nonMember ?? 0),
+          gstPercent: 18,
+        },
+      ]),
+    );
+
+    return {
+      feesByRatingSystem,
+      couponCodes: [],
+    };
   }
 
   private getNonMemberFeeByRatingSystem(ratingSystemName: string) {
@@ -1258,8 +1379,12 @@ export class ProjectsService {
     projectId: number,
     dto: SaveCertificationSectionDto,
   ) {
-    const { ctx } = await this.assertWorkspaceContext(email, projectId, "write");
-    return this.ratingFormService.saveSection(ctx, dto);
+    const { ctx, access } = await this.assertWorkspaceContext(email, projectId, "write");
+    return this.ratingFormService.saveSection(ctx, dto, {
+      userId: access.user.id,
+      userRole: access.user.userType,
+      userDisplayName: access.user.displayName,
+    });
   }
 
   async uploadCertificationDocuments(
@@ -1271,7 +1396,7 @@ export class ProjectsService {
     files: UploadedFile[],
     replaceExisting = true,
   ) {
-    const { ctx } = await this.assertWorkspaceContext(email, projectId, "write");
+    const { ctx, access } = await this.assertWorkspaceContext(email, projectId, "write");
     return this.ratingFormService.uploadDocuments(
       ctx,
       tab,
@@ -1279,6 +1404,11 @@ export class ProjectsService {
       paramName,
       files,
       replaceExisting,
+      {
+        userId: access.user.id,
+        userRole: access.user.userType,
+        userDisplayName: access.user.displayName,
+      },
     );
   }
 

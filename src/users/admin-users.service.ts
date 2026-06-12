@@ -10,6 +10,8 @@ import { In, Repository } from "typeorm";
 import { RatingTypeService } from "../projects/rating-type.service";
 import { DEFAULT_STAFF_PASSWORD, RoleName } from "../rbac/role.enum";
 import { RoleSeedService } from "../rbac/role-seed.service";
+import { ActivityType } from "../activity-log/activity-type.enum";
+import { ActivityLogService } from "../activity-log/activity-log.service";
 import { AuditLog, type AuditAction } from "./audit-log.entity";
 import { CreateAdminUserDto } from "./dto/create-admin-user.dto";
 import { ListUsersQueryDto } from "./dto/list-users-query.dto";
@@ -39,6 +41,7 @@ export class AdminUsersService {
     private readonly auditLogRepository: Repository<AuditLog>,
     private readonly ratingTypeService: RatingTypeService,
     private readonly roleSeedService: RoleSeedService,
+    private readonly activityLogService: ActivityLogService,
   ) {}
 
   async create(actorEmail: string, dto: CreateAdminUserDto) {
@@ -421,5 +424,29 @@ export class AdminUsersService {
         metadata: metadata ?? null,
       }),
     );
+
+    const activityTypeMap: Partial<Record<AuditAction, string>> = {
+      USER_CREATED: ActivityType.USER_CREATED,
+      USER_UPDATED: ActivityType.USER_UPDATED,
+      USER_ACTIVATED: ActivityType.USER_ACTIVATED,
+      USER_DEACTIVATED: ActivityType.USER_DEACTIVATED,
+      PASSWORD_RESET: ActivityType.PASSWORD_RESET,
+    };
+
+    const activityType = activityTypeMap[action] ?? action;
+    const actor = actorUserId
+      ? await this.userRepository.findOne({ where: { id: actorUserId } })
+      : null;
+
+    await this.activityLogService.log({
+      userId: actorUserId,
+      userRole: actor?.userType ?? "a",
+      activityType,
+      module: "admin",
+      activityTitle: action.replace(/_/g, " ").toLowerCase(),
+      activityDescription: `Admin action: ${action} for user ${targetUserId}`,
+      oldValue: metadata?.role ? { role: metadata.role } : null,
+      newValue: { targetUserId, ...(metadata ?? {}) },
+    });
   }
 }

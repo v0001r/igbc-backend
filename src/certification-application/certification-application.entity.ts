@@ -177,6 +177,9 @@ export class CertificationApplication {
   @Column({ name: "workflow_status", type: "varchar", length: 32, default: "draft" })
   workflowStatus!: CertificationWorkflowStatus;
 
+  @Column({ name: "submission_count", type: "int", default: 0 })
+  submissionCount!: number;
+
   @CreateDateColumn()
   createdAt!: Date;
 

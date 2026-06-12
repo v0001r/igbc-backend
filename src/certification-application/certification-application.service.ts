@@ -11,6 +11,8 @@ import { ProjectDetail } from "../projects/project-detail.entity";
 import { ProjectInvoice } from "../projects/project-invoice.entity";
 import { ProjectPayment } from "../projects/project-payment.entity";
 import { Project } from "../projects/project.entity";
+import { ActivityType } from "../activity-log/activity-type.enum";
+import { ActivityLogService } from "../activity-log/activity-log.service";
 import { RejectCertificationApplicationDto } from "./dto/reject-certification-application.dto";
 import { UsersService } from "../users/users.service";
 import { CertificationApplication } from "./certification-application.entity";
@@ -36,6 +38,7 @@ export class CertificationApplicationService {
     @InjectRepository(ProjectContact)
     private readonly projectContactRepository: Repository<ProjectContact>,
     private readonly usersService: UsersService,
+    private readonly activityLogService: ActivityLogService,
   ) {}
 
   private isCertificationPaymentApproved(paymentStatus: string): boolean {
@@ -128,6 +131,22 @@ export class CertificationApplicationService {
         currentStep: existingApplication?.currentStep ?? 1,
       }),
     );
+
+    await this.activityLogService.log({
+      projectId: saved.projectId,
+      certificationApplicationId: saved.id,
+      userId: user.id,
+      userRole: user.userType,
+      activityType: existingApplication ? ActivityType.CERT_APP_UPDATED : ActivityType.CERT_APP_CREATED,
+      module: "certification_application",
+      activityTitle: existingApplication
+        ? "Certification application updated"
+        : "Certification application created",
+      activityDescription: existingApplication
+        ? "Certification application step 1 updated"
+        : "Certification application step 1 created",
+      newValue: { certificationApplicationId: saved.id, step: 1 },
+    });
 
     return {
       certificationApplicationId: saved.id,
@@ -416,6 +435,19 @@ export class CertificationApplicationService {
       }),
     );
 
+    const admin = await this.usersService.findByEmail(email);
+    await this.activityLogService.log({
+      projectId: saved.projectId,
+      certificationApplicationId: saved.id,
+      userId: admin?.id ?? null,
+      userRole: admin?.userType ?? "a",
+      activityType: ActivityType.CERT_APP_APPROVED,
+      module: "certification_application",
+      activityTitle: "Certification application approved",
+      activityDescription: "Admin approved certification application payment",
+      newValue: { status: saved.status, paymentStatus: saved.paymentStatus },
+    });
+
     return {
       certificationApplicationId: saved.id,
       projectId: saved.projectId,
@@ -451,6 +483,22 @@ export class CertificationApplicationService {
         paymentRemarks: dto.remark,
       }),
     );
+
+    const admin = await this.usersService.findByEmail(email);
+    await this.activityLogService.log({
+      projectId: saved.projectId,
+      certificationApplicationId: saved.id,
+      userId: admin?.id ?? null,
+      userRole: admin?.userType ?? "a",
+      activityType: ActivityType.CERT_APP_REJECTED,
+      module: "certification_application",
+      activityTitle: "Certification application rejected",
+      activityDescription: dto.remark,
+      newValue: {
+        paymentStatus: saved.paymentStatus,
+        paymentRemarks: dto.remark,
+      },
+    });
 
     return {
       certificationApplicationId: saved.id,
@@ -551,6 +599,19 @@ export class CertificationApplicationService {
       }),
     );
 
+    const user = await this.usersService.findByEmail(email);
+    await this.activityLogService.log({
+      projectId: saved.projectId,
+      certificationApplicationId: saved.id,
+      userId: user?.id ?? null,
+      userRole: user?.userType ?? null,
+      activityType: ActivityType.CERT_APP_UPDATED,
+      module: "certification_application",
+      activityTitle: "Certification application updated",
+      activityDescription: "Certification application step 2 (invoice) saved",
+      newValue: { step: 2 },
+    });
+
     return {
       certificationApplicationId: saved.id,
       projectId: saved.projectId,
@@ -618,6 +679,22 @@ export class CertificationApplicationService {
         certificateAppliedStatus: "yes",
       }),
     );
+
+    const user = await this.usersService.findByEmail(email);
+    await this.activityLogService.log({
+      projectId: saved.projectId,
+      certificationApplicationId: saved.id,
+      userId: user?.id ?? null,
+      userRole: user?.userType ?? null,
+      activityType: ActivityType.CERT_APP_SUBMITTED,
+      module: "certification_application",
+      activityTitle: "Certification application submitted",
+      activityDescription: "Client submitted certification application for payment review",
+      newValue: {
+        paymentMethod: saved.paymentMethod,
+        remarks: saved.paymentRemarks ?? null,
+      },
+    });
 
     return {
       certificationApplicationId: saved.id,
