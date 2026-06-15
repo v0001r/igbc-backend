@@ -1,0 +1,25 @@
+{
+  "id": "annexure_waste_management",
+  "title": "Annexure Waste Management Sheet",
+  "schemaVersion": 1,
+  "ratingTypeIds": [1],
+  "renderMode": "wasteManagement",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.newbuilding.NewannexMasterWaste",
+  "wasteManagementLayout": {
+    "minRows": 5,
+    "materialReadonly": true,
+    "sourceAnnex": {
+      "tab": "material_resources",
+      "subtab": "annexure_master_material",
+      "materialField": "one_materials",
+      "materialSourceMode": "freeText"
+    },
+    "unitOptions": {
+      "": "Select Unit",
+      "kgs": "Weight (Kgs)",
+      "volume": "Volume (m³)"
+    },
+    "materialOptionsCatalogPath": "shared/waste-material-options.json"
+  }
+}

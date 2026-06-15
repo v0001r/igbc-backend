@@ -252,6 +252,60 @@ function enrichExistingSingleZoneVentilationRates(
   };
 }
 
+type RefrigerantCatalogFile = {
+  entries?: {
+    slug: string;
+    label: string;
+    gwp: number;
+    odp: number;
+    leak_rate: string;
+    end_loss: string;
+  }[];
+};
+
+type EquipmentLifeCatalogFile = {
+  entries?: { slug: string; label: string; life: number }[];
+};
+
+function enrichEcoFriendlyRefrigerantCatalogs(
+  parsed: AnnexureSchemaDefinition,
+  schemaFilePath: string,
+): AnnexureSchemaDefinition {
+  if (parsed.renderMode !== "ecoFriendlyRefrigerant" || !parsed.ecoFriendlyRefrigerantLayout) {
+    return parsed;
+  }
+  const versionDir = dirname(dirname(schemaFilePath));
+  let layout = { ...parsed.ecoFriendlyRefrigerantLayout };
+
+  if (parsed.refrigerantCatalogPath) {
+    const refrigerantPath = join(versionDir, parsed.refrigerantCatalogPath);
+    if (existsSync(refrigerantPath)) {
+      const raw = JSON.parse(readFileSync(refrigerantPath, "utf8")) as RefrigerantCatalogFile;
+      const refrigerantCatalog: Record<string, { slug: string; label: string; gwp: number; odp: number; leak_rate: string; end_loss: string }> = {};
+      for (const e of raw.entries ?? []) {
+        if (!e?.slug) continue;
+        refrigerantCatalog[e.slug] = e;
+      }
+      layout = { ...layout, refrigerantCatalog };
+    }
+  }
+
+  if (parsed.equipmentLifeCatalogPath) {
+    const equipmentPath = join(versionDir, parsed.equipmentLifeCatalogPath);
+    if (existsSync(equipmentPath)) {
+      const raw = JSON.parse(readFileSync(equipmentPath, "utf8")) as EquipmentLifeCatalogFile;
+      const equipmentCatalog: Record<string, { slug: string; label: string; life: number }> = {};
+      for (const e of raw.entries ?? []) {
+        if (!e?.slug) continue;
+        equipmentCatalog[e.slug] = e;
+      }
+      layout = { ...layout, equipmentCatalog };
+    }
+  }
+
+  return { ...parsed, ecoFriendlyRefrigerantLayout: layout };
+}
+
 function enrichWasteMaterialOptions(
   parsed: AnnexureSchemaDefinition,
   schemaFilePath: string,
@@ -327,6 +381,7 @@ function loadOneAnnexureFile(
     let parsed = JSON.parse(raw) as AnnexureSchemaDefinition;
     parsed = enrichSchemaFromGreenhomeCatalog(parsed, full);
     parsed = enrichExistingSingleZoneVentilationRates(parsed, full);
+    parsed = enrichEcoFriendlyRefrigerantCatalogs(parsed, full);
     parsed = enrichWasteMaterialOptions(parsed, full);
     const hasTable = (parsed.table?.columns?.length ?? 0) > 0;
     const hasComparison =
@@ -377,6 +432,9 @@ function loadOneAnnexureFile(
     const hasWastewaterReuse =
       parsed.renderMode === "wastewaterReuse" &&
       (parsed.wastewaterReuseLayout?.reuseSection?.rows?.length ?? 0) > 0;
+    const hasHvacWaterRequirement =
+      parsed.renderMode === "hvacWaterRequirement" &&
+      Boolean(parsed.hvacWaterRequirementLayout);
     const hasUrbanHeatRoof =
       parsed.renderMode === "urbanHeatRoof" && Boolean(parsed.urbanHeatRoofLayout);
     const hasUrbanHeatNonRoof =
@@ -410,6 +468,9 @@ function loadOneAnnexureFile(
     const hasExistingOutdoorAirSystem =
       parsed.renderMode === "existingOutdoorAirSystem" &&
       Boolean(parsed.existingOutdoorAirSystemLayout);
+    const hasEcoFriendlyRefrigerant =
+      parsed.renderMode === "ecoFriendlyRefrigerant" &&
+      Boolean(parsed.ecoFriendlyRefrigerantLayout);
     if (
       !parsed?.id ||
       (!hasTable &&
@@ -430,6 +491,7 @@ function loadOneAnnexureFile(
         !hasWasteManagement &&
         !hasWaterBalance &&
         !hasWastewaterReuse &&
+        !hasHvacWaterRequirement &&
         !hasUrbanHeatRoof &&
         !hasUrbanHeatNonRoof &&
         !hasExistingRainfall &&
@@ -442,7 +504,8 @@ function loadOneAnnexureFile(
         !hasExistingSimulationMethod &&
         !hasExistingOneSiteRenewable &&
         !hasExistingSingleZoneSystem &&
-        !hasExistingOutdoorAirSystem)
+        !hasExistingOutdoorAirSystem &&
+        !hasEcoFriendlyRefrigerant)
     )
       return null;
     if (
@@ -587,6 +650,8 @@ export function buildAnnexureSchemaIndex(
           (existing?.waterBalanceLayout?.sections?.length ?? 0) > 0) ||
         (existing?.renderMode === "wastewaterReuse" &&
           (existing?.wastewaterReuseLayout?.reuseSection?.rows?.length ?? 0) > 0) ||
+        (existing?.renderMode === "hvacWaterRequirement" &&
+          Boolean(existing?.hvacWaterRequirementLayout)) ||
         (existing?.renderMode === "urbanHeatRoof" && Boolean(existing?.urbanHeatRoofLayout)) ||
         (existing?.renderMode === "urbanHeatNonRoof" && Boolean(existing?.urbanHeatNonRoofLayout)) ||
         (existing?.renderMode === "existingRainfall" && Boolean(existing?.existingRainfallLayout)) ||
@@ -608,6 +673,8 @@ export function buildAnnexureSchemaIndex(
           Boolean(existing?.existingSingleZoneLayout)) ||
         (existing?.renderMode === "existingOutdoorAirSystem" &&
           Boolean(existing?.existingOutdoorAirSystemLayout)) ||
+        (existing?.renderMode === "ecoFriendlyRefrigerant" &&
+          Boolean(existing?.ecoFriendlyRefrigerantLayout)) ||
         Boolean(existing?.ventilationSummary?.sources?.length);
       if (hasFullEditor) continue;
 

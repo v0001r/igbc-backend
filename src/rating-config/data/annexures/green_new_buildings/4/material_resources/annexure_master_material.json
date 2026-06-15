@@ -1,0 +1,409 @@
+{
+  "id": "annexure_master_material",
+  "title": "Annexure Master Material",
+  "schemaVersion": 1,
+  "ratingTypeIds": [1],
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.newbuilding.NEannexMasterMaterial",
+  "table": {
+    "addRowLabel": "Add More",
+    "defaultRowCount": 5,
+    "minRows": 1,
+    "maxRows": 50,
+    "stickyFirstColumns": 2,
+    "columns": [
+      {
+        "id": "one_materials",
+        "param": "one_materials",
+        "header": "Description of Material",
+        "type": "text",
+        "width": "min-w-[160px]"
+      },
+      {
+        "id": "quantity",
+        "param": "quantity",
+        "header": "Material Quantity",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[100px]"
+      },
+      {
+        "id": "unit",
+        "param": "unit",
+        "header": "Unit",
+        "type": "select",
+        "width": "min-w-[100px]",
+        "options": {
+          "": "Select Unit",
+          "sq.m": "Sq.m",
+          "cu.m": "Cu.m",
+          "sq.ft": "Sq.ft",
+          "cu.ft": "Cu.ft",
+          "kg": "KG",
+          "ton": "Ton",
+          "liter": "Litre",
+          "nos": "NOS",
+          "rm": "RM"
+        }
+      },
+      {
+        "id": "rates",
+        "param": "rates",
+        "header": "Rates",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[100px]"
+      },
+      {
+        "id": "total_rates",
+        "param": "total_rates",
+        "header": "Total material Cost",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "manufacture_details",
+        "param": "manufacture_details",
+        "header": "Manufacturer Details",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "id": "manufacture_location",
+        "param": "manufacture_location",
+        "header": "Manufacturing Location",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "id": "distance",
+        "param": "distance",
+        "header": "Distance from the site (km)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[110px]"
+      },
+      {
+        "id": "total_cost_material",
+        "param": "total_cost_material",
+        "header": "Cost of Local Materials Procured",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[140px]"
+      },
+      {
+        "id": "salvaged",
+        "param": "salvaged",
+        "header": "Salvaged Material (Y/N)",
+        "type": "select",
+        "width": "min-w-[110px]",
+        "options": { "": "Select salvaged", "yes": "Yes", "no": "No" }
+      },
+      {
+        "id": "salvaged_cost",
+        "param": "salvaged_cost",
+        "header": "Salvaged Material Cost",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "recycled",
+        "param": "recycled",
+        "header": "Recycled Content (%)",
+        "type": "number",
+        "step": "0.01",
+        "width": "min-w-[110px]"
+      },
+      {
+        "id": "recycled_cost",
+        "param": "recycled_cost",
+        "header": "Recycled Material Cost",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "woodbased",
+        "param": "woodbased",
+        "header": "Wood based Material (Y/N)",
+        "type": "select",
+        "width": "min-w-[120px]",
+        "options": { "": "Select woodbased", "yes": "Yes", "no": "No" }
+      },
+      {
+        "id": "woodbased_cost",
+        "param": "woodbased_cost",
+        "header": "Wood based Material Cost",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[120px]"
+      },
+      {
+        "id": "composite_wood",
+        "param": "composite_wood",
+        "header": "FSC/ Composite wood (Y/N)",
+        "type": "select",
+        "width": "min-w-[120px]",
+        "options": { "": "Select composite", "yes": "Yes", "no": "No" }
+      },
+      {
+        "id": "composite_wood_cost",
+        "param": "composite_wood_cost",
+        "header": "Eco-friendly/ Rapidly Renewable Wood Cost",
+        "type": "readonly",
+        "computed": true,
+        "width": "min-w-[160px]"
+      }
+    ]
+  },
+  "footerRows": [
+    {
+      "cells": [
+        { "kind": "label", "colspan": 5, "text": "Total Material Cost" },
+        { "kind": "field", "param": "total_material_cost", "type": "readonly", "aggregateOf": "total_rates" },
+        { "kind": "label", "colspan": 3, "text": "Total" },
+        { "kind": "field", "param": "total_procured_cost", "type": "readonly", "aggregateOf": "total_cost_material" },
+        { "kind": "label", "text": "Total" },
+        { "kind": "field", "param": "total_salvage_cost", "type": "readonly", "aggregateOf": "salvaged_cost" },
+        { "kind": "label", "text": "Total" },
+        { "kind": "field", "param": "total_recycled_cost", "type": "readonly", "aggregateOf": "recycled_cost" },
+        { "kind": "label", "text": "Total" },
+        { "kind": "field", "param": "total_wood_cost", "type": "readonly", "aggregateOf": "woodbased_cost" },
+        { "kind": "label", "text": "Total" },
+        { "kind": "field", "param": "total_renewable_cost", "type": "readonly", "aggregateOf": "composite_wood_cost" }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "label": "Percentage of local material procured/ used",
+      "param": "local_percent",
+      "type": "readonly"
+    },
+    {
+      "label": "Percentage of Salvage Materials procured/ used",
+      "param": "salvage_percent",
+      "type": "readonly"
+    },
+    {
+      "label": "Percentage of Recycled content Materials procured/ used",
+      "param": "recycled_percent",
+      "type": "readonly"
+    },
+    {
+      "label": "Percentage of Eco Friendly Wood Based Materials procured/used",
+      "param": "wood_percent",
+      "type": "readonly"
+    },
+    {
+      "label": "Percentage of Eco-Labelled Construction Materials procured/used",
+      "param": "ecolablled_material_percent",
+      "type": "readonly"
+    },
+    {
+      "label": "Percentage of Alternate Construction Materials procured/used",
+      "param": "alternate_material_percent",
+      "type": "readonly"
+    }
+  ],
+  "rowPipeline": [
+    {
+      "set": "total_rates",
+      "expr": {
+        "op": "mul",
+        "args": [
+          { "op": "parseNum", "arg": { "ref": "row:quantity" } },
+          { "op": "parseNum", "arg": { "ref": "row:rates" } }
+        ]
+      }
+    },
+    {
+      "set": "total_cost_material",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "or",
+          "args": [
+            { "op": "isEmpty", "arg": { "ref": "row:distance" } },
+            {
+              "op": "gt",
+              "left": { "op": "parseNum", "arg": { "ref": "row:distance" } },
+              "right": { "const": 500 }
+            }
+          ]
+        },
+        "then": { "const": 0 },
+        "else": { "op": "parseNum", "arg": { "ref": "row:total_rates" } }
+      }
+    },
+    {
+      "set": "salvaged_cost",
+      "expr": {
+        "op": "if",
+        "cond": { "op": "eq", "left": { "ref": "row:salvaged" }, "right": { "const": "yes" } },
+        "then": { "op": "parseNum", "arg": { "ref": "row:total_rates" } },
+        "else": { "const": 0 }
+      }
+    },
+    {
+      "set": "recycled_cost",
+      "expr": {
+        "op": "div",
+        "args": [
+          {
+            "op": "mul",
+            "args": [
+              { "op": "parseNum", "arg": { "ref": "row:recycled" } },
+              { "op": "parseNum", "arg": { "ref": "row:total_rates" } }
+            ]
+          },
+          { "const": 100 }
+        ]
+      }
+    },
+    {
+      "set": "woodbased_cost",
+      "expr": {
+        "op": "if",
+        "cond": { "op": "eq", "left": { "ref": "row:woodbased" }, "right": { "const": "yes" } },
+        "then": { "op": "parseNum", "arg": { "ref": "row:total_rates" } },
+        "else": { "const": 0 }
+      }
+    },
+    {
+      "set": "composite_wood_cost",
+      "expr": {
+        "op": "if",
+        "cond": { "op": "eq", "left": { "ref": "row:composite_wood" }, "right": { "const": "yes" } },
+        "then": { "op": "parseNum", "arg": { "ref": "row:total_rates" } },
+        "else": { "const": 0 }
+      }
+    }
+  ],
+  "scalarPipeline": [
+    { "set": "total_material_cost", "expr": { "op": "sumRows", "field": "total_rates" } },
+    { "set": "total_procured_cost", "expr": { "op": "sumRows", "field": "total_cost_material" } },
+    { "set": "total_salvage_cost", "expr": { "op": "sumRows", "field": "salvaged_cost" } },
+    { "set": "total_recycled_cost", "expr": { "op": "sumRows", "field": "recycled_cost" } },
+    { "set": "total_wood_cost", "expr": { "op": "sumRows", "field": "woodbased_cost" } },
+    { "set": "total_renewable_cost", "expr": { "op": "sumRows", "field": "composite_wood_cost" } },
+    {
+      "set": "local_percent",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "lte",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_material_cost" } },
+          "right": { "const": 0 }
+        },
+        "then": { "const": 0 },
+        "else": {
+          "op": "mul",
+          "args": [
+            {
+              "op": "div",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "scalar:total_procured_cost" } },
+                { "op": "parseNum", "arg": { "ref": "scalar:total_material_cost" } }
+              ]
+            },
+            { "const": 100 }
+          ]
+        }
+      }
+    },
+    {
+      "set": "salvage_percent",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "lte",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_material_cost" } },
+          "right": { "const": 0 }
+        },
+        "then": { "const": 0 },
+        "else": {
+          "op": "mul",
+          "args": [
+            {
+              "op": "div",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "scalar:total_salvage_cost" } },
+                { "op": "parseNum", "arg": { "ref": "scalar:total_material_cost" } }
+              ]
+            },
+            { "const": 100 }
+          ]
+        }
+      }
+    },
+    {
+      "set": "recycled_percent",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "lte",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_material_cost" } },
+          "right": { "const": 0 }
+        },
+        "then": { "const": 0 },
+        "else": {
+          "op": "mul",
+          "args": [
+            {
+              "op": "div",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "scalar:total_recycled_cost" } },
+                { "op": "parseNum", "arg": { "ref": "scalar:total_material_cost" } }
+              ]
+            },
+            { "const": 100 }
+          ]
+        }
+      }
+    },
+    {
+      "set": "wood_percent",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "lte",
+          "left": { "op": "parseNum", "arg": { "ref": "scalar:total_wood_cost" } },
+          "right": { "const": 0 }
+        },
+        "then": { "const": 0 },
+        "else": {
+          "op": "mul",
+          "args": [
+            {
+              "op": "div",
+              "args": [
+                { "op": "parseNum", "arg": { "ref": "scalar:total_renewable_cost" } },
+                { "op": "parseNum", "arg": { "ref": "scalar:total_wood_cost" } }
+              ]
+            },
+            { "const": 100 }
+          ]
+        }
+      }
+    },
+    { "set": "ecolablled_material_percent", "expr": { "const": 0 } },
+    { "set": "alternate_material_percent", "expr": { "const": 0 } }
+  ],
+  "scalarParams": [
+    "total_material_cost",
+    "total_procured_cost",
+    "total_salvage_cost",
+    "total_recycled_cost",
+    "total_wood_cost",
+    "total_renewable_cost",
+    "local_percent",
+    "salvage_percent",
+    "recycled_percent",
+    "wood_percent",
+    "ecolablled_material_percent",
+    "alternate_material_percent"
+  ]
+}

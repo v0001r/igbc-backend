@@ -1,0 +1,17 @@
+{
+  "id": "freshair_condition_space",
+  "title": "Annexture 2 – Fresh Air for Air-Conditioned Spaces",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "existingOutdoorAirSystem",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.newbuilding.outdoorairsystem",
+  "ventilationRatesCatalogPath": "shared/minimum-ventilation-rates.json",
+  "existingOutdoorAirSystemLayout": {
+    "variant": "newBuilding",
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More",
+    "ezHelpUrl": "https://dev.mirakitech.com/igbc/uploads/singlezone.png"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "entries": [
+    { "slug": "absorption_chiller", "label": "Absorption chiller", "life": 23 },
+    { "slug": "centrifugal_chiller", "label": "Centrifugal chiller", "life": 25 },
+    { "slug": "packaged_ac_hp", "label": "Packaged AC or HP", "life": 15 },
+    { "slug": "reciprocating_chiller", "label": "Reciprocating chiller", "life": 20 },
+    { "slug": "screw_chiller", "label": "Screw chiller", "life": 25 },
+    { "slug": "scroll_chiller", "label": "Scroll chiller", "life": 20 },
+    { "slug": "split_system_ac_hp", "label": "Split-system AC or HP", "life": 15 },
+    { "slug": "unitary_ac_hp", "label": "Unitary AC or HP", "life": 15 },
+    { "slug": "water_cooled_packaged_ac", "label": "Water cooled packaged AC", "life": 24 },
+    { "slug": "window_ac_hp", "label": "Window AC or HP", "life": 10 }
+  ]
+}

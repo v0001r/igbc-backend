@@ -1,0 +1,64 @@
+{
+  "id": "annextwo",
+  "title": "Annexure Water Efficiency Calculation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "waterEfficiency",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.factorybuilding.annextwo",
+  "waterEfficiencyLayout": {
+    "addRowLabel": "Add More",
+    "minDynamicRows": 1,
+    "maxDynamicRows": 50,
+    "presetRows": [
+      {
+        "id": "full_flush",
+        "fixtureType": "Water Closets (Full Flush)",
+        "detailParam": "half_flush_fix",
+        "prefix": "full_flush",
+        "category": "flush",
+        "defaults": { "duration": "1", "daily": "1", "base": "6", "unit": "LPF" }
+      },
+      {
+        "id": "half_flush",
+        "fixtureType": "Water Closets (Half Flush)",
+        "detailParam": "half_flush",
+        "prefix": "half_flush",
+        "category": "flush",
+        "defaults": { "duration": "1", "daily": "4", "base": "3", "unit": "LPF" }
+      },
+      {
+        "id": "hand_spary",
+        "fixtureType": "Health Faucet/Bidet, Hand-held spray",
+        "detailParam": "hand_spary",
+        "prefix": "hand_spary",
+        "category": "flow",
+        "defaults": { "duration": "0.25", "daily": "1", "base": "6", "unit": "LPM" }
+      },
+      {
+        "id": "taps",
+        "fixtureType": "Faucet/ taps",
+        "detailParam": "taps",
+        "prefix": "taps",
+        "category": "flow",
+        "defaults": { "duration": "0.25", "daily": "8", "base": "6", "unit": "LPM" }
+      },
+      {
+        "id": "sink",
+        "fixtureType": "Showers/ Handheld Spray",
+        "detailParam": "sink",
+        "prefix": "sink",
+        "category": "flow",
+        "defaults": { "duration": "0.25", "daily": "6", "base": "10", "unit": "LPM" }
+      },
+      {
+        "id": "urinal",
+        "fixtureType": "Urinal",
+        "detailParam": "urinal",
+        "prefix": "urinal",
+        "category": "flow",
+        "defaults": { "duration": "1", "daily": "2", "base": "3.8", "unit": "LPF" }
+      }
+    ]
+  }
+}

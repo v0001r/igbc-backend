@@ -1,0 +1,19 @@
+{
+  "id": "annex_eco_friendly_refrigerant",
+  "title": "Annexure Eco Friendly Refrigerant",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "ecoFriendlyRefrigerant",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.factorybuilding.ecosinglezonesystem",
+  "refrigerantCatalogPath": "shared/refrigerant-types.json",
+  "equipmentLifeCatalogPath": "shared/equipment-life.json",
+  "ecoFriendlyRefrigerantLayout": {
+    "singleTabLabel": "Single Zone System",
+    "multipleTabLabel": "Multiple Zone System",
+    "complianceThreshold": 100,
+    "multiDefaultColumns": 1,
+    "multiMinColumns": 1,
+    "multiMaxColumns": 12
+  }
+}

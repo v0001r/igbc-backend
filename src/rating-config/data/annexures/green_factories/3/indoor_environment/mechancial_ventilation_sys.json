@@ -1,0 +1,164 @@
+{
+  "id": "mechancial_ventilation_sys",
+  "title": "Annexture 1 - For Mechanically Ventilated Spaces",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "dwelling",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.factorybuilding.mechancialVentilationSys",
+  "dwellingLayout": {
+    "layoutMode": "rowTable",
+    "rowTableHeaderStyle": "fte",
+    "towerNameLabel": "Building Name / Building Typology / Space Name",
+    "addTowerLabel": "Add Another FTE Details",
+    "addRowLabel": "Add Row",
+    "defaultTowerCount": 1,
+    "minTowers": 1,
+    "maxTowers": 20,
+    "orientationRowCount": 5,
+    "minOrientationRows": 5,
+    "maxOrientationRows": 50,
+    "towerNameParam": "dwelling_type",
+    "orientationColumnGroups": [
+      {
+        "label": "Equipment Selection",
+        "params": ["ex_equipment_exhaust", "ex_equipment_fresh_air"]
+      }
+    ],
+    "rowTableFooter": [
+      {
+        "cells": [
+          { "kind": "label", "colspan": 6, "text": "Total" },
+          { "kind": "field", "param": "ex_total_extract_cfm" },
+          { "kind": "empty" },
+          { "kind": "empty" },
+          { "kind": "empty" }
+        ]
+      }
+    ],
+    "orientationColumns": [
+      {
+        "param": "ex_floor_space",
+        "header": "Floor/ Space",
+        "type": "text",
+        "width": "min-w-[120px]"
+      },
+      {
+        "param": "ex_area_sft",
+        "header": "Area (Sft)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_effective_height",
+        "header": "Effective Height (Ft.)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_acph",
+        "header": "ACPH for Exhaust/ Fresh Air",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_extract_cfm",
+        "header": "Minimum fresh air requirement (CFM)",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "ex_equipment_exhaust",
+        "header": "Provided System Capacity",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "ex_equipment_fresh_air",
+        "header": "Description",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "param": "ex_meets_requirement",
+        "header": "Meets / Exceeds Mandatory Requirement",
+        "type": "readonly",
+        "computed": true
+      }
+    ]
+  },
+  "dwellingStore": {
+    "towerStringParams": ["dwelling_type"],
+    "towerScalarParams": ["ex_total_extract_cfm"],
+    "orientationParams": [
+      "ex_floor_space",
+      "ex_area_sft",
+      "ex_effective_height",
+      "ex_acph",
+      "ex_extract_cfm",
+      "ex_equipment_exhaust",
+      "ex_equipment_fresh_air",
+      "ex_meets_requirement"
+    ]
+  },
+  "dwellingRowPipeline": [
+    {
+      "set": "ex_extract_cfm",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": {
+          "op": "div",
+          "args": [
+            {
+              "op": "mul",
+              "args": [
+                {
+                  "op": "mul",
+                  "args": [
+                    { "op": "parseNum", "arg": { "ref": "row:ex_area_sft" } },
+                    { "op": "parseNum", "arg": { "ref": "row:ex_effective_height" } }
+                  ]
+                },
+                { "op": "parseNum", "arg": { "ref": "row:ex_acph" } }
+              ]
+            },
+            { "const": 60 }
+          ]
+        }
+      }
+    },
+    {
+      "set": "ex_meets_requirement",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "gt",
+          "left": { "op": "parseNum", "arg": { "ref": "row:ex_extract_cfm" } },
+          "right": { "const": 0 }
+        },
+        "then": {
+          "op": "if",
+          "cond": {
+            "op": "gte",
+            "left": { "op": "parseNum", "arg": { "ref": "row:ex_equipment_exhaust" } },
+            "right": { "op": "parseNum", "arg": { "ref": "row:ex_extract_cfm" } }
+          },
+          "then": { "const": "Yes" },
+          "else": { "const": "No" }
+        },
+        "else": { "const": "" }
+      }
+    }
+  ],
+  "dwellingTowerPipeline": [
+    {
+      "set": "ex_total_extract_cfm",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "ex_extract_cfm" }
+      }
+    }
+  ]
+}

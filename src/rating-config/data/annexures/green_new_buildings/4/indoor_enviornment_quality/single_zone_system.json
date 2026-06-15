@@ -1,0 +1,17 @@
+{
+  "id": "single_zone_system",
+  "title": "Annexure Minimum Fresh Air Ventilation (Single Zone System)",
+  "schemaVersion": 1,
+  "ratingTypeIds": [1],
+  "renderMode": "existingSingleZoneSystem",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.newbuilding.singlezonesystem",
+  "ventilationRatesCatalogPath": "shared/minimum-ventilation-rates.json",
+  "existingSingleZoneLayout": {
+    "variant": "newBuilding",
+    "minRows": 5,
+    "maxRows": 50,
+    "addRowLabel": "Add More",
+    "ezHelpUrl": "https://dev.mirakitech.com/igbc/uploads/singlezone.png"
+  }
+}

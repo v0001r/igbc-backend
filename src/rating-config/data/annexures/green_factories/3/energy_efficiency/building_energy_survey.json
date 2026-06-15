@@ -1,0 +1,225 @@
+{
+  "id": "building_energy_survey",
+  "title": "Annexure Building Energy Survey",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "comparison",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.annexV1.factorybuildingenergy",
+  "comparisonCompute": "factoryBuildingEnergy",
+  "comparisonLayout": {
+    "columnHeaders": ["Parameters", "Base Case", "Design Case"],
+    "defaultRowCount": 1,
+    "inputType": "number",
+    "sections": [
+      {
+        "title": "BUILDING ENVELOPE",
+        "rows": [
+          {
+            "label": "Exterior Wall Construction:",
+            "baseParam": "exterior_wall_construction_base",
+            "designParam": "exterior_wall_construction_design"
+          },
+          {
+            "label": "Roof Construction:",
+            "baseParam": "roof_construction_base",
+            "designParam": "roof_construction_design"
+          },
+          {
+            "groupLabel": "Fenestration:",
+            "groupStart": true,
+            "label": "U Value (W/m2 K)",
+            "baseParam": "fenestration_base",
+            "designParam": "fenestration_design"
+          },
+          {
+            "label": "SHGC:",
+            "baseParam": "shgc_base",
+            "designParam": "shgc_design"
+          },
+          {
+            "label": "WWR (Window to Wall Ratio):",
+            "baseParam": "wwr_base",
+            "designParam": "wwr_design"
+          },
+          {
+            "label": "Skylight Ratio:",
+            "baseParam": "skylight_ratio_base",
+            "designParam": "skylight_ratio_design"
+          }
+        ]
+      },
+      {
+        "title": "LIGHTING SYSTEMS",
+        "rows": [
+          {
+            "label": "Lighting Power Density (W/sq.ft.):",
+            "baseParam": "lighting_power_density_base",
+            "designParam": "lighting_power_density_design"
+          },
+          {
+            "label": "Equipment Power Density (W/sq.ft.):",
+            "baseParam": "equipment_power_density_base",
+            "designParam": "equipment_power_density_design"
+          },
+          {
+            "label": "Lighting Controls:",
+            "baseParam": "lighting_controls_base",
+            "designParam": "lighting_controls_design"
+          },
+          {
+            "label": "Exterior Power (W/sq.ft.):",
+            "baseParam": "exterior_power_base",
+            "designParam": "exterior_power_design"
+          }
+        ]
+      },
+      {
+        "title": "HVAC SYSTEM",
+        "rows": [
+          {
+            "label": "Conditioned Area (sq.ft):",
+            "baseParam": "conditioned_area_base",
+            "designParam": "conditioned_area_design"
+          },
+          {
+            "label": "HVAC System Type:",
+            "baseParam": "hvac_system_type_base",
+            "designParam": "hvac_system_type_design"
+          },
+          {
+            "label": "Fan Power, Supply & Control:",
+            "baseParam": "fan_power_base",
+            "designParam": "fan_power_design"
+          },
+          {
+            "label": "Temp. Setpoint:",
+            "baseParam": "temp_setpoint_base",
+            "designParam": "temp_setpoint_design"
+          },
+          {
+            "label": "COP of HVAC Systems:",
+            "baseParam": "cop_hvac_base",
+            "designParam": "cop_hvac_design"
+          },
+          {
+            "label": "Heating Type:",
+            "baseParam": "heating_type_base",
+            "designParam": "heating_type_design"
+          },
+          {
+            "label": "Chilled water pump details:",
+            "baseParam": "chilled_water_pump_base",
+            "designParam": "chilled_water_pump_design"
+          },
+          {
+            "label": "Condenser water pump details:",
+            "baseParam": "condenser_water_pump_base",
+            "designParam": "condenser_water_pump_design"
+          },
+          {
+            "label": "Cooling Tower parameters:",
+            "baseParam": "cooling_tower_base",
+            "designParam": "cooling_tower_design"
+          },
+          {
+            "label": "Heat Recovery System / Treated Fresh Air Units:",
+            "baseParam": "heat_recovery_base",
+            "designParam": "heat_recovery_design"
+          },
+          {
+            "label": "Fresh Air:",
+            "baseParam": "fresh_air_base",
+            "designParam": "fresh_air_design"
+          },
+          {
+            "label": "Solar PV cells (kWp):",
+            "baseParam": "solar_pv_base",
+            "designParam": "solar_pv_design"
+          },
+          {
+            "label": "System Schedule:",
+            "baseParam": "system_schedule_base",
+            "designParam": "system_schedule_design"
+          }
+        ]
+      },
+      {
+        "title": "Overall Energy Summary",
+        "rows": [
+          {
+            "label": "Space Cooling:",
+            "baseParam": "space_cooling_base",
+            "designParam": "space_cooling_design"
+          },
+          {
+            "label": "Space Heating:",
+            "baseParam": "space_heating_base",
+            "designParam": "space_heating_design"
+          },
+          {
+            "label": "Vent. Fans:",
+            "baseParam": "vent_fans_base",
+            "designParam": "vent_fans_design"
+          },
+          {
+            "label": "Ext. Usage:",
+            "baseParam": "ext_usage_base",
+            "designParam": "ext_usage_design"
+          },
+          {
+            "label": "Misc. Equip.:",
+            "baseParam": "misc_equip_base",
+            "designParam": "misc_equip_design"
+          },
+          {
+            "label": "Area Lights:",
+            "baseParam": "area_lights_base",
+            "designParam": "area_lights_design"
+          },
+          {
+            "label": "Process Load:",
+            "baseParam": "process_load_base",
+            "designParam": "process_load_design"
+          },
+          {
+            "label": "Total Energy Consumption",
+            "baseParam": "total_energy_consumption_base",
+            "designParam": "total_energy_consumption_design",
+            "readonly": true,
+            "emphasis": true
+          },
+          {
+            "label": "R.E gen. kWh",
+            "baseParam": "re_gen_kwh",
+            "designParam": "re_gen_kwh_design",
+            "emphasis": true
+          },
+          {
+            "label": "Overall Energy Savings",
+            "baseParam": "energy_saved",
+            "designParam": "energy_saved",
+            "readonly": true,
+            "spanBoth": true,
+            "emphasis": true
+          }
+        ]
+      },
+      {
+        "title": "Renewable Energy",
+        "rows": [
+          {
+            "label": "Onsite Renewable Energy:",
+            "baseParam": "onsite_renewable_base",
+            "designParam": "onsite_renewable_design"
+          },
+          {
+            "label": "Offsite Renewable Energy:",
+            "baseParam": "offsite_renewable_base",
+            "designParam": "offsite_renewable_design"
+          }
+        ]
+      }
+    ]
+  }
+}

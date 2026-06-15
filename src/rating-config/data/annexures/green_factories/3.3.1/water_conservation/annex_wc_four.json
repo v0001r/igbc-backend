@@ -1,0 +1,45 @@
+{
+  "id": "annex_wc_four",
+  "title": "Annexure Waste Water Treatment & Reuse Calculations",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "wastewaterReuse",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.greenhomes.annexFour",
+  "wastewaterReuseLayout": {
+    "annualDays": 365,
+    "wasteFromAnnex": {
+      "tab": "water_conservation",
+      "subtab": "annextwo",
+      "flushParam": "flush_proposed_total",
+      "flowParam": "fixture_proposed_total"
+    },
+    "stpCapacityParam": "capacity_of_stp",
+    "stpCapacitySubtab": "water_conservation_details",
+    "reuseSection": {
+      "title": "Reuse of various Treated Waste Water",
+      "rows": [
+        {
+          "label": "Flushing (in Litres)",
+          "dailyParam": "flushing_daily",
+          "annualParam": "flushing_annual"
+        },
+        {
+          "label": "Landscaping (in Litres)",
+          "dailyParam": "lands_daily",
+          "annualParam": "lands_annual"
+        },
+        {
+          "label": "Airconditioning Makeup (in Litres)",
+          "dailyParam": "acmakeup_daily",
+          "annualParam": "acmakeup_annual"
+        },
+        {
+          "label": "Others - Please specify (in Litres)",
+          "dailyParam": "others_reuse_daily",
+          "annualParam": "others_reuse_annual"
+        }
+      ]
+    }
+  }
+}

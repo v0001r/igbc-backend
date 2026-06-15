@@ -1,0 +1,92 @@
+{
+  "id": "annex_wc_two",
+  "title": "Annexure Water Efficient Plumbing Fixtures",
+  "schemaVersion": 1,
+  "ratingTypeIds": [1],
+  "renderMode": "waterEfficiency",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.annexV1.annexTwo",
+  "waterEfficiencyLayout": {
+    "multiTable": true,
+    "addRowLabel": "Add More",
+    "addTableLabel": "Add Another Table",
+    "tableNameParam": "annex_table_name",
+    "minTables": 1,
+    "maxTables": 20,
+    "lockFirstTablePresetFields": true,
+    "minDynamicRows": 1,
+    "maxDynamicRows": 50,
+    "columnLabels": {
+      "dailyUses": "Estimation Users per FTE",
+      "occupancy": "Full Time Equivalent (FTE)",
+      "baseFlowHeader": "Flow Rate / Capacity (LPF/LPM)",
+      "proposedFlowHeader": "Flow Rate / Capacity (LPF/LPM)"
+    },
+    "aggregateParams": {
+      "totalVolumeBase": "total_volume_base_tb",
+      "totalVolumeProposed": "total_volume_proposed_tb",
+      "savingPercentage": "saving_percentage_tb"
+    },
+    "presetRows": [
+      {
+        "id": "full_flush",
+        "fixtureType": "Water Closets (Full Flush)",
+        "detailParam": "half_flush_fix",
+        "prefix": "full_flush",
+        "category": "flush",
+        "defaults": { "duration": "1", "daily": "1", "base": "6", "unit": "LPF" }
+      },
+      {
+        "id": "half_flush",
+        "fixtureType": "Water Closets (Half Flush)",
+        "detailParam": "half_flush",
+        "prefix": "half_flush",
+        "category": "flush",
+        "defaults": { "duration": "1", "daily": "2", "base": "3", "unit": "LPF" }
+      },
+      {
+        "id": "urinal",
+        "fixtureType": "Urinal",
+        "detailParam": "urinal_detail",
+        "prefix": "urinal",
+        "category": "flow",
+        "defaults": { "duration": "1", "daily": "2", "base": "4", "unit": "LPF" }
+      },
+      {
+        "id": "hand_spary",
+        "fixtureType": "Health Faucet",
+        "detailParam": "hand_spary",
+        "prefix": "hand_spary",
+        "category": "flow",
+        "defaults": { "duration": "0.25", "daily": "1", "base": "6", "unit": "LPM" }
+      },
+      {
+        "id": "taps",
+        "fixtureType": "Faucet/ taps",
+        "detailParam": "taps",
+        "prefix": "taps",
+        "category": "flow",
+        "defaults": { "duration": "0.25", "daily": "8", "base": "6", "unit": "LPM" }
+      },
+      {
+        "id": "sink",
+        "fixtureType": "Kitchen Sink",
+        "detailParam": "sink",
+        "prefix": "sink",
+        "category": "flow",
+        "defaults": { "duration": "0.25", "daily": "6", "base": "6", "unit": "LPM" }
+      },
+      {
+        "id": "shower_head",
+        "fixtureType": "Showerhead/Hand-held Spray",
+        "detailParam": "shower_head_detail",
+        "prefix": "shower_head",
+        "category": "flow",
+        "totalUseParam": "shower_head_total_use",
+        "proposedParam": "shower_head_total_proposed",
+        "proposedTotalParam": "shower_head_proposed",
+        "defaults": { "duration": "8", "daily": "0.1", "base": "10", "unit": "LPM" }
+      }
+    ]
+  }
+}

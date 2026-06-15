@@ -17,6 +17,22 @@
   },
   {
     "tab": "water_conservation",
+    "subtab": "annex_wc_one",
+    "version": "4",
+    "bladeInclude": ".rating.annexV1.annexOne",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "water_conservation",
+    "subtab": "annex_wc_two",
+    "version": "4",
+    "bladeInclude": ".rating.annexV1.annexTwo",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "water_conservation",
     "subtab": "annex_wc_two",
     "version": "3",
     "bladeInclude": ".rating.annexV1.annexTwo",
@@ -84,7 +100,15 @@
     "subtab": "annexure_master_material",
     "version": "3",
     "bladeInclude": ".rating.greenhomes.annexMasterMaterial",
-    "ratingTypeId5Only": true,
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "material_resources",
+    "subtab": "annexure_master_material",
+    "version": "4",
+    "bladeInclude": ".rating.newbuilding.NEannexMasterMaterial",
+    "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
   },
   {
@@ -100,6 +124,14 @@
     "subtab": "annexure_waste_management",
     "version": "3",
     "bladeInclude": ".rating.greenhomes.annexMasterWaste",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "material_resources",
+    "subtab": "annexure_waste_management",
+    "version": "4",
+    "bladeInclude": ".rating.newbuilding.NewannexMasterWaste",
     "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
   },
@@ -441,8 +473,24 @@
   },
   {
     "tab": "energy_efficency",
+    "subtab": "annex_eco_friendly_refrigerant",
+    "version": "4",
+    "bladeInclude": ".rating.newbuilding.ecosinglezonesystem",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "energy_efficency",
     "subtab": "annex_simulation_input_parameters",
     "version": "3",
+    "bladeInclude": ".rating.newbuilding.simulaition_method",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "energy_efficency",
+    "subtab": "annex_simulation_input_parameters",
+    "version": "4",
     "bladeInclude": ".rating.newbuilding.simulaition_method",
     "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
@@ -475,6 +523,22 @@
     "tab": "indoor_enviornment_quality",
     "subtab": "outdoor_air_systems",
     "version": "3",
+    "bladeInclude": ".rating.newbuilding.outdoorairsystem",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "indoor_enviornment_quality",
+    "subtab": "single_zone_system",
+    "version": "4",
+    "bladeInclude": ".rating.newbuilding.singlezonesystem",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "indoor_enviornment_quality",
+    "subtab": "outdoor_air_systems",
+    "version": "4",
     "bladeInclude": ".rating.newbuilding.outdoorairsystem",
     "ratingTypeId5Only": false,
     "ratingTypeExclude5": false
@@ -547,6 +611,14 @@
     "tab": "water_conservation",
     "subtab": "hvac_water_requirement",
     "version": "3",
+    "bladeInclude": ".rating.newbuilding.hvacWaterRequire",
+    "ratingTypeId5Only": false,
+    "ratingTypeExclude5": false
+  },
+  {
+    "tab": "water_conservation",
+    "subtab": "hvac_water_requirement",
+    "version": "4",
     "bladeInclude": ".rating.newbuilding.hvacWaterRequire",
     "ratingTypeId5Only": false,
     "ratingTypeExclude5": false

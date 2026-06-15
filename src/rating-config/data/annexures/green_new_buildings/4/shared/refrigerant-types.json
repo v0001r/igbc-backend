@@ -1,0 +1,24 @@
+{
+  "entries": [
+    { "slug": "ammonia", "label": "Ammonia", "gwp": 0, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "carbon_dioxide", "label": "Carbon dioxide", "gwp": 1, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "propane", "label": "Propane", "gwp": 3, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_123", "label": "R-123", "gwp": 77, "odp": 0.02, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_123_trane_ctv_documented_", "label": "R-123_Trane_CTV_Documented_", "gwp": 77, "odp": 0.02, "leak_rate": "0.50", "end_loss": "10.0" },
+    { "slug": "r_1233zd_e", "label": "R-1233zd(E)", "gwp": 5, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_1234yf", "label": "R-1234yf", "gwp": 4, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_1234ze_e", "label": "R-1234ze(E)", "gwp": 6, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_134a", "label": "R-134a", "gwp": 1430, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_22", "label": "R-22", "gwp": 1810, "odp": 0.04, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_245fa", "label": "R-245fa", "gwp": 1030, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_32", "label": "R-32", "gwp": 675, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_404a", "label": "R-404A", "gwp": 3900, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_407a", "label": "R-407A", "gwp": 2100, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_407c", "label": "R-407C", "gwp": 1770, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_407f", "label": "R-407F", "gwp": 1820, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_410a", "label": "R-410A", "gwp": 2080, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_434a", "label": "R-434A", "gwp": 3240, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "r_507a", "label": "R-507A", "gwp": 4000, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" },
+    { "slug": "water", "label": "Water", "gwp": 0, "odp": 0, "leak_rate": "2.0", "end_loss": "10.0" }
+  ]
+}

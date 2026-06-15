@@ -1,0 +1,160 @@
+{
+  "id": "annex_wc_three",
+  "title": "Annexure Water Balance Calculation",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "waterBalance",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.greenhomes.annexThree",
+  "waterBalanceLayout": {
+    "annualDays": 365,
+    "consumptionFromAnnex": {
+      "tab": "water_conservation",
+      "subtab": "annextwo",
+      "flushDailyParam": "flush_proposed_total",
+      "flowDailyParam": "fixture_proposed_total"
+    },
+    "sections": [
+      {
+        "id": "availability",
+        "title": "Water Availability (Including Process and Non Process)",
+        "totalDailyParam": "availability_daily_total",
+        "totalAnnualParam": "availability_annual_total",
+        "annualTotalFromAnnualInputs": true,
+        "rows": [
+          {
+            "label": "Municipal Water (in Litres)",
+            "dailyParam": "municipal_daily",
+            "annualParam": "municipal_annuals",
+            "editableAnnual": true
+          },
+          {
+            "label": "Ground Water (in Litres)",
+            "dailyParam": "ground_daily",
+            "annualParam": "ground_annuals",
+            "editableAnnual": true
+          },
+          {
+            "label": "Generated Treated water (in Litres)",
+            "dailyParam": "generated_treated_water",
+            "annualParam": "generated_treated_datas",
+            "editableAnnual": true
+          },
+          {
+            "label": "Purchased Treated Water (in Litres)",
+            "dailyParam": "purchased_treated_water",
+            "annualParam": "purchased_treated_datas",
+            "editableAnnual": true
+          },
+          {
+            "label": "Tanker water (in Litres)",
+            "dailyParam": "tanker_water_lt",
+            "annualParam": "tanker_water_datas",
+            "editableAnnual": true
+          },
+          {
+            "label": "Used Rainwater (in Litres)",
+            "dailyParam": "used_water_liter",
+            "annualParam": "used_water_liter_datas",
+            "editableAnnual": true
+          },
+          {
+            "label": "Other Sources - Please specify (in Litres)",
+            "dailyParam": "others_daily",
+            "annualParam": "others_annuals",
+            "editableAnnual": true
+          }
+        ]
+      },
+      {
+        "id": "consumption",
+        "title": "Water Demand/Consumption",
+        "totalDailyParam": "consumption_daily_total",
+        "totalAnnualParam": "consumption_annual_total",
+        "rows": [
+          {
+            "label": "Flush fixtures (in Litres)",
+            "dailyParam": "flush_daily",
+            "annualParam": "flush_annual",
+            "source": "wcTwoFlush",
+            "editableDaily": false
+          },
+          {
+            "label": "Flow Fixtures (in Litres)",
+            "dailyParam": "flow_daily",
+            "annualParam": "flow_annual",
+            "source": "wcTwoFlow",
+            "editableDaily": false
+          },
+          {
+            "label": "Process water Consumption (ltr)",
+            "dailyParam": "process_water_consumption",
+            "annualParam": "process_water_consumption",
+            "annualMode": "mirrorDaily"
+          },
+          {
+            "label": "Landscaping (in Litres)",
+            "dailyParam": "landscaping_daily",
+            "annualParam": "landscaping_annual"
+          },
+          {
+            "label": "Airconditioning Makeup (in Litres)",
+            "dailyParam": "ac_daily",
+            "annualParam": "ac_annual"
+          },
+          {
+            "label": "Others - Please specify (in Litres)",
+            "dailyParam": "others_consumption_daily",
+            "annualParam": "others_consumption_annual"
+          }
+        ]
+      },
+      {
+        "id": "wastage",
+        "title": "Water Wastage",
+        "totalDailyParam": "waste_daily_total",
+        "totalAnnualParam": "waste_annual_total",
+        "rows": [
+          {
+            "label": "To the drainage (in Litres)",
+            "dailyParam": "drain_daily",
+            "annualParam": "drain_annual"
+          },
+          {
+            "label": "Other Sources - Please specify (in Litres)",
+            "dailyParam": "waste_other_daily",
+            "annualParam": "waste_other_annual"
+          }
+        ]
+      },
+      {
+        "id": "reuse",
+        "title": "Reuse of various Treated Waste Water/ Stored Water for Various Applications",
+        "totalDailyParam": "reuse_daily_total",
+        "totalAnnualParam": "reuse_annual_total",
+        "rows": [
+          {
+            "label": "Flushing (in Litres)",
+            "dailyParam": "flushing_daily",
+            "annualParam": "flushing_annual"
+          },
+          {
+            "label": "Landscaping (in Litres)",
+            "dailyParam": "lands_daily",
+            "annualParam": "lands_annual"
+          },
+          {
+            "label": "Airconditioning Makeup (in Litres)",
+            "dailyParam": "acmakeup_daily",
+            "annualParam": "acmakeup_annual"
+          },
+          {
+            "label": "Others - Please specify (in Litres)",
+            "dailyParam": "others_reuse_daily",
+            "annualParam": "others_reuse_annual"
+          }
+        ]
+      }
+    ]
+  }
+}

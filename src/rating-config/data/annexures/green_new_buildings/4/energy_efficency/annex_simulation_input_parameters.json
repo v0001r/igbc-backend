@@ -1,0 +1,195 @@
+{
+  "id": "annex_simulation_input_parameters",
+  "title": "Annexure Simulation Input parameters",
+  "schemaVersion": 1,
+  "ratingTypeIds": [1],
+  "renderMode": "comparison",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.newbuilding.simulaition_method",
+  "comparisonLayout": {
+    "columnHeaders": ["PARAMETERS", "BASE CASE", "DESIGN CASE"],
+    "defaultRowCount": 1,
+    "sections": [
+      {
+        "title": "BUILDING ENVELOPE",
+        "rows": [
+          {
+            "label": "Exterior Wall Construction:\nU Value (W/m2 K)",
+            "baseParam": "exterior_simulation",
+            "designParam": "design_exterior_simulation"
+          },
+          {
+            "label": "Roof Construction:\nU Value (W/m2 K)",
+            "baseParam": "roof_simulation",
+            "designParam": "roof_design_simulation"
+          },
+          {
+            "groupLabel": "Fenestration",
+            "groupStart": true,
+            "label": "U Value (W/m2 K)",
+            "baseParam": "fenestration_simulation",
+            "designParam": "design_fenestration_simulation"
+          },
+          {
+            "label": "SHGC",
+            "baseParam": "shgc_simulation",
+            "designParam": "design_shgc_simulation"
+          },
+          {
+            "label": "WWR (Window to Wall Ratio)",
+            "baseParam": "wwr_window_simulation",
+            "designParam": "wwr_design_simulation"
+          },
+          {
+            "label": "Skylight Ratio",
+            "baseParam": "skylight_simulation",
+            "designParam": "skylight_design_simulation"
+          }
+        ]
+      },
+      {
+        "title": "LIGHTING SYSTEMS",
+        "rows": [
+          {
+            "label": "Lighting Power Density (W/sqm)",
+            "baseParam": "lighting_power_density",
+            "designParam": "lighting_power_density_design"
+          },
+          {
+            "label": "Equipment Power Density (W/sqm)",
+            "baseParam": "equipment_power_density",
+            "designParam": "equipment_power_density_design"
+          },
+          {
+            "label": "Lighting Controls",
+            "baseParam": "lighting_controls",
+            "designParam": "lighting_controls_design"
+          },
+          {
+            "label": "Exterior Power (W/sqm)",
+            "baseParam": "exterior_power",
+            "designParam": "exterior_power_design"
+          }
+        ]
+      },
+      {
+        "title": "HVAC SYSTEM",
+        "rows": [
+          {
+            "label": "Conditioned Area (sq.m)",
+            "baseParam": "conditioned_area",
+            "designParam": "conditioned_area_design"
+          },
+          {
+            "label": "HVAC System Type",
+            "baseParam": "hvac_system_type",
+            "designParam": "hvac_system_type_design"
+          },
+          {
+            "label": "Fan Power: Supply & Control",
+            "baseParam": "fan_power_supply_control",
+            "designParam": "fan_power_supply_control_design"
+          },
+          {
+            "label": "Temp. Setpoint",
+            "baseParam": "temp_setpoint",
+            "designParam": "temp_setpoint_design"
+          },
+          {
+            "label": "COP of HVAC Systems",
+            "baseParam": "cop_hvac_systems",
+            "designParam": "cop_hvac_systems_design"
+          },
+          {
+            "label": "Heating Type",
+            "baseParam": "heating_type",
+            "designParam": "heating_type_design"
+          },
+          {
+            "label": "Chilled water pump details",
+            "baseParam": "chilled_water_pump_details",
+            "designParam": "chilled_water_pump_details_design"
+          },
+          {
+            "label": "Condenser water pump details",
+            "baseParam": "condenser_water_pump_details",
+            "designParam": "condenser_water_pump_details_design"
+          },
+          {
+            "label": "Cooling Tower parameters",
+            "baseParam": "cooling_tower_parameters",
+            "designParam": "cooling_tower_parameters_design"
+          },
+          {
+            "label": "Heat Recovery System / Treated Fresh Air Units",
+            "baseParam": "heat_recovery_system",
+            "designParam": "heat_recovery_system_design"
+          },
+          {
+            "label": "Fresh Air",
+            "baseParam": "fresh_air",
+            "designParam": "fresh_air_design"
+          },
+          {
+            "label": "Solar PV cells (kWp)",
+            "baseParam": "solar_pv_cells",
+            "designParam": "solar_pv_cells_design"
+          },
+          {
+            "label": "System Schedule",
+            "baseParam": "system_schedule",
+            "designParam": "system_schedule_design"
+          }
+        ]
+      }
+    ]
+  },
+  "comparisonParams": [
+    "exterior_simulation",
+    "design_exterior_simulation",
+    "roof_simulation",
+    "roof_design_simulation",
+    "fenestration_simulation",
+    "design_fenestration_simulation",
+    "shgc_simulation",
+    "design_shgc_simulation",
+    "wwr_window_simulation",
+    "wwr_design_simulation",
+    "skylight_simulation",
+    "skylight_design_simulation",
+    "lighting_power_density",
+    "lighting_power_density_design",
+    "equipment_power_density",
+    "equipment_power_density_design",
+    "lighting_controls",
+    "lighting_controls_design",
+    "exterior_power",
+    "exterior_power_design",
+    "conditioned_area",
+    "conditioned_area_design",
+    "hvac_system_type",
+    "hvac_system_type_design",
+    "fan_power_supply_control",
+    "fan_power_supply_control_design",
+    "temp_setpoint",
+    "temp_setpoint_design",
+    "cop_hvac_systems",
+    "cop_hvac_systems_design",
+    "heating_type",
+    "heating_type_design",
+    "chilled_water_pump_details",
+    "chilled_water_pump_details_design",
+    "condenser_water_pump_details",
+    "condenser_water_pump_details_design",
+    "cooling_tower_parameters",
+    "cooling_tower_parameters_design",
+    "heat_recovery_system",
+    "heat_recovery_system_design",
+    "fresh_air",
+    "fresh_air_design",
+    "solar_pv_cells",
+    "solar_pv_cells_design",
+    "system_schedule",
+    "system_schedule_design"
+  ]
+}

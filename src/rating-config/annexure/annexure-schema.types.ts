@@ -23,6 +23,7 @@ export type AnnexureRenderMode =
   | "wasteManagement"
   | "waterBalance"
   | "wastewaterReuse"
+  | "hvacWaterRequirement"
   | "urbanHeatRoof"
   | "urbanHeatNonRoof"
   | "existingRainfall"
@@ -36,7 +37,29 @@ export type AnnexureRenderMode =
   | "existingOneSiteRenewable"
   | "existingSingleZoneSystem"
   | "existingOutdoorAirSystem"
+  | "ecoFriendlyRefrigerant"
   | "reference";
+
+export type EcoFriendlyRefrigerantCatalogEntry = {
+  slug: string;
+  label: string;
+  gwp?: number;
+  odp?: number;
+  leak_rate?: string;
+  end_loss?: string;
+  life?: number;
+};
+
+export type EcoFriendlyRefrigerantLayoutDef = {
+  singleTabLabel?: string;
+  multipleTabLabel?: string;
+  complianceThreshold?: number;
+  multiDefaultColumns?: number;
+  multiMinColumns?: number;
+  multiMaxColumns?: number;
+  refrigerantCatalog?: Record<string, EcoFriendlyRefrigerantCatalogEntry>;
+  equipmentCatalog?: Record<string, EcoFriendlyRefrigerantCatalogEntry>;
+};
 
 export type ExistingSingleZoneAreaDescriptionDef = {
   label: string;
@@ -48,6 +71,9 @@ export type ExistingSingleZoneLayoutDef = {
   minRows?: number;
   maxRows?: number;
   addRowLabel?: string;
+  /** `newBuilding` uses occupant density → Pz and footer total intake (GNB). Default: `existingBuilding`. */
+  variant?: "existingBuilding" | "newBuilding";
+  ezHelpUrl?: string;
   areaDescriptionOptions?: Record<string, ExistingSingleZoneAreaDescriptionDef>;
 };
 
@@ -221,10 +247,11 @@ export type AnnexureComparisonRowDef = {
   label: string;
   baseParam: string;
   designParam: string;
-  /** Optional rowspan label in first column (e.g. Fenestration). */
   groupLabel?: string;
-  /** When true, render `groupLabel` with rowspan on this row. */
   groupStart?: boolean;
+  readonly?: boolean;
+  spanBoth?: boolean;
+  emphasis?: boolean;
 };
 
 export type AnnexureComparisonSectionDef = {
@@ -235,6 +262,7 @@ export type AnnexureComparisonSectionDef = {
 export type AnnexureComparisonLayoutDef = {
   columnHeaders?: [string, string, string];
   defaultRowCount?: number;
+  inputType?: "textarea" | "number";
   sections: AnnexureComparisonSectionDef[];
 };
 
@@ -309,11 +337,15 @@ export type AnnexureVentilationSummarySourceDef = {
 
 export type AnnexureRainfallSectionDef = {
   fixedRowCount?: number;
+  /** Factory buildings: show free-text year when Past Years = Other. */
+  allowOtherYear?: boolean;
   yearOptions?: Record<string, string>;
   monthOptions?: Record<string, string>;
 };
 
 export type AnnexureRainwaterLayoutDef = {
+  /** Factory buildings use a different one-day rainfall label. */
+  onedayLabel?: string;
   rainfall: AnnexureRainfallSectionDef;
   /** When true, applicability (case) row is hidden — use `defaultCase` for calculations. */
   hideCaseSelector?: boolean;
@@ -330,6 +362,12 @@ export type WaterEfficiencyPresetDef = {
   detailParam: string;
   prefix: string;
   category: "flush" | "flow";
+  /** Override calculated total-use param (e.g. shower_head_total_use). */
+  totalUseParam?: string;
+  /** Override proposed flow input param (e.g. shower_head_total_proposed). */
+  proposedParam?: string;
+  /** Override calculated proposed-total param (e.g. shower_head_proposed). */
+  proposedTotalParam?: string;
   defaults: {
     duration?: string;
     daily?: string;
@@ -338,10 +376,32 @@ export type WaterEfficiencyPresetDef = {
   };
 };
 
+export type WaterEfficiencyColumnLabelsDef = {
+  dailyUses?: string;
+  occupancy?: string;
+  baseFlowHeader?: string;
+  proposedFlowHeader?: string;
+};
+
+export type WaterEfficiencyAggregateParamsDef = {
+  totalVolumeBase?: string;
+  totalVolumeProposed?: string;
+  savingPercentage?: string;
+};
+
 export type AnnexureWaterEfficiencyLayoutDef = {
   addRowLabel?: string;
+  addTableLabel?: string;
   minDynamicRows?: number;
   maxDynamicRows?: number;
+  /** Green New Buildings: multiple fixture tables with per-table summary. */
+  multiTable?: boolean;
+  tableNameParam?: string;
+  minTables?: number;
+  maxTables?: number;
+  lockFirstTablePresetFields?: boolean;
+  columnLabels?: WaterEfficiencyColumnLabelsDef;
+  aggregateParams?: WaterEfficiencyAggregateParamsDef;
   presetRows: WaterEfficiencyPresetDef[];
 };
 
@@ -496,11 +556,17 @@ export type WasteManagementSourceAnnexDef = {
   subtab: string;
   materialField?: string;
   otherMaterialField?: string;
+  /** Extends row count from master material when longer than material labels (e.g. `one_materials_master`). */
+  rowCountField?: string;
+  /** `freeText` reads descriptions from master material (e.g. `one_materials`). Default: `subCategory`. */
+  materialSourceMode?: "subCategory" | "freeText";
 };
 
 export type WasteManagementLayoutDef = {
   minRows?: number;
   sourceAnnex?: WasteManagementSourceAnnexDef;
+  /** When true, material column is read-only (synced from master material annex). */
+  materialReadonly?: boolean;
   unitOptions?: Record<string, string>;
   materialOptions?: Record<string, string>;
   materialOptionsCatalogPath?: string;
@@ -511,6 +577,10 @@ export type WaterBalanceRowDef = {
   dailyParam: string;
   annualParam: string;
   editableDaily?: boolean;
+  /** Factory availability: annual column is user-editable (stored in `annualParam`). */
+  editableAnnual?: boolean;
+  /** `mirrorDaily` copies daily into annual; default derives annual from daily × annualDays. */
+  annualMode?: "computed" | "mirrorDaily";
   source?: "wcTwoFlush" | "wcTwoFlow";
 };
 
@@ -519,6 +589,8 @@ export type WaterBalanceSectionDef = {
   title: string;
   totalDailyParam: string;
   totalAnnualParam: string;
+  /** When true, section annual total sums row annual values (factory availability). */
+  annualTotalFromAnnualInputs?: boolean;
   rows: WaterBalanceRowDef[];
 };
 
@@ -549,6 +621,34 @@ export type AnnexureWastewaterReuseLayoutDef = {
   stpCapacityParam?: string;
   stpCapacitySubtab?: string;
   reuseSection: WastewaterReuseSectionDef;
+};
+
+export type HvacWaterBalanceRowDef = {
+  label: string;
+  dailyParam: string;
+  annualParam: string;
+  dailyReadonly?: boolean;
+  annualReadonly?: boolean;
+};
+
+export type HvacWaterRequirementLayoutDef = {
+  coolingTowerTabLabel?: string;
+  waterBalanceTabLabel?: string;
+  gallonsToLiters?: number;
+  wasteFromAnnex?: {
+    tab?: string;
+    subtab?: string;
+    flushProposedParam?: string;
+    fixtureProposedParam?: string;
+    flushBaseParam?: string;
+    annualDaysParam?: string;
+  };
+  stpCapacityFrom?: {
+    tab?: string;
+    subtab?: string;
+    param?: string;
+  };
+  demandRows?: HvacWaterBalanceRowDef[];
 };
 
 export type AnnexureVentilationSummaryDef = {
@@ -632,6 +732,7 @@ export type AnnexureSchemaDefinition = {
   comparisonLayout?: AnnexureComparisonLayoutDef;
   /** All `baseParam` / `designParam` names for save/hydrate. */
   comparisonParams?: string[];
+  comparisonCompute?: "factoryBuildingEnergy";
   dwellingLayout?: AnnexureDwellingLayoutDef;
   dwellingStore?: AnnexureDwellingStoreDef;
   dwellingRowPipeline?: AnnexureRowStep[];
@@ -653,6 +754,7 @@ export type AnnexureSchemaDefinition = {
   wasteManagementLayout?: WasteManagementLayoutDef;
   waterBalanceLayout?: AnnexureWaterBalanceLayoutDef;
   wastewaterReuseLayout?: AnnexureWastewaterReuseLayoutDef;
+  hvacWaterRequirementLayout?: HvacWaterRequirementLayoutDef;
   urbanHeatRoofLayout?: UrbanHeatRoofLayoutDef;
   urbanHeatNonRoofLayout?: UrbanHeatNonRoofLayoutDef;
   existingRainfallLayout?: ExistingRainfallLayoutDef;
@@ -666,6 +768,9 @@ export type AnnexureSchemaDefinition = {
   existingOneSiteRenewableLayout?: ExistingOneSiteRenewableLayoutDef;
   existingSingleZoneLayout?: ExistingSingleZoneLayoutDef;
   existingOutdoorAirSystemLayout?: ExistingSingleZoneLayoutDef;
+  refrigerantCatalogPath?: string;
+  equipmentLifeCatalogPath?: string;
+  ecoFriendlyRefrigerantLayout?: EcoFriendlyRefrigerantLayoutDef;
   ventilationRatesCatalogPath?: string;
   table?: AnnexureTableDef;
   footerRows?: AnnexureFooterRowDef[];

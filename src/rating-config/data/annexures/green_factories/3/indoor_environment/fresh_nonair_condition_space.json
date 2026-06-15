@@ -1,0 +1,295 @@
+{
+  "id": "fresh_nonair_condition_space",
+  "title": "Annexture 3 – Fresh Air for Non Air Conditioned Spaces",
+  "schemaVersion": 1,
+  "ratingTypeIds": [3],
+  "renderMode": "dwelling",
+  "storageTable": "material_resources",
+  "bladeInclude": ".rating.greenhomes.rwh_ventilation_one",
+  "lookupMaps": {
+    "ventilationMandatoryPct": {
+      "living_spaces": 10,
+      "kitchen": 8,
+      "bathrooms": 4,
+      "na": 0
+    },
+    "ventilationCreditPct": {
+      "living_spaces": 12,
+      "kitchen": 10,
+      "bathrooms": 5,
+      "na": 0
+    }
+  },
+  "dwellingLayout": {
+    "layoutMode": "rowTable",
+    "addTowerLabel": "Add Dwelling Unit",
+    "addRowLabel": "Add Row",
+    "defaultTowerCount": 1,
+    "minTowers": 1,
+    "maxTowers": 20,
+    "orientationRowCount": 5,
+    "minOrientationRows": 5,
+    "maxOrientationRows": 50,
+    "complianceHeaderParam": "rwh_one_coust",
+    "complianceColumnCount": 2,
+    "rowTableFooter": [
+      {
+        "cells": [
+          { "kind": "empty" },
+          { "kind": "label", "colspan": 2, "text": "Total area" },
+          { "kind": "field", "param": "total_floor_area" },
+          { "kind": "label", "colspan": 5, "text": "Meeting Compliance" },
+          { "kind": "field", "param": "total_complied_area_ventilation" },
+          { "kind": "field", "param": "percentage_home" }
+        ]
+      }
+    ],
+    "orientationColumns": [
+      {
+        "param": "rwh_one_ventilation",
+        "header": "Regularly Occupied Space",
+        "type": "text",
+        "width": "min-w-[140px]"
+      },
+      {
+        "param": "type_reg_occ_ventilation",
+        "header": "Type of Regularly Occupied Space",
+        "type": "select",
+        "options": {
+          "": "Select",
+          "living_spaces": "Living Spaces",
+          "kitchen": "Kitchen",
+          "bathrooms": "Bathrooms"
+        }
+      },
+      {
+        "param": "floor_area_home_ventilation",
+        "header": "Floor Area (sq.m)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "window_area_home_ventilation",
+        "header": "Openable Window Area (sq.m)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "window_glazing_home_ventilation",
+        "header": "Openable Door Area (sq.m) (French Window only)",
+        "type": "number",
+        "step": "0.01"
+      },
+      {
+        "param": "skylight_area_home_ventilation",
+        "header": "Openable Area as a Percentage of Total Carpet Area",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "skylight_glazing_home_ventilation",
+        "header": "Mandatory Openable Area Requirement",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "glazing_achieved_ventilation",
+        "header": "Credit Openable Area Requirement",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "glazing_factor_home_ventilation",
+        "header": "Meet or Exceed Mandatory Requirement (RHW MR 2) (Yes/ No)",
+        "type": "readonly",
+        "computed": true
+      },
+      {
+        "param": "glazing_factor_boolean_ventilation",
+        "header": "Meet or Exceed Credit Requirement (RHW Cr 2) (Yes/ No)",
+        "type": "readonly",
+        "computed": true
+      }
+    ]
+  },
+  "dwellingStore": {
+    "towerStringParams": ["rwh_one_coust"],
+    "towerScalarParams": [
+      "total_floor_area",
+      "total_complied_area_ventilation",
+      "percentage_home"
+    ],
+    "orientationParams": [
+      "rwh_one_ventilation",
+      "type_reg_occ_ventilation",
+      "floor_area_home_ventilation",
+      "window_area_home_ventilation",
+      "window_glazing_home_ventilation",
+      "skylight_area_home_ventilation",
+      "skylight_glazing_home_ventilation",
+      "glazing_achieved_ventilation",
+      "glazing_factor_home_ventilation",
+      "glazing_factor_boolean_ventilation"
+    ]
+  },
+  "dwellingRowPipeline": [
+    {
+      "set": "skylight_glazing_home_ventilation",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 0,
+        "arg": {
+          "op": "mapGet",
+          "mapKey": "ventilationMandatoryPct",
+          "key": { "ref": "row:type_reg_occ_ventilation" },
+          "default": 0
+        }
+      }
+    },
+    {
+      "set": "glazing_achieved_ventilation",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 0,
+        "arg": {
+          "op": "mapGet",
+          "mapKey": "ventilationCreditPct",
+          "key": { "ref": "row:type_reg_occ_ventilation" },
+          "default": 0
+        }
+      }
+    },
+    {
+      "set": "skylight_area_home_ventilation",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "and",
+          "args": [
+            {
+              "op": "neq",
+              "left": { "ref": "row:type_reg_occ_ventilation" },
+              "right": { "const": "" }
+            },
+            {
+              "op": "neq",
+              "left": { "ref": "row:type_reg_occ_ventilation" },
+              "right": { "const": "na" }
+            },
+            {
+              "op": "gt",
+              "left": { "op": "parseNum", "arg": { "ref": "row:floor_area_home_ventilation" } },
+              "right": { "const": 0 }
+            }
+          ]
+        },
+        "then": {
+          "op": "formatNum",
+          "decimals": 2,
+          "arg": {
+            "op": "mul",
+            "args": [
+              {
+                "op": "div",
+                "args": [
+                  {
+                    "op": "add",
+                    "args": [
+                      { "op": "parseNum", "arg": { "ref": "row:window_area_home_ventilation" } },
+                      { "op": "parseNum", "arg": { "ref": "row:window_glazing_home_ventilation" } }
+                    ]
+                  },
+                  { "op": "parseNum", "arg": { "ref": "row:floor_area_home_ventilation" } }
+                ]
+              },
+              { "const": 100 }
+            ]
+          }
+        },
+        "else": { "const": "" }
+      }
+    },
+    {
+      "set": "glazing_factor_home_ventilation",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "and",
+          "args": [
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:skylight_area_home_ventilation" } },
+              "right": { "const": 0 }
+            },
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:skylight_glazing_home_ventilation" } },
+              "right": { "const": 0 }
+            }
+          ]
+        },
+        "then": { "const": "" },
+        "else": {
+          "op": "if",
+          "cond": {
+            "op": "gte",
+            "left": { "op": "parseNum", "arg": { "ref": "row:skylight_area_home_ventilation" } },
+            "right": { "op": "parseNum", "arg": { "ref": "row:skylight_glazing_home_ventilation" } }
+          },
+          "then": { "const": "Yes" },
+          "else": { "const": "No" }
+        }
+      }
+    },
+    {
+      "set": "glazing_factor_boolean_ventilation",
+      "expr": {
+        "op": "if",
+        "cond": {
+          "op": "and",
+          "args": [
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:skylight_area_home_ventilation" } },
+              "right": { "const": 0 }
+            },
+            {
+              "op": "eq",
+              "left": { "op": "parseNum", "arg": { "ref": "row:glazing_achieved_ventilation" } },
+              "right": { "const": 0 }
+            }
+          ]
+        },
+        "then": { "const": "" },
+        "else": {
+          "op": "if",
+          "cond": {
+            "op": "gte",
+            "left": { "op": "parseNum", "arg": { "ref": "row:skylight_area_home_ventilation" } },
+            "right": { "op": "parseNum", "arg": { "ref": "row:glazing_achieved_ventilation" } }
+          },
+          "then": { "const": "Yes" },
+          "else": { "const": "No" }
+        }
+      }
+    }
+  ],
+  "dwellingTowerPipeline": [
+    {
+      "set": "total_floor_area",
+      "expr": {
+        "op": "formatNum",
+        "decimals": 2,
+        "arg": { "op": "sumRows", "field": "floor_area_home_ventilation" }
+      }
+    },
+    {
+      "set": "total_complied_area_ventilation",
+      "expr": { "op": "allRowsYes", "field": "glazing_factor_home_ventilation" }
+    },
+    {
+      "set": "percentage_home",
+      "expr": { "op": "allRowsYes", "field": "glazing_factor_boolean_ventilation" }
+    }
+  ]
+}

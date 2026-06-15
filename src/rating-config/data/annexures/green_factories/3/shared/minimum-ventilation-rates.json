@@ -1,0 +1,478 @@
+{
+  "entries": [
+    {
+      "slug": "cell",
+      "label": "Cell",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "dayroom",
+      "label": "Dayroom",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "guard_stations",
+      "label": "Guard stations",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "booking_waiting",
+      "label": "Booking/waiting",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "daycare_through_age_4_",
+      "label": "Daycare (through age 4)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "daycare_sickroom",
+      "label": "Daycare sickroom",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "classrooms_ages_5_8_",
+      "label": "Classrooms (ages 5-8)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "classrooms_age_9_plus_",
+      "label": "Classrooms (age 9 plus)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "lecture_classroom",
+      "label": "Lecture classroom",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "lecture_hall_fixed_seats_",
+      "label": "Lecture hall (fixed seats)",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "art_classroom",
+      "label": "Art classroom",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "science_laboratories",
+      "label": "Science laboratories",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "university_college_laboratories",
+      "label": "University/college laboratories",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "wood_metal_shop",
+      "label": "Wood/metal shop",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "computer_lab",
+      "label": "Computer lab",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "libraries",
+      "label": "Libraries",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "media_center",
+      "label": "Media center",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "music_theater_dance",
+      "label": "Music/theater/dance",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "multiuse_assembly",
+      "label": "Multiuse assembly",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "restaurant_dining_rooms",
+      "label": "Restaurant dining rooms",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "cafeteria_fast_food_dining",
+      "label": "Cafeteria/fast-food dining",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "bars_cocktail_lounges",
+      "label": "Bars, cocktail lounges",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "kitchen_cooking_",
+      "label": "Kitchen (cooking)",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "break_rooms",
+      "label": "Break rooms",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "coffee_stations",
+      "label": "Coffee stations",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "conference_meeting",
+      "label": "Conference/meeting",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "corridors",
+      "label": "Corridors",
+      "outdoor_air_rate": null,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "occupiable_storage_rooms_for_liquids_or_gels",
+      "label": "Occupiable storage rooms for liquids or gels",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "bedroom_living_room",
+      "label": "Bedroom/living room",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "barracks_sleeping_areas",
+      "label": "Barracks sleeping areas",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "laundry_rooms_central",
+      "label": "Laundry rooms, central",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "laundry_rooms_within_dwelling_units",
+      "label": "Laundry rooms within dwelling units",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "lobbies_prefunction",
+      "label": "Lobbies/prefunction",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "multipurpose_assembly",
+      "label": "Multipurpose assembly",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "breakrooms",
+      "label": "Breakrooms",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "main_entry_lobbies",
+      "label": "Main entry lobbies",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "occupiable_storage_rooms_for_dry_materials",
+      "label": "Occupiable storage rooms for dry materials",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "office_space",
+      "label": "Office space",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "reception_areas",
+      "label": "Reception areas",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "telephone_data_entry",
+      "label": "Telephone/data entry",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "bank_vaults_safe_deposit",
+      "label": "Bank vaults/safe deposit",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "banks_or_bank_lobbies",
+      "label": "Banks or bank lobbies",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "computer_not_printing_",
+      "label": "Computer (not printing)",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "freezer_and_refrigerated_spaces_50f_",
+      "label": "Freezer and refrigerated spaces (<50F)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0
+    },
+    {
+      "slug": "general_manufacturing_excludes_heavy_industrial_and_processes_using_chemicals_",
+      "label": "General manufacturing (excludes heavy industrial and processes using chemicals)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "pharmacy_prep_area_",
+      "label": "Pharmacy (prep. area)",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "photo_studios",
+      "label": "Photo studios",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "shipping_receiving",
+      "label": "Shipping/receiving",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "sorting_packing_light_assembly",
+      "label": "Sorting, packing, light assembly",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "telephone_closets",
+      "label": "Telephone closets",
+      "outdoor_air_rate": null,
+      "area_outdoor_rate": 0
+    },
+    {
+      "slug": "transportation_waiting",
+      "label": "Transportation waiting",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "warehouses",
+      "label": "Warehouses",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "auditorium_seating_area",
+      "label": "Auditorium seating area",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "places_of_religious_worship",
+      "label": "Places of religious worship",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "courtrooms",
+      "label": "Courtrooms",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "legislative_chambers",
+      "label": "Legislative chambers",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "lobbies",
+      "label": "Lobbies",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "museums_childrens_",
+      "label": "Museums (childrens)",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "museums_galleries",
+      "label": "Museums/galleries",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "dwelling_unit",
+      "label": "Dwelling unit",
+      "outdoor_air_rate": 5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "common_corridors",
+      "label": "Common corridors",
+      "outdoor_air_rate": null,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "sales_except_as_below_",
+      "label": "Sales (except as below)",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "mall_common_areas",
+      "label": "Mall common areas",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "barbershop",
+      "label": "Barbershop",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "beauty_and_nail_salons",
+      "label": "Beauty and nail salons",
+      "outdoor_air_rate": 20,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "pet_shops_animal_areas_",
+      "label": "Pet shops (animal areas)",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "supermarket",
+      "label": "Supermarket",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "coin_operated_laundries",
+      "label": "Coin-operated laundries",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "gym_sports_arena_play_area_",
+      "label": "Gym, sports arena (play area)",
+      "outdoor_air_rate": 20,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "spectator_areas",
+      "label": "Spectator areas",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "swimming_pool_deck_",
+      "label": "Swimming (pool & deck)",
+      "outdoor_air_rate": null,
+      "area_outdoor_rate": 0.48
+    },
+    {
+      "slug": "disco_dance_floors",
+      "label": "Disco/dance floors",
+      "outdoor_air_rate": 20,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "health_club_aerobics_room",
+      "label": "Health club/aerobics room",
+      "outdoor_air_rate": 20,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "health_club_weight_rooms",
+      "label": "Health club/weight rooms",
+      "outdoor_air_rate": 20,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "bowling_alley_seating_",
+      "label": "Bowling alley (seating)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    },
+    {
+      "slug": "gambling_casinos",
+      "label": "Gambling casinos",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "game_arcades",
+      "label": "Game arcades",
+      "outdoor_air_rate": 7.5,
+      "area_outdoor_rate": 0.18
+    },
+    {
+      "slug": "stages_studios",
+      "label": "Stages, studios",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.06
+    },
+    {
+      "slug": "animal_exam_room_veterinary_office_",
+      "label": "Animal exam room (veterinary office)",
+      "outdoor_air_rate": 10,
+      "area_outdoor_rate": 0.12
+    }
+  ]
+}

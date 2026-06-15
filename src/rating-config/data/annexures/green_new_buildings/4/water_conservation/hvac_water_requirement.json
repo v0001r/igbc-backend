@@ -1,0 +1,51 @@
+{
+  "id": "hvac_water_requirement",
+  "title": "Annexure Waste Water Treatment and Reuse",
+  "schemaVersion": 1,
+  "ratingTypeIds": [1],
+  "renderMode": "hvacWaterRequirement",
+  "storageTable": "water_conservation",
+  "bladeInclude": ".rating.newbuilding.hvacWaterRequire",
+  "hvacWaterRequirementLayout": {
+    "coolingTowerTabLabel": "Cooling Tower Makeup Water",
+    "waterBalanceTabLabel": "Water Balance",
+    "gallonsToLiters": 3.78,
+    "wasteFromAnnex": {
+      "tab": "water_conservation",
+      "subtab": "annex_wc_two",
+      "flushProposedParam": "flush_proposed_total",
+      "fixtureProposedParam": "fixture_proposed_total",
+      "flushBaseParam": "flush_base_total",
+      "annualDaysParam": "annual_days"
+    },
+    "stpCapacityFrom": {
+      "tab": "project_details",
+      "subtab": "water_conservation_details",
+      "param": "capacity_of_stp"
+    },
+    "demandRows": [
+      {
+        "label": "Flushing",
+        "dailyParam": "flusing_water",
+        "annualParam": "flusing_waste",
+        "dailyReadonly": true
+      },
+      {
+        "label": "Landscaping",
+        "dailyParam": "landscaping_water",
+        "annualParam": "landscaping_waste"
+      },
+      {
+        "label": "Cooling Tower Makeup",
+        "dailyParam": "cooling_tower_makeup",
+        "annualParam": "maleup_waste",
+        "dailyReadonly": true
+      },
+      {
+        "label": "Others",
+        "dailyParam": "others_reuse_daily",
+        "annualParam": "others_reuse_annual"
+      }
+    ]
+  }
+}
