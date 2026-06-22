@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CertificationApplication } from "../certification-application/certification-application.entity";
 import { DashboardModule } from "../dashboard/dashboard.module";
@@ -12,6 +12,10 @@ import { ProjectPayment } from "./project-payment.entity";
 import { UserRatingType } from "../users/user-rating-type.entity";
 import { User } from "../users/user.entity";
 import { CertificationWorkflowService } from "../certification-application/certification-workflow.service";
+import {
+  CertificationAccessService,
+  CertificateLevelService,
+} from "../certification-application/certification-access.service";
 import { CertificationCompletionService } from "./certification-completion.service";
 import { ProjectAccessService } from "./project-access.service";
 import { ProjectAssignmentService } from "./project-assignment.service";
@@ -25,8 +29,10 @@ import { ProjectsEmailService } from "./projects-email.service";
 import { ProjectsService } from "./projects.service";
 import { RatingData } from "./rating-data.entity";
 import { RatingDocument } from "./rating-document.entity";
+import { CertificateActionLog } from "../review/certificate-action-log.entity";
 import { RatingFormService } from "./rating-form.service";
 import { RatingTypesModule } from "./rating-types.module";
+import { ReviewModule } from "../review/review.module";
 
 @Module({
   imports: [
@@ -35,6 +41,7 @@ import { RatingTypesModule } from "./rating-types.module";
     DashboardModule,
     RatingConfigModule,
     RatingTypesModule,
+    forwardRef(() => ReviewModule),
     TypeOrmModule.forFeature([
       Project,
       ProjectDetail,
@@ -47,6 +54,7 @@ import { RatingTypesModule } from "./rating-types.module";
       ProjectStaffAssignment,
       ProjectTpaAssignment,
       ProjectAuditLog,
+      CertificateActionLog,
       User,
       UserRatingType,
     ]),
@@ -61,7 +69,15 @@ import { RatingTypesModule } from "./rating-types.module";
     CertificationCompletionService,
     CertificationWorkflowService,
     ProjectAssignmentService,
+    CertificationAccessService,
+    CertificateLevelService,
   ],
-  exports: [ProjectAccessService, ProjectAssignmentService, CertificationWorkflowService],
+  exports: [
+    ProjectAccessService,
+    ProjectAssignmentService,
+    CertificationWorkflowService,
+    CertificationAccessService,
+    CertificateLevelService,
+  ],
 })
 export class ProjectsModule {}

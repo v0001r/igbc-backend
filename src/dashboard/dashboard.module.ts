@@ -1,6 +1,7 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CertificationApplication } from "../certification-application/certification-application.entity";
+import { CertificateActionLog } from "../review/certificate-action-log.entity";
 import { ProjectStaffAssignment } from "../projects/project-staff-assignment.entity";
 import { ProjectTpaAssignment } from "../projects/project-tpa-assignment.entity";
 import { Project } from "../projects/project.entity";
@@ -20,6 +21,7 @@ import { DashboardService } from "./dashboard.service";
       UserProjectAssignment,
       UserRatingType,
       CertificationApplication,
+      CertificateActionLog,
       ProjectStaffAssignment,
       ProjectTpaAssignment,
     ]),

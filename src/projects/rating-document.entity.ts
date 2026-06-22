@@ -45,6 +45,9 @@ export class RatingDocument {
   @Column({ type: "varchar", length: 1024, name: "file_path" })
   filePath!: string;
 
+  @Column({ type: "int", name: "submission_count", default: 1 })
+  submissionCount!: number;
+
   @Column({ type: "varchar", length: 128, name: "file_type", nullable: true })
   fileType?: string | null;
 

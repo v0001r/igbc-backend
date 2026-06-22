@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import type { CertificationWorkflowStatus } from "./certification-workflow-status.enum";
+import type { CertificateStatus } from "./certificate-status.enum";
 
 @Entity("certification_applications")
 export class CertificationApplication {
@@ -179,6 +180,39 @@ export class CertificationApplication {
 
   @Column({ name: "submission_count", type: "int", default: 0 })
   submissionCount!: number;
+
+  @Column({ name: "report_phase", type: "varchar", length: 32, default: "none" })
+  reportPhase!: string;
+
+  @Column({ name: "is_reappeal", type: "boolean", default: false })
+  isReappeal!: boolean;
+
+  @Column({ name: "reappeal_payment_status", type: "varchar", length: 16, nullable: true })
+  reappealPaymentStatus?: "pending" | "paid" | "rejected" | null;
+
+  @Column({ name: "client_report_status", type: "varchar", length: 16, default: "pending" })
+  clientReportStatus!: "pending" | "accepted" | "rejected";
+
+  @Column({ name: "is_pending", type: "boolean", default: false })
+  isPending!: boolean;
+
+  @Column({ name: "certificate_status", type: "varchar", length: 20, default: "pending" })
+  certificateStatus!: CertificateStatus;
+
+  @Column({ name: "certificate_accepted_at", type: "timestamptz", nullable: true })
+  certificateAcceptedAt?: Date | null;
+
+  @Column({ name: "certificate_accepted_by", type: "uuid", nullable: true })
+  certificateAcceptedBy?: string | null;
+
+  @Column({ name: "certificate_rejected_at", type: "timestamptz", nullable: true })
+  certificateRejectedAt?: Date | null;
+
+  @Column({ name: "certificate_rejected_by", type: "uuid", nullable: true })
+  certificateRejectedBy?: string | null;
+
+  @Column({ name: "certificate_reject_remarks", type: "text", nullable: true })
+  certificateRejectRemarks?: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;

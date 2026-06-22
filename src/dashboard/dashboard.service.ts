@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import { CertificationApplication } from "../certification-application/certification-application.entity";
+import { CertificateActionLog } from "../review/certificate-action-log.entity";
+import { fetchLatestCertificateLogsByApplication } from "../review/certificate-log-query";
 import { ProjectStaffAssignment } from "../projects/project-staff-assignment.entity";
 import { ProjectTpaAssignment } from "../projects/project-tpa-assignment.entity";
 import { Project } from "../projects/project.entity";
@@ -23,6 +25,8 @@ export class DashboardService {
     private readonly userRatingTypeRepository: Repository<UserRatingType>,
     @InjectRepository(CertificationApplication)
     private readonly certificationRepository: Repository<CertificationApplication>,
+    @InjectRepository(CertificateActionLog)
+    private readonly certificateActionLogRepository: Repository<CertificateActionLog>,
     @InjectRepository(ProjectStaffAssignment)
     private readonly staffAssignmentRepository: Repository<ProjectStaffAssignment>,
     @InjectRepository(ProjectTpaAssignment)
@@ -53,7 +57,14 @@ export class DashboardService {
       where: { email: email.toLowerCase() },
     });
     if (!user?.isLead) {
-      return { submittedProjects: 0, unassignedStaff: 0, assignedStaff: 0 };
+      return {
+        submittedProjects: 0,
+        unassignedStaff: 0,
+        assignedStaff: 0,
+        registeredProjects: 0,
+        tpaCoordinatorQueue: 0,
+        fullyAssigned: 0,
+      };
     }
 
     const ratingTypeIds = (
@@ -61,7 +72,14 @@ export class DashboardService {
     ).map((r) => r.ratingTypeId);
 
     if (!ratingTypeIds.length) {
-      return { submittedProjects: 0, unassignedStaff: 0, assignedStaff: 0 };
+      return {
+        submittedProjects: 0,
+        unassignedStaff: 0,
+        assignedStaff: 0,
+        registeredProjects: 0,
+        tpaCoordinatorQueue: 0,
+        fullyAssigned: 0,
+      };
     }
 
     const submittedApps = await this.certificationRepository.find({
@@ -79,11 +97,28 @@ export class DashboardService {
           where: { projectId: In(matchingIds) },
         })
       : [];
+    const tpaAssignments = matchingIds.length
+      ? await this.tpaAssignmentRepository.find({
+          where: { projectId: In(matchingIds) },
+        })
+      : [];
+    const tpaByProject = new Set(tpaAssignments.map((a) => a.projectId));
+    const fullyAssigned = staffAssignments.filter((a) => tpaByProject.has(a.projectId)).length;
+
+    const registeredProjects = await this.projectRepository.count({
+      where: {
+        ratingTypeId: In(ratingTypeIds),
+        paymentStatus: In(["approved", "paid"]),
+      },
+    });
 
     return {
       submittedProjects: matchingIds.length,
       unassignedStaff: matchingIds.length - staffAssignments.length,
       assignedStaff: staffAssignments.length,
+      registeredProjects,
+      tpaCoordinatorQueue: matchingIds.length,
+      fullyAssigned,
     };
   }
 
@@ -115,12 +150,20 @@ export class DashboardService {
         where: { projectId: In(projectIds) },
       });
       pendingProjects = apps.filter(
-        (a) => a.workflowStatus === "assigned_to_staff" || a.workflowStatus === "final_submitted",
-      ).length;
-      assignedToTpa = apps.filter(
         (a) =>
-          a.workflowStatus === "assigned_to_tpa" ||
-          a.workflowStatus === "under_review",
+          a.workflowStatus === "assigned_to_staff" ||
+          a.workflowStatus === "final_submitted" ||
+          a.workflowStatus === "tpa_report_released",
+      ).length;
+      assignedToTpa = apps.filter((a) =>
+        [
+          "assigned_to_tpa",
+          "tpa_review_in_progress",
+          "tpa_report_released",
+          "coordinator_review_in_progress",
+          "client_review_pending",
+          "under_review",
+        ].includes(a.workflowStatus),
       ).length;
       completedProjects = apps.filter((a) => a.workflowStatus === "completed").length;
     }
@@ -152,8 +195,13 @@ export class DashboardService {
       const apps = await this.certificationRepository.find({
         where: { projectId: In(projectIds) },
       });
-      underReview = apps.filter(
-        (a) => a.workflowStatus === "assigned_to_tpa" || a.workflowStatus === "under_review",
+      underReview = apps.filter((a) =>
+        [
+          "assigned_to_tpa",
+          "tpa_review_in_progress",
+          "tpa_report_released",
+          "under_review",
+        ].includes(a.workflowStatus),
       ).length;
       completedProjects = apps.filter((a) => a.workflowStatus === "completed").length;
     }
@@ -206,7 +254,9 @@ export class DashboardService {
     const user = await this.userRepository.findOne({
       where: { email: email.toLowerCase() },
     });
-    if (!user) return { items: [] };
+    if (!user) return { items: [], recentCertificateActivity: [] };
+
+    let projects: Project[] = [];
 
     if (user.userType === "T") {
       const assignments = await this.tpaAssignmentRepository.find({
@@ -214,30 +264,27 @@ export class DashboardService {
         relations: { project: true },
         order: { assignedAt: "DESC" },
       });
-      return {
-        items: await this.mapAssignmentItems(assignments.map((a) => a.project)),
-      };
-    }
-
-    if (user.userType === "s") {
+      projects = assignments.map((a) => a.project);
+    } else if (user.userType === "s") {
       const assignments = await this.staffAssignmentRepository.find({
         where: { staffId: user.id },
         relations: { project: true },
         order: { assignedAt: "DESC" },
       });
-      return {
-        items: await this.mapAssignmentItems(assignments.map((a) => a.project)),
-      };
+      projects = assignments.map((a) => a.project);
+    } else {
+      const assignments = await this.assignmentRepository.find({
+        where: { userId: user.id },
+        relations: { project: true },
+        order: { assignedAt: "DESC" },
+      });
+      projects = assignments.map((a) => a.project);
     }
 
-    const assignments = await this.assignmentRepository.find({
-      where: { userId: user.id },
-      relations: { project: true },
-      order: { assignedAt: "DESC" },
-    });
-    return {
-      items: await this.mapAssignmentItems(assignments.map((a) => a.project)),
-    };
+    const items = await this.mapAssignmentItems(projects);
+    const recentCertificateActivity = await this.getRecentCertificateActivity(projects, items);
+
+    return { items, recentCertificateActivity };
   }
 
   private async mapAssignmentItems(projects: Project[]) {
@@ -246,9 +293,14 @@ export class DashboardService {
       where: { projectId: In(projects.map((p) => p.id)) },
     });
     const appMap = new Map(apps.map((a) => [a.projectId, a]));
+    const logMap = await fetchLatestCertificateLogsByApplication(
+      this.certificateActionLogRepository,
+      apps.map((a) => a.id),
+    );
 
     return projects.map((p) => {
       const app = appMap.get(p.id);
+      const latestLog = app ? logMap.get(app.id) : undefined;
       return {
         projectId: p.id,
         igbcProjectId: p.igbcProjectId ?? p.temporaryProjectId,
@@ -257,7 +309,48 @@ export class DashboardService {
         paymentStatus: p.paymentStatus,
         workflowStatus: app?.workflowStatus ?? "draft",
         isSubmitted: app?.isSubmitted ?? false,
+        isPending: app?.isPending ?? false,
+        certificateStatus: app?.certificateStatus ?? "pending",
+        latestCertificateAction: latestLog
+          ? {
+              action: latestLog.action,
+              createdAt: latestLog.createdAt.toISOString(),
+            }
+          : null,
         assignedAt: p.updatedAt?.toISOString?.() ?? null,
+      };
+    });
+  }
+
+  private async getRecentCertificateActivity(
+    projects: Project[],
+    items: Array<{ projectId: number; igbcProjectId?: string | null }>,
+  ) {
+    if (!projects.length) return [];
+
+    const apps = await this.certificationRepository.find({
+      where: { projectId: In(projects.map((p) => p.id)) },
+    });
+    const appById = new Map(apps.map((a) => [a.id, a]));
+    const projectLabelById = new Map(
+      items.map((item) => [item.projectId, item.igbcProjectId ?? String(item.projectId)]),
+    );
+
+    const logs = await this.certificateActionLogRepository.find({
+      where: { applicationId: In(apps.map((a) => a.id)) },
+      order: { createdAt: "DESC" },
+      take: 15,
+    });
+
+    return logs.map((log) => {
+      const app = appById.get(log.applicationId);
+      const projectId = app?.projectId ?? 0;
+      return {
+        projectId,
+        igbcProjectId: projectLabelById.get(projectId) ?? String(projectId),
+        action: log.action,
+        remarks: log.remarks,
+        createdAt: log.createdAt.toISOString(),
       };
     });
   }

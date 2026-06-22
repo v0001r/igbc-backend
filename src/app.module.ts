@@ -43,6 +43,15 @@ import { UsersModule } from "./users/users.module";
 import { DashboardModule } from "./dashboard/dashboard.module";
 import { ActivityLogModule } from "./activity-log/activity-log.module";
 import { ProjectActivityLog } from "./activity-log/project-activity-log.entity";
+import { ReviewModule } from "./review/review.module";
+import { ReviewCycle } from "./review/review-cycle.entity";
+import { CreditReview } from "./review/credit-review.entity";
+import { ReportRelease } from "./review/report-release.entity";
+import { ReportPdfVersion } from "./review/report-pdf-version.entity";
+import { ClientReportResponse } from "./review/client-report-response.entity";
+import { ReappealRequest } from "./review/reappeal-request.entity";
+import { CertificateActionLog } from "./review/certificate-action-log.entity";
+import { CertificateCustomization } from "./review/certificate-customization.entity";
 
 @Module({
   imports: [
@@ -93,6 +102,14 @@ import { ProjectActivityLog } from "./activity-log/project-activity-log.entity";
           ProjectTpaAssignment,
           ProjectAuditLog,
           ProjectActivityLog,
+          ReviewCycle,
+          CreditReview,
+          ReportRelease,
+          ReportPdfVersion,
+          ClientReportResponse,
+          ReappealRequest,
+          CertificateActionLog,
+          CertificateCustomization,
         ],
         synchronize: true,
       }),
@@ -110,6 +127,7 @@ import { ProjectActivityLog } from "./activity-log/project-activity-log.entity";
     CertificationApplicationModule,
     EventsModule,
     SupportModule,
+    ReviewModule,
   ],
   providers: [
     {

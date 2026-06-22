@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -9,6 +9,7 @@ import { CertificationApplication } from "../certification-application/certifica
 import { RatingConfigService } from "../rating-config/rating-config.service";
 import { RatingTypeService } from "./rating-type.service";
 import { UsersService } from "../users/users.service";
+import { UserRatingType } from "../users/user-rating-type.entity";
 import { CreateProjectStepOneDto } from "./dto/create-project-step-one.dto";
 import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
 import { UpsertProjectStepFourDto } from "./dto/upsert-project-step-four.dto";
@@ -20,6 +21,12 @@ import { ProjectDetail } from "./project-detail.entity";
 import { ProjectInvoice } from "./project-invoice.entity";
 import { ProjectPayment } from "./project-payment.entity";
 import { CertificationWorkflowService } from "../certification-application/certification-workflow.service";
+import {
+  CertificationAccessService,
+} from "../certification-application/certification-access.service";
+import { CreditReviewService } from "../review/credit-review.service";
+import { CertificateActionLog } from "../review/certificate-action-log.entity";
+import { fetchLatestCertificateLogsByApplication } from "../review/certificate-log-query";
 import { CertificationCompletionService } from "./certification-completion.service";
 import { ProjectAccessService } from "./project-access.service";
 import { ProjectsEmailService } from "./projects-email.service";
@@ -57,6 +64,10 @@ export class ProjectsService {
     private readonly projectPaymentRepository: Repository<ProjectPayment>,
     @InjectRepository(CertificationApplication)
     private readonly certificationApplicationRepository: Repository<CertificationApplication>,
+    @InjectRepository(CertificateActionLog)
+    private readonly certificateActionLogRepository: Repository<CertificateActionLog>,
+    @InjectRepository(UserRatingType)
+    private readonly userRatingTypeRepository: Repository<UserRatingType>,
     private readonly usersService: UsersService,
     private readonly projectsEmailService: ProjectsEmailService,
     private readonly ratingConfigService: RatingConfigService,
@@ -65,6 +76,9 @@ export class ProjectsService {
     private readonly projectAccessService: ProjectAccessService,
     private readonly certificationWorkflowService: CertificationWorkflowService,
     private readonly certificationCompletionService: CertificationCompletionService,
+    private readonly certificationAccessService: CertificationAccessService,
+    @Inject(forwardRef(() => CreditReviewService))
+    private readonly creditReviewService: CreditReviewService,
     private readonly activityLogService: ActivityLogService,
   ) {}
 
@@ -259,6 +273,10 @@ export class ProjectsService {
     const certByProjectId = new Map(
       certifications.map((application) => [application.projectId, application]),
     );
+    const latestLogByAppId = await fetchLatestCertificateLogsByApplication(
+      this.certificateActionLogRepository,
+      certifications.map((application) => application.id),
+    );
 
     const counts = {
       saved: allProjects.filter((project) => project.status === "saved").length,
@@ -291,7 +309,8 @@ export class ProjectsService {
       items: filtered.map((project) => {
         const detail = detailByProjectId.get(project.id);
         const cert = certByProjectId.get(project.id);
-        return this.mapMyProjectListItem(project, detail, cert);
+        const latestLog = cert ? latestLogByAppId.get(cert.id) : undefined;
+        return this.mapMyProjectListItem(project, detail, cert, latestLog);
       }),
     };
   }
@@ -385,6 +404,29 @@ export class ProjectsService {
 
   async getAdminProjectView(email: string, projectId: number) {
     await this.ensureAdminAccess(email);
+    return this.getProjectViewById(projectId);
+  }
+
+  async getLeadProjectRegistrationView(email: string, projectId: number) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user || user.userType !== "s" || !user.isLead) {
+      throw new ForbiddenException("Lead access required");
+    }
+
+    const project = await this.projectRepository.findOne({ where: { id: projectId } });
+    if (!project) {
+      throw new NotFoundException("Project not found");
+    }
+
+    if (project.ratingTypeId) {
+      const count = await this.userRatingTypeRepository.count({
+        where: { userId: user.id, ratingTypeId: project.ratingTypeId },
+      });
+      if (!count) {
+        throw new ForbiddenException("Project rating type does not match your assignments");
+      }
+    }
+
     return this.getProjectViewById(projectId);
   }
 
@@ -1244,6 +1286,7 @@ export class ProjectsService {
             numberOfBuildings: certificationApplication.numberOfBuildings,
             totalBuiltUpAreaSqm: Number(certificationApplication.totalBuiltUpAreaSqm),
             totalBuiltUpAreaSqft: Number(certificationApplication.totalBuiltUpAreaSqft),
+            expediteReview: certificationApplication.expediteReview ?? false,
           }
         : null,
       canReapplyCertification:
@@ -1340,6 +1383,11 @@ export class ProjectsService {
     const form = await this.ratingFormService.getForm(ctx);
     const workflow = await this.certificationWorkflowService.getWorkflowSummary(projectId);
     const completion = this.certificationCompletionService.validateCompletion(ctx, form);
+    const certApp = access.certificationApplication;
+    const pendingCredits =
+      certApp?.isPending === true
+        ? await this.creditReviewService.getPendingCreditsForProject(projectId)
+        : [];
 
     const payload = this.ratingConfigService.buildWorkspacePayload({
       projectId: String(project.id),
@@ -1357,6 +1405,14 @@ export class ProjectsService {
       ...payload,
       isSubmitted: access.isSubmitted,
       workflowStatus: access.workflowStatus,
+      isPending: certApp?.isPending ?? false,
+      certificateStatus: certApp?.certificateStatus ?? "pending",
+      clientReportStatus: certApp?.clientReportStatus ?? "pending",
+      pendingCredits,
+      canViewCertificateTab: this.certificationAccessService.canViewCertificateTab(
+        certApp ?? undefined,
+        workflow.reviewCycle,
+      ),
       readOnly: !access.canWrite,
       canFinalSubmit: access.canWrite && !access.isSubmitted,
       completion: {
@@ -1380,6 +1436,7 @@ export class ProjectsService {
     dto: SaveCertificationSectionDto,
   ) {
     const { ctx, access } = await this.assertWorkspaceContext(email, projectId, "write");
+    await this.assertSectionWritable(access.certificationApplication, dto.tab, dto.subtab, projectId);
     return this.ratingFormService.saveSection(ctx, dto, {
       userId: access.user.id,
       userRole: access.user.userType,
@@ -1397,6 +1454,7 @@ export class ProjectsService {
     replaceExisting = true,
   ) {
     const { ctx, access } = await this.assertWorkspaceContext(email, projectId, "write");
+    await this.assertSectionWritable(access.certificationApplication, tab, subtab, projectId);
     return this.ratingFormService.uploadDocuments(
       ctx,
       tab,
@@ -1418,7 +1476,7 @@ export class ProjectsService {
   }
 
   async getProjectWorkflow(email: string, projectId: number) {
-    await this.assertWorkspaceContext(email, projectId, "read");
+    await this.projectAccessService.resolveAccess(email, projectId, "read");
     return this.certificationWorkflowService.getWorkflowSummary(projectId);
   }
 
@@ -1481,6 +1539,23 @@ export class ProjectsService {
     };
 
     return { project, detail, ctx, resolved, access };
+  }
+
+  private async assertSectionWritable(
+    certApp: CertificationApplication | null | undefined,
+    tab: string,
+    subtab: string,
+    projectId: number,
+  ) {
+    if (!certApp?.isSubmitted) return;
+    const pendingCredits = await this.creditReviewService.getPendingCreditsForProject(projectId);
+    if (
+      !this.certificationAccessService.canEditSection(certApp, tab, subtab, pendingCredits)
+    ) {
+      throw new ForbiddenException(
+        "This section is read-only. Only credits with pending points can be edited.",
+      );
+    }
   }
 
   private readRatingSystems() {
@@ -1641,6 +1716,7 @@ export class ProjectsService {
     project: Project,
     detail: ProjectDetail | undefined,
     certificationApplication?: CertificationApplication,
+    latestCertificateLog?: CertificateActionLog,
   ) {
     const certPayment = certificationApplication?.paymentStatus?.toLowerCase() ?? null;
     const registrationRejected =
@@ -1673,6 +1749,14 @@ export class ProjectsService {
         certificationApplication,
       ),
       isSubmitted: certificationApplication?.isSubmitted ?? false,
+      isPending: certificationApplication?.isPending ?? false,
+      workflowCertificateStatus: certificationApplication?.certificateStatus ?? "pending",
+      latestCertificateAction: latestCertificateLog
+        ? {
+            action: latestCertificateLog.action,
+            createdAt: latestCertificateLog.createdAt.toISOString(),
+          }
+        : null,
       workflowStatus: certificationApplication?.workflowStatus ?? "draft",
       submittedAt: certificationApplication?.submittedAt?.toISOString?.() ?? null,
       rejectionType: certificationRejected

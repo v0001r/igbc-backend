@@ -33,6 +33,12 @@ export class ProjectStaffAssignment {
   @Column({ name: "assigned_by", type: "uuid", nullable: true })
   assignedBy?: string | null;
 
+  @Column({ type: "decimal", precision: 12, scale: 2, nullable: true })
+  fee?: string | null;
+
+  @Column({ type: "int", nullable: true })
+  count?: number | null;
+
   @CreateDateColumn({ name: "assigned_at" })
   assignedAt!: Date;
 }

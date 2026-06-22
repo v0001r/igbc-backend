@@ -1,0 +1,30 @@
+{
+  "default": {
+    "final": [
+      { "level": "Certified", "min": 51, "max": 59 },
+      { "level": "Silver", "min": 60, "max": 69 },
+      { "level": "Gold", "min": 70, "max": 79 },
+      { "level": "Platinum", "min": 80, "max": 100 }
+    ],
+    "precert": [
+      { "level": "Certified", "min": 51, "max": 59 },
+      { "level": "Silver", "min": 60, "max": 69 },
+      { "level": "Gold", "min": 70, "max": 79 },
+      { "level": "Platinum", "min": 80, "max": 100 }
+    ]
+  },
+  "5": {
+    "final": [
+      { "level": "Certified", "min": 30, "max": 44 },
+      { "level": "Silver", "min": 45, "max": 59 },
+      { "level": "Gold", "min": 60, "max": 79 },
+      { "level": "Platinum", "min": 80, "max": 100 }
+    ],
+    "precert": [
+      { "level": "Certified", "min": 22, "max": 32 },
+      { "level": "Silver", "min": 33, "max": 44 },
+      { "level": "Gold", "min": 45, "max": 59 },
+      { "level": "Platinum", "min": 60, "max": 75 }
+    ]
+  }
+}

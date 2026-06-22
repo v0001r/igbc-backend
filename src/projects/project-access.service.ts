@@ -70,6 +70,8 @@ export class ProjectAccessService {
       canWrite = true;
     } else if (isOwner && !isSubmitted) {
       canWrite = true;
+    } else if (isOwner && isSubmitted && certificationApplication?.isPending === true) {
+      canWrite = true;
     }
 
     if (!canView) {

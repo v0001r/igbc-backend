@@ -29,6 +29,7 @@ import { UpsertProjectStepFiveDto } from "./dto/upsert-project-step-five.dto";
 import { UpsertProjectStepThreeDto } from "./dto/upsert-project-step-three.dto";
 import { UpsertProjectStepTwoDto } from "./dto/upsert-project-step-two.dto";
 import { AssignStaffDto } from "./dto/assign-staff.dto";
+import { AssignTeamDto } from "./dto/assign-team.dto";
 import { AssignTpaDto } from "./dto/assign-tpa.dto";
 import { SaveCertificationSectionDto } from "./dto/save-certification-section.dto";
 import { ProjectAssignmentService } from "./project-assignment.service";
@@ -61,6 +62,53 @@ export class ProjectsController {
   @Get("lead/submitted")
   getLeadSubmittedProjects(@Req() request: { user: { email: string } }) {
     return this.projectAssignmentService.listLeadSubmittedProjects(request.user.email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: registered projects by rating type" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Get("lead/registered")
+  getLeadRegisteredProjects(@Req() request: { user: { email: string } }) {
+    return this.projectAssignmentService.listLeadRegisteredProjects(request.user.email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: final-submitted projects for TPA & coordinator assignment" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Get("lead/tpa-coordinator")
+  getLeadTpaCoordinatorProjects(@Req() request: { user: { email: string } }) {
+    return this.projectAssignmentService.listLeadTpaCoordinatorProjects(request.user.email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: fully assigned projects (coordinator + TPA)" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Get("lead/assigned")
+  getLeadAssignedProjects(@Req() request: { user: { email: string } }) {
+    return this.projectAssignmentService.listLeadAssignedProjects(request.user.email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: project registration overview" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
+  @Get("lead/:projectId/registration-view")
+  getLeadRegistrationView(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectsService.getLeadProjectRegistrationView(request.user.email, projectId);
   }
 
   @ApiBearerAuth()
@@ -283,7 +331,25 @@ export class ProjectsController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Lead: assign staff to project" })
+  @ApiOperation({ summary: "Lead: assign coordinator (staff) and TPA together" })
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles(RoleName.IGBC_STAFF)
+  @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF, Permission.PROJECTS_ASSIGN_TPA)
+  @Post(":projectId/assign-team")
+  assignTeam(
+    @Req() request: { user: { email: string } },
+    @Param("projectId") projectIdParam: string,
+    @Body() dto: AssignTeamDto,
+  ) {
+    const projectId = Number(projectIdParam);
+    if (Number.isNaN(projectId)) {
+      throw new BadRequestException("projectId must be a number");
+    }
+    return this.projectAssignmentService.assignTeam(request.user.email, projectId, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Lead: assign staff to project (deprecated)" })
   @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
   @Roles(RoleName.IGBC_STAFF)
   @RequirePermissions(Permission.PROJECTS_ASSIGN_STAFF)
@@ -340,7 +406,7 @@ export class ProjectsController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Staff: eligible TPAs for project rating type" })
+  @ApiOperation({ summary: "Lead: eligible TPAs for project rating type" })
   @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
   @Roles(RoleName.IGBC_STAFF)
   @RequirePermissions(Permission.PROJECTS_ASSIGN_TPA)

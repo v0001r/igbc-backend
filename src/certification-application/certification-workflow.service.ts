@@ -1,8 +1,10 @@
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Inject, Injectable, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 import { ActivityType } from "../activity-log/activity-type.enum";
 import { ActivityLogService } from "../activity-log/activity-log.service";
+import { CertificateEligibilityService } from "../review/client-report.service";
+import { ReviewCycleService } from "../review/review-cycle.service";
 import { ProjectAccessService } from "../projects/project-access.service";
 import { ProjectAuditService } from "../projects/project-audit.service";
 import { ProjectStaffAssignment } from "../projects/project-staff-assignment.entity";
@@ -23,6 +25,10 @@ export class CertificationWorkflowService {
     private readonly auditService: ProjectAuditService,
     private readonly activityLogService: ActivityLogService,
     private readonly dataSource: DataSource,
+    @Inject(forwardRef(() => ReviewCycleService))
+    private readonly reviewCycleService: ReviewCycleService,
+    @Inject(forwardRef(() => CertificateEligibilityService))
+    private readonly certificateEligibilityService: CertificateEligibilityService,
   ) {}
 
   async finalSubmit(email: string, projectId: number, _ctx: RegistrationRatingContext) {
@@ -35,22 +41,33 @@ export class CertificationWorkflowService {
     if (!certApp) {
       throw new BadRequestException("Certification application not found");
     }
-    if (certApp.isSubmitted) {
-      // ACTIVITY_LOG: When re-submit after rejection is implemented, reset isSubmitted here
-      // and reuse the submission_count increment block below.
+
+    const canResubmit =
+      !certApp.isSubmitted &&
+      (certApp.workflowStatus === "draft" ||
+        certApp.clientReportStatus === "rejected" ||
+        certApp.workflowStatus === "reappeal_in_progress");
+
+    if (certApp.isSubmitted && !canResubmit) {
       throw new BadRequestException("Project has already been submitted");
     }
 
     const prevCount = certApp.submissionCount ?? 0;
     const newCount = prevCount + 1;
     const submittedAt = new Date();
+    const isResubmit = prevCount > 0;
 
     await this.dataSource.transaction(async (manager) => {
       certApp.isSubmitted = true;
       certApp.submittedAt = submittedAt;
       certApp.workflowStatus = "final_submitted";
       certApp.submissionCount = newCount;
+      certApp.clientReportStatus = "pending";
+      certApp.reportPhase = "none";
+      certApp.isReappeal = false;
       await manager.getRepository(CertificationApplication).save(certApp);
+
+      await this.reviewCycleService.openCycle(projectId, newCount, manager);
 
       await this.activityLogService.log(
         {
@@ -58,9 +75,9 @@ export class CertificationWorkflowService {
           certificationApplicationId: certApp.id,
           userId: access.user.id,
           userRole: access.user.userType,
-          activityType: ActivityType.FINAL_SUBMITTED,
+          activityType: isResubmit ? ActivityType.CERT_RESUBMITTED : ActivityType.FINAL_SUBMITTED,
           module: "certification",
-          activityTitle: "Final submission",
+          activityTitle: isResubmit ? "Certification resubmitted" : "Final submission",
           activityDescription: `Submission #${newCount}`,
           oldValue: { submissionCount: prevCount },
           newValue: { submissionCount: newCount, workflowStatus: "final_submitted" },
@@ -71,7 +88,7 @@ export class CertificationWorkflowService {
     });
 
     return {
-      message: "Project submitted successfully",
+      message: isResubmit ? "Project resubmitted successfully" : "Project submitted successfully",
       isSubmitted: true,
       workflowStatus: certApp.workflowStatus,
       submittedAt: certApp.submittedAt?.toISOString() ?? null,
@@ -90,12 +107,25 @@ export class CertificationWorkflowService {
       relations: { tpa: true },
     });
     const timeline = await this.auditService.getTimeline(projectId);
+    if (certApp?.isSubmitted) {
+      await this.reviewCycleService.ensureCycleFromCertApp(projectId);
+    }
+    const cycle = await this.reviewCycleService.getCurrentCycle(projectId);
+    const eligibility = await this.certificateEligibilityService.getEligibility(projectId);
 
     return {
       isSubmitted: certApp?.isSubmitted ?? false,
       workflowStatus: certApp?.workflowStatus ?? "draft",
+      reportPhase: certApp?.reportPhase ?? "none",
+      clientReportStatus: certApp?.clientReportStatus ?? "pending",
+      isPending: certApp?.isPending ?? false,
+      certificateStatus: certApp?.certificateStatus ?? "pending",
       submittedAt: certApp?.submittedAt?.toISOString() ?? null,
       submissionCount: certApp?.submissionCount ?? 0,
+      reviewCycle: this.reviewCycleService.getCycleSummary(cycle),
+      certificateEligible: eligibility.certificateEligible,
+      pendingPointsTotal: eligibility.totalPendingPoints,
+      blockingCredits: eligibility.blockingCredits,
       assignedStaff: staffAssignment
         ? {
             id: staffAssignment.staffId,

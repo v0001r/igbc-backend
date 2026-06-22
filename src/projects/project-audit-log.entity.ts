@@ -4,6 +4,7 @@ export type ProjectAuditAction =
   | "FINAL_SUBMITTED"
   | "STAFF_ASSIGNED"
   | "STAFF_REASSIGNED"
+  | "TEAM_ASSIGNED"
   | "TPA_ASSIGNED"
   | "TPA_REASSIGNED"
   | "WORKFLOW_STATUS_CHANGED";
